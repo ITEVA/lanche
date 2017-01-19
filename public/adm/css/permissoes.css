@@ -1,0 +1,10 @@
+.quebraBox {
+    display: block;
+    padding-top: 7px;
+}
+
+.lblPermissao {
+    position: relative;
+    padding-left: 5px;
+    top: 2px;
+}

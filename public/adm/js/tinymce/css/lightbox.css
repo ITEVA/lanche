@@ -1,0 +1,138 @@
+p#txt {
+    color: #000000;
+    text-align: center;
+    margin-top: 5px;
+}
+
+a#btn-excluir {
+    position: relative;
+    left: 73px;
+    top: 20px;
+    text-decoration: none;
+    color: #000000;
+    background-color: #F5F5F5;
+    border: 1px solid #7a7a7a;
+}
+
+a#btn-cancelar {
+    position: relative;
+    left: 150px;
+    top: 4px;
+    text-decoration: none;
+    color: #000000;
+    background-color: #F5F5F5;
+    border: 1px solid #7a7a7a;
+    width: 55px;
+}
+
+a#link-exclui {
+    width: 40px;
+    height: 10px;
+}
+
+img#fechar {
+    position: relative;
+    left: 360px;
+}
+
+a#excluir-galeria {
+    color: #722f0c;
+}
+
+a#excluir-galeria:hover {
+    color: #000000;
+}
+
+div.boxes a {color:#333; text-decoration:none}
+div.boxes a:hover {color:#ccc; text-decoration:none}
+
+#mask {
+    position: absolute;
+    left: -765px;
+    top: -202px;
+    z-index:9000;
+    background-color:rgba(0, 0, 0, 0.5);
+    display:none;
+}
+
+#boxes .window {
+    position:fixed;
+    left:0;
+    top:0;
+    display:none;
+    z-index:9999;
+    padding:0px;
+    width: 400px;
+    background-color:#f1f1f1;
+    color: #0c2f57;
+    font-weight: bold;
+    border-radius: 2px;
+    height: 100px;
+}
+
+#boxes .topoMsg{
+    background-color: #666666;
+    height: 25px;
+}
+
+#boxes #dialog1 {
+    width:375px;
+    height:203px;
+}
+
+#dialog1 .d-header {
+    background:url(login-header.png) no-repeat 0 0 transparent;
+    width:375px;
+    height:150px;
+}
+
+#dialog1 .d-header input {
+    position:relative;
+    top:60px;
+    left:100px;
+    border:3px solid #cccccc;
+    height:22px;
+    width:200px;
+    font-size:15px;
+    padding:5px;
+    margin-top:4px;
+}
+
+#dialog1 .d-blank {
+    float:left;
+    background:url(login-blank.png) no-repeat 0 0 transparent;
+    width:267px;
+    height:53px;
+}
+
+#dialog1 .d-login {
+    float:left;
+    width:108px;
+    height:53px;
+}
+
+#boxes #dialog2 {
+    background:url(notice.png) no-repeat 0 0 transparent;
+    width:326px;
+    height:229px;
+    padding:50px 0 20px 25px;
+}
+
+#boxes h2{
+}
+
+#boxes hr{
+    background-color:#bbbbbb;
+}
+
+.close{display:block; text-align:right;}
+
+a#titulo-noticia {
+    text-decoration: underline;
+    color: #000000;
+}
+
+a#titulo-noticia:hover {
+    text-decoration: underline;
+    color: #a04f24;
+}
