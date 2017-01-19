@@ -43,7 +43,7 @@
                                         </td>
                                         <td>{{$pedido->data}}</td>
                                         <td>{{$pedido->preco}}</td>
-                                        <td><i class="fa fa-search detalhesPedido" style="cursor: pointer"></i></td>
+                                        <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
                                     </tr>
                                 @endforeach
                             @else
@@ -79,21 +79,41 @@
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
 
-                <div class="modal fade" id="detalhesPedido" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Itens do pedido</h4>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="tipoRemocao" value="" />
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
+                @foreach($produtosPedidos as $produtosPedido)
+                    <div class="modal fade" id="detalhesPedido{{$produtosPedido['id_pedido']}}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Itens do pedido</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Preço unitário</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço total</th>
+                                        </tr>
+                                        @foreach($produtosPedido as $produtoPedido)
+                                            @if(isset($produtoPedido['id_pedido']))
+                                                <tr>
+                                                    <td>{{$produtoPedido['nome']}}</td>
+                                                    <td>R$ {{str_replace(".", ",", $produtoPedido['preco_unitario'])}}</td>
+                                                    <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
+                                                    <td>R$ {{str_replace(".", ",", $produtoPedido['preco_total'])}}</td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
 
+                                    </table>
+                                    <input type="hidden" id="tipoRemocao" value="" />
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                @endforeach
             </div>
         </div>
     </div>

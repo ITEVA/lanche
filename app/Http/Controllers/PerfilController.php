@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PerfilRequest;
+use App\ProdutoPedido;
 use App\User;
 use App\Pedido;
 use App\PermissaoClasse;
@@ -53,11 +54,18 @@ class PerfilController extends Controller
 
         $this->formatInput($pedidos);
 
+        $produtosPedidos = array();
+
         foreach ($pedidos as $pedido) {
+            //Calculando o custo total
             $preco = explode(" ", $pedido->preco);
             $preco[1] = str_replace(",", ".", $preco[1]);
 
             $consumo = $consumo + floatval($preco[1]);
+
+            //Pegando produtos do pedido
+            $produtosPedidos[$pedido->id] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
+            $produtosPedidos[$pedido->id]['id_pedido'] = $pedido->id;
         }
 
         $consumo = str_replace(".", ",", $consumo);
@@ -66,7 +74,8 @@ class PerfilController extends Controller
             ->with('usuario', $usuario)
             ->with('itensPermitidos', $itensPermitidos)
             ->with('consumo', $consumo)
-            ->with('pedidos', $pedidos);
+            ->with('pedidos', $pedidos)
+            ->with('produtosPedidos', $produtosPedidos);
     }
 
     protected function getClassesPermissao($id)

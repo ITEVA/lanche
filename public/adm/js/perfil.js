@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $(".detalhesPedido").click(function () {
-        $("#detalhesPedido").modal();
+        var id = $(this).attr('iid');
+        $("#detalhesPedido"+id).modal();
     });
 });

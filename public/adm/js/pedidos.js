@@ -25,7 +25,7 @@ $(document).ready(function () {
                     $("#addTr").append("<tr class='produtosTabela'>" +
                         "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
                         "<td><label class='precoUnitario'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
-                        "<td><input class='quantidadeProduto' type='text' value='1' min='1' max='10'></td>" +
+                        "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
                         "<td><label class='precoProduto'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
                         "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
@@ -106,5 +106,7 @@ $(document).ready(function () {
         });
 
         $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
+
+        ativarMascaras();
     });
 });
