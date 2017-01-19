@@ -24,9 +24,9 @@ $(document).ready(function () {
                 if(ctrl) {
                     $("#addTr").append("<tr class='produtosTabela'>" +
                         "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
-                        "<td><label class='precoUnitario'>" + $(this).attr('precoE') + "</label></td>" +
-                        "<td><input class='quantidadeProduto' type='number' value='1'></td>" +
-                        "<td><label class='precoProduto'>" + $(this).attr('precoE') + "</label></td>" +
+                        "<td><label class='precoUnitario'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
+                        "<td><input class='quantidadeProduto' type='text' value='1' min='1' max='10'></td>" +
+                        "<td><label class='precoProduto'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
                         "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
 
@@ -80,10 +80,12 @@ $(document).ready(function () {
 
     });
 
-    $(document).on('change', '.quantidadeProduto', function () {
+    $(document).on('keyup', '.quantidadeProduto', function () {
         var nome = $(this).parent().parent('tr').find('.nomeProduto').html();
-        var unit = $(this).parent().parent('tr').find('.precoUnitario').html();
-        var qtd = $(this).parent().parent('tr').find('.quantidadeProduto').val();
+        var valuePrecoUnit = $(this).parent().parent('tr').find('.precoUnitario').html();
+        var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
+        var precoUnitarioQ = valuePrecoUnit.split(' ');
+        var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
         var cont = 0, contO = 0;
 
         $(".selectProduto").each(function () {
@@ -103,6 +105,6 @@ $(document).ready(function () {
             }
         });
 
-        $(this).parent().parent('tr').find('.precoProduto').html(unit * qtd);
+        $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
     });
 });

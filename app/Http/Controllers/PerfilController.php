@@ -51,9 +51,16 @@ class PerfilController extends Controller
         $pedidos = Pedido::where(['id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dateI, $dateF])->get();
         $consumo = 0;
 
+        $this->formatInput($pedidos);
+
         foreach ($pedidos as $pedido) {
-            $consumo = $consumo + $pedido->preco;
+            $preco = explode(" ", $pedido->preco);
+            $preco[1] = str_replace(",", ".", $preco[1]);
+
+            $consumo = $consumo + floatval($preco[1]);
         }
+
+        $consumo = str_replace(".", ",", $consumo);
 
         return view('adm.perfil.perfil')
             ->with('usuario', $usuario)
@@ -92,5 +99,21 @@ class PerfilController extends Controller
         }
 
         return $ctrl;
+    }
+
+    protected function formatInput($request)
+    {
+        foreach ($request as $pedido) {
+            $pedido['preco'] = str_replace('.', ',', $pedido['preco']);
+
+            $precoQ = explode(",", $pedido['preco']);
+
+            if(!isset($precoQ[1]))
+                $pedido['preco'] = "R$ ".$precoQ[0].",00";
+            else
+            $pedido['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+        }
+
+        return $request;
     }
 }

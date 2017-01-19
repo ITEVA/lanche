@@ -10,9 +10,6 @@
     <div class="row conteudoPrincipal">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
-                <a href="pedidos/removerLote" id="removerLote" class="btn btn-success pull-right">
-                    <i class="fa fa-trash"></i>&nbsp;Remover
-                </a>
                 <a href="pedidos/novo" class="btn btn-success pull-right">
                     <i class="fa fa-plus"></i>&nbsp;Novo
                 </a>
@@ -27,7 +24,7 @@
                         <thead>
                         <tr class="headings">
                             <th id="checkboxs">
-                                <input type="checkbox" id="check-all" class="tableflat">
+
                             </th>
                             <th>Data</th>
                             <th>Preço</th>
@@ -40,7 +37,7 @@
                             @foreach($pedidos as $pedido)
                                 <tr class="even pointer">
                                     <td class="a-center ">
-                                        <input type="checkbox" id="row{{$pedido->id}}" class="tableflat">
+
                                     </td>
                                     <td>{{$pedido->data}}</td>
                                     <td>{{$pedido->preco}}</td>

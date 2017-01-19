@@ -22,6 +22,22 @@ class PedidoController extends AbstractCrudController
         parent::__construct('auth');
     }
 
+    public function listar()
+    {
+        if(parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+
+        date_default_timezone_set('America/Fortaleza');
+        $date = date('Y-m-d');
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date])->get();
+
+        $pedidos = $this->formatInputListagem($pedidos);
+
+        return view('adm.pedidos.listagem')
+            ->with('pedidos', $pedidos)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
     public function novo(){
         date_default_timezone_set('America/Fortaleza');
         $date = date('Y-m-d');
@@ -156,7 +172,7 @@ class PedidoController extends AbstractCrudController
         for ($i = 0; $i < count($nomesProdutos); $i++) {
             $produto = array(
                     "nome" => $nomesProdutos[$i],
-                    "quantidade" => $quantidadesProdutos[$i],
+                    "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
                     "preco_unitario" => $precosProdutos[$i],
                     "preco_total" => $precosTotaisProdutos[$i],
                     "id_pedido" => $pedido->id,
@@ -183,6 +199,22 @@ class PedidoController extends AbstractCrudController
     protected function formatInput($request)
     {
         return parent::formatInput($request);
+    }
+
+    protected function formatInputListagem($request)
+    {
+        foreach ($request as $produto) {
+            $produto['preco'] = str_replace('.', ',', $produto['preco']);
+
+            $precoQ = explode(",", $produto['preco']);
+
+            if(!isset($precoQ[1]))
+                $produto['preco'] = "R$ ".$precoQ[0].",00";
+            else
+                $produto['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+        }
+
+        return $request;
     }
 
     protected function getFilter()

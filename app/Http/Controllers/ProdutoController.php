@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProdutoRequest;
+use App\Produto;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,20 @@ class ProdutoController extends AbstractCrudController
     public function __construct()
     {
         parent::__construct('auth');
+    }
+
+    public function listar()
+    {
+        if(parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+
+        $produtos = Produto::all();
+
+        $produtos = $this->formatInputListagem($produtos);
+
+        return view('adm.produtos.listagem')
+            ->with('produtos', $produtos)
+            ->with('itensPermitidos', $itensPermitidos);
     }
 
     public function salvar(ProdutoRequest $request)
@@ -49,12 +64,42 @@ class ProdutoController extends AbstractCrudController
 
     protected function formatOutput($request)
     {
-        return parent::formatOutput($request);
+        $request['preco'] = str_replace('.', '', $request['preco']);
+        $request['preco'] = str_replace(',', '.', $request['preco']);
+
+        return $request;
     }
 
     protected function formatInput($request)
     {
-        return parent::formatInput($request);
+        if($request->preco != '') {
+            $produto = str_replace('.', ',', $request->preco);
+
+            $precoQ = explode(",", $produto);
+
+            if (!isset($precoQ[1]))
+                $request->preco = $precoQ[0] . ",00";
+            else
+                $request->preco = $precoQ[1] < 10 ? $precoQ[0] . "," . $precoQ[1] . "0" : $precoQ[0] . "," . $precoQ[1];
+        }
+
+        return $request;
+    }
+
+    protected function formatInputListagem($request)
+    {
+        foreach ($request as $produto) {
+            $produto['preco'] = str_replace('.', ',', $produto['preco']);
+
+            $precoQ = explode(",", $produto['preco']);
+
+            if(!isset($precoQ[1]))
+                $produto['preco'] = "R$ ".$precoQ[0].",00";
+            else
+                $produto['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+        }
+
+        return $request;
     }
 
     protected function getFilter()

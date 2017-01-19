@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ef8daba2-6a88-4ab9-950f-6db4b71be7f0" name="Default" comment="" />
+    <list default="true" id="ef8daba2-6a88-4ab9-950f-6db4b71be7f0" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/adm/js/perfil.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/PedidoController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/PedidoController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/PerfilController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/PerfilController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/adm/js/pedidos.js" afterPath="$PROJECT_DIR$/public/adm/js/pedidos.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php" afterPath="$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php" afterPath="$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php" afterPath="$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,44 +28,31 @@
       <file leaf-file-name="perfil.blade.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pedidos.css" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/public/adm/css/pedidos.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="1" lean-forward="true" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="formulario.blade.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="45" column="27" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="64" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PerfilController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PerfilController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="591">
-              <caret line="61" column="27" lean-forward="false" selection-start-line="61" selection-start-column="20" selection-end-line="61" selection-end-column="27" />
+            <state relative-caret-position="265">
+              <caret line="91" column="34" lean-forward="false" selection-start-line="91" selection-start-column="34" selection-end-line="91" selection-end-column="34" />
               <folding>
-                <element signature="e#40#76#0#PHP" expanded="true" />
-                <element signature="e#2125#2486#0#PHP" expanded="false" />
-                <element signature="e#2492#2630#0#PHP" expanded="false" />
-                <element signature="e#2635#3055#0#PHP" expanded="false" />
+                <element signature="e#2124#2147#0#HTML" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="perfil.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/adm/js/perfil.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="44" lean-forward="false" selection-start-line="1" selection-start-column="44" selection-end-line="1" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pedidos.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/adm/js/pedidos.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="527">
+              <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -63,13 +60,10 @@
       <file leaf-file-name="AbstractCrudController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AbstractCrudController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+            <state relative-caret-position="306">
+              <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
               <folding>
                 <element signature="e#469#823#0#PHP" expanded="false" />
-                <element signature="e#829#1309#0#PHP" expanded="false" />
-                <element signature="e#1315#1796#0#PHP" expanded="false" />
-                <element signature="e#1802#2284#0#PHP" expanded="false" />
                 <element signature="e#2290#2678#0#PHP" expanded="false" />
                 <element signature="e#3150#3734#0#PHP" expanded="false" />
                 <element signature="e#3740#4811#0#PHP" expanded="false" />
@@ -94,9 +88,17 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
       <find>precoProduto</find>
+      <find>modal</find>
     </findStrings>
     <replaceStrings>
       <replace>precoTotal</replace>
@@ -111,7 +113,6 @@
         <option value="$PROJECT_DIR$/config/database.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/PermissaoController.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/CardapioController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php" />
         <option value="$PROJECT_DIR$/vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesUsers.php" />
         <option value="$PROJECT_DIR$/resources/views/adm/permissoes/formulario.blade.php" />
         <option value="$PROJECT_DIR$/public/adm/css/custom.css" />
@@ -119,14 +120,16 @@
         <option value="$PROJECT_DIR$/resources/views/auth/login.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/adm/layout/adm.blade.php" />
         <option value="$PROJECT_DIR$/app/ProdutoPedido.php" />
-        <option value="$PROJECT_DIR$/public/adm/js/pedidos.js" />
         <option value="$PROJECT_DIR$/routes/web.php" />
-        <option value="$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/PedidoController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/PerfilController.php" />
-        <option value="$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php" />
-        <option value="$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php" />
         <option value="$PROJECT_DIR$/public/adm/css/pedidos.css" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php" />
+        <option value="$PROJECT_DIR$/public/adm/js/pedidos.js" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/PedidoController.php" />
+        <option value="$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/PerfilController.php" />
+        <option value="$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php" />
+        <option value="$PROJECT_DIR$/public/adm/js/perfil.js" />
+        <option value="$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php" />
       </list>
     </option>
   </component>
@@ -166,7 +169,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -312,6 +314,32 @@
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adm" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cardapios" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanche" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanche" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -342,6 +370,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="adm" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanche" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanche" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adm" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -423,6 +473,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -503,18 +554,19 @@
       <workItem from="1484739978598" duration="157000" />
       <workItem from="1484740141968" duration="2454000" />
       <workItem from="1484743036980" duration="22216000" />
+      <workItem from="1484825820746" duration="14328000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24827000" />
+    <option name="totallyTimeSpent" value="39155000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="1912" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Gulp" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2553305" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25799572" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32998884" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -542,11 +594,78 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <option name="time" value="8" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/adm/css/pedidos.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="45" column="27" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="64" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PerfilController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="918">
+          <caret line="61" column="27" lean-forward="false" selection-start-line="61" selection-start-column="20" selection-end-line="61" selection-end-column="27" />
+          <folding>
+            <element signature="e#40#76#0#PHP" expanded="false" />
+            <element signature="e#2332#2693#0#PHP" expanded="false" />
+            <element signature="e#2699#2837#0#PHP" expanded="false" />
+            <element signature="e#2842#3262#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AbstractCrudController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+          <folding>
+            <element signature="e#469#823#0#PHP" expanded="false" />
+            <element signature="e#829#1309#0#PHP" expanded="false" />
+            <element signature="e#1315#1796#0#PHP" expanded="false" />
+            <element signature="e#1802#2284#0#PHP" expanded="false" />
+            <element signature="e#2290#2678#0#PHP" expanded="false" />
+            <element signature="e#3150#3734#0#PHP" expanded="false" />
+            <element signature="e#3740#4811#0#PHP" expanded="false" />
+            <element signature="e#4817#5346#0#PHP" expanded="false" />
+            <element signature="e#5352#5505#0#PHP" expanded="false" />
+            <element signature="e#5511#6273#0#PHP" expanded="false" />
+            <element signature="e#6279#6640#0#PHP" expanded="false" />
+            <element signature="e#6646#6784#0#PHP" expanded="false" />
+            <element signature="e#6789#7213#0#PHP" expanded="false" />
+            <element signature="e#7219#7281#0#PHP" expanded="false" />
+            <element signature="e#7286#7354#0#PHP" expanded="false" />
+            <element signature="e#7360#7485#0#PHP" expanded="false" />
+            <element signature="e#7490#7568#0#PHP" expanded="false" />
+            <element signature="e#7574#7702#0#PHP" expanded="false" />
+            <element signature="e#7707#7784#0#PHP" expanded="false" />
+            <element signature="e#7790#7871#0#PHP" expanded="false" />
+            <element signature="e#7876#7937#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -559,7 +678,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -606,19 +724,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/InicioController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="36" column="41" lean-forward="true" selection-start-line="36" selection-start-column="41" selection-end-line="37" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesUsers.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="367">
           <caret line="106" column="5" lean-forward="true" selection-start-line="106" selection-start-column="5" selection-end-line="106" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -642,7 +751,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
           <caret line="61" column="192" lean-forward="false" selection-start-line="61" selection-start-column="192" selection-end-line="61" selection-end-column="192" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -650,7 +758,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="38" lean-forward="false" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -658,7 +765,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -666,7 +772,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-85">
           <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -674,7 +779,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
           <caret line="50" column="38" lean-forward="false" selection-start-line="50" selection-start-column="38" selection-end-line="50" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -682,7 +786,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="469">
           <caret line="127" column="25" lean-forward="false" selection-start-line="127" selection-start-column="25" selection-end-line="127" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -690,26 +793,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="30" lean-forward="false" selection-start-line="0" selection-start-column="30" selection-end-line="0" selection-end-column="30" />
-          <folding>
-            <element signature="e#30#793#0" expanded="false" />
-            <element signature="n#!!block;n#enviarForm#0" expanded="false" />
-            <element signature="n#!!block;n#ativarMascaras#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="64" column="0" lean-forward="true" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-          <folding>
-            <element signature="e#311#389#0#PHP" expanded="false" />
-            <element signature="e#395#802#0#PHP" expanded="false" />
-            <element signature="e#808#1202#0#PHP" expanded="false" />
-            <element signature="e#1208#1308#0#PHP" expanded="false" />
-            <element signature="e#1314#1412#0#PHP" expanded="false" />
-            <element signature="e#1418#1525#0#PHP" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -717,14 +800,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="18" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/adm/js/pedidos.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -745,10 +820,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/adm/css/pedidos.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="1" lean-forward="true" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CardapioController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="68" column="0" lean-forward="false" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+        <state relative-caret-position="571">
+          <caret line="160" column="5" lean-forward="true" selection-start-line="160" selection-start-column="5" selection-end-line="160" selection-end-column="5" />
           <folding>
             <element signature="e#416#494#0#PHP" expanded="false" />
             <element signature="e#500#638#0#PHP" expanded="false" />
@@ -761,22 +844,107 @@
             <element signature="e#3723#3890#0#PHP" expanded="false" />
             <element signature="e#3896#4013#0#PHP" expanded="false" />
             <element signature="e#4018#4159#0#PHP" expanded="false" />
-            <element signature="e#4165#4311#0#PHP" expanded="false" />
-            <element signature="e#4317#4457#0#PHP" expanded="false" />
             <element signature="e#4463#4570#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Produto.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/InicioController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="36" column="41" lean-forward="true" selection-start-line="36" selection-start-column="41" selection-end-line="37" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProdutoController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="673">
+          <caret line="102" column="5" lean-forward="true" selection-start-line="88" selection-start-column="4" selection-end-line="102" selection-end-column="5" />
+          <folding>
+            <element signature="e#328#406#0#PHP" expanded="false" />
+            <element signature="e#1256#1650#0#PHP" expanded="false" />
+            <element signature="e#2856#2963#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PedidoController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="168" column="12" lean-forward="true" selection-start-line="168" selection-start-column="12" selection-end-line="168" selection-end-column="12" />
+          <folding>
+            <element signature="e#408#486#0#PHP" expanded="false" />
+            <element signature="e#1112#1692#0#PHP" expanded="false" />
+            <element signature="e#1698#2468#0#PHP" expanded="false" />
+            <element signature="e#2474#2957#0#PHP" expanded="false" />
+            <element signature="e#2963#3477#0#PHP" expanded="false" />
+            <element signature="e#5526#5782#0#PHP" expanded="false" />
+            <element signature="e#5894#5992#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PerfilController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="46" column="55" lean-forward="true" selection-start-line="46" selection-start-column="55" selection-end-line="46" selection-end-column="55" />
+          <folding>
+            <element signature="e#2332#2693#0#PHP" expanded="false" />
+            <element signature="e#2699#2837#0#PHP" expanded="false" />
+            <element signature="e#2842#3262#0#PHP" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="59" column="131" lean-forward="false" selection-start-line="59" selection-start-column="81" selection-end-line="59" selection-end-column="131" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/cardapios/listagem.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="46" lean-forward="false" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="39" column="40" lean-forward="false" selection-start-line="39" selection-start-column="40" selection-end-line="39" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="91" column="34" lean-forward="false" selection-start-line="91" selection-start-column="34" selection-end-line="91" selection-end-column="34" />
+          <folding>
+            <element signature="e#2124#2147#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AbstractCrudController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+        <state relative-caret-position="306">
+          <caret line="24" column="27" lean-forward="true" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           <folding>
             <element signature="e#469#823#0#PHP" expanded="false" />
-            <element signature="e#829#1309#0#PHP" expanded="false" />
-            <element signature="e#1315#1796#0#PHP" expanded="false" />
-            <element signature="e#1802#2284#0#PHP" expanded="false" />
             <element signature="e#2290#2678#0#PHP" expanded="false" />
             <element signature="e#3150#3734#0#PHP" expanded="false" />
             <element signature="e#3740#4811#0#PHP" expanded="false" />
@@ -798,63 +966,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PedidoController.php">
+    <entry file="file://$PROJECT_DIR$/public/adm/js/perfil.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="136" column="8" lean-forward="true" selection-start-line="136" selection-start-column="8" selection-end-line="137" selection-end-column="30" />
-          <folding>
-            <element signature="e#40#76#0#PHP" expanded="true" />
-            <element signature="e#408#486#0#PHP" expanded="false" />
-            <element signature="e#492#1072#0#PHP" expanded="false" />
-            <element signature="e#1078#1848#0#PHP" expanded="false" />
-            <element signature="e#4883#5139#0#PHP" expanded="false" />
-            <element signature="e#5145#5245#0#PHP" expanded="false" />
-            <element signature="e#5251#5349#0#PHP" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/listagem.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="46" lean-forward="true" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="46" />
+        <state relative-caret-position="17">
+          <caret line="1" column="44" lean-forward="false" selection-start-line="1" selection-start-column="44" selection-end-line="1" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PerfilController.php">
+    <entry file="file://$PROJECT_DIR$/public/adm/js/pedidos.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="591">
-          <caret line="61" column="27" lean-forward="false" selection-start-line="61" selection-start-column="20" selection-end-line="61" selection-end-column="27" />
-          <folding>
-            <element signature="e#40#76#0#PHP" expanded="true" />
-            <element signature="e#2125#2486#0#PHP" expanded="false" />
-            <element signature="e#2492#2630#0#PHP" expanded="false" />
-            <element signature="e#2635#3055#0#PHP" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/adm/pedidos/formulario.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="45" column="27" lean-forward="true" selection-start-line="45" selection-start-column="27" selection-end-line="64" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/adm/perfil/perfil.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/adm/css/pedidos.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="1" lean-forward="true" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+        <state relative-caret-position="527">
+          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
           <folding />
         </state>
       </provider>
