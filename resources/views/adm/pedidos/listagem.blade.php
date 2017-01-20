@@ -6,87 +6,91 @@
     <link href="adm/css/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
 @endsection
 @section('conteudo')
-<div class="">
-    <div class="row conteudoPrincipal">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-                <a href="pedidos/novo" class="btn btn-success pull-right">
-                    <i class="fa fa-plus"></i>&nbsp;Novo
-                </a>
+    <div class="">
+        <div class="row conteudoPrincipal">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <a class="btn btn-success pull-right" {{count($pedidos[0]['pedido']) != 0 ? " disabled data-toggle=popover data-placement=bottom data-trigger=hover" : " href=pedidos/novo "}}  data-content="Já existe um pedido para este turno">
+                        <i class="fa fa-plus"></i>&nbsp;Novo
+                    </a>
 
-                <div class="x_title">
-                    <h2>Pedido</h2>
+                    <a href="pedidos/removerLote" id="removerLote" style="display: none"></a>
 
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <table id="example" class="table table-striped responsive-utilities jambo_table">
-                        <thead>
-                        <tr class="headings">
-                            <th id="checkboxs">
+                    <div class="x_title">
+                        <h2>Pedido</h2>
 
-                            </th>
-                            <th>Data</th>
-                            <th>Preço</th>
-                            <th>Editar</th>
-                            <th>Excluir</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if(count($pedidos) > 0)
-                            @foreach($pedidos as $pedido)
-                                <tr class="even pointer">
-                                    <td class="a-center ">
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="example" class="table table-striped responsive-utilities jambo_table">
+                            <thead>
+                            <tr class="headings">
+                                <th id="checkboxs">
 
-                                    </td>
-                                    <td>{{$pedido->data}}</td>
-                                    <td>{{$pedido->preco}}</td>
-                                    <td class="iconeListagem"><a
-                                                href="pedidos/editar/{{$pedido->id}}"><i
-                                                    class="fa fa-pencil-square-o"></i></a></td>
-                                    <td class="iconeListagem"><a class="removerRegistro"
-                                                                 href="{{$pedido->id}}"><i
-                                                    class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="6" class="iconeListagem">Nenhum pedido encontrado</td>
+                                </th>
+                                <th>Data</th>
+                                <th>Preço</th>
+                                <th>Turno</th>
+                                <th>Editar</th>
+                                <th>Excluir</th>
                             </tr>
-                        @endif
-                        </tbody>
-                    </table>
-                    <form id="formSelecionados" method="post" action="">
-                        <input type="hidden" name="_token" value="{{{ csrf_token() }}}"/>
-                        <input type="hidden" name="ids" id="ids" value=""/>
-                    </form>
+                            </thead>
+                            <tbody>
+                            @if(count($pedidos) > 0)
+                                @foreach($pedidos as $pedido)
+                                    <tr class="even pointer">
+                                        <td class="a-center ">
+
+                                        </td>
+                                        <td>{{$pedido->data}}</td>
+                                        <td>{{$pedido->preco}}</td>
+                                        <td>{{$pedido['turno']}}</td>
+                                        <td class="iconeListagem"><a {{$pedido->tempoEsgotado ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "href=pedidos/editar/$pedido->id"}} data-content="Tempo para edição esgotado"><i
+                                                        class="fa fa-pencil-square-o"></i></a></td>
+                                        <td class="iconeListagem"><a {{$pedido->tempoEsgotado ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "class=removerRegistro href=$pedido->id"}} data-content="Tempo para remoção esgotado">
+                                                        <i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="iconeListagem">Nenhum pedido encontrado</td>
+                                </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                        <form id="formSelecionados" method="post" action="">
+                            <input type="hidden" name="_token" value="{{{ csrf_token() }}}"/>
+                            <input type="hidden" name="ids" id="ids" value=""/>
+                        </form>
+                    </div>
                 </div>
+                <div class="modal fade" id="alertRemover" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Remover registro</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Você deseja excluir este(s) registro(s)?</p>
+                                <input type="hidden" id="tipoRemocao" value="" />
+                            </div>
+                            <div class="modal-footer">
+                                <button id="confirmarRemocao" type="button" class="btn btn-danger">Sim</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
             </div>
-            <div class="modal fade" id="alertRemover" tabindex="-1" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Remover registro</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Você deseja excluir este(s) registro(s)?</p>
-                            <input type="hidden" id="tipoRemocao" value="" />
-                        </div>
-                        <div class="modal-footer">
-                            <button id="confirmarRemocao" type="button" class="btn btn-danger">Sim</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
         </div>
     </div>
-</div>
 @stop
 @section('js')
+    <script src="adm/js/pedidos.js"></script>
+
     <!-- Datatables -->
     <script src="adm/js/datatables/js/jquery.dataTables.js"></script>
     <script src="adm/js/datatables/tools/js/dataTables.tableTools.js"></script>
@@ -139,9 +143,9 @@
                     'aTargets': [1],
                     render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [3]},
+                    'aTargets': [4]},
                 {'bSortable': false,
-                    'aTargets': [4]}
+                    'aTargets': [5]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

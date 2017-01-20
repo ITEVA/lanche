@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+    $('[data-toggle="popover"]').popover();
+
     var urlAtual = window.location.href.split('/');
 
     if(urlAtual[4] === 'editar') {

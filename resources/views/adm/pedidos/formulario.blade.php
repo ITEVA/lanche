@@ -27,6 +27,8 @@
                             </ul>
                         @endif
 
+                        <input type="hidden" name="cardapio" value="{{$cardapio[0]['id']}}" />
+
                         <div class="form-group col-md-2 col-xs-12">
                             <label>Produtos*</label>
                             <select id="produtos" name="produtos" class="form-control">

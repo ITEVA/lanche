@@ -30,8 +30,12 @@ class PedidoController extends AbstractCrudController
         date_default_timezone_set('America/Fortaleza');
         $date = date('Y-m-d');
         $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date])->get();
-
         $pedidos = $this->formatInputListagem($pedidos);
+
+        foreach ($pedidos as $pedido){
+            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+            $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
+        }
 
         return view('adm.pedidos.listagem')
             ->with('pedidos', $pedidos)
@@ -59,15 +63,28 @@ class PedidoController extends AbstractCrudController
             $i++;
         }
 
-        return parent::novo()
-            ->with('produtos', $produtos);
+        $pedido = Pedido::where(['data' => $date, 'id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $cardapio[0]->id])->get();
+
+        if(count($pedido) != 0) {
+            return redirect('pedidos');
+        }
+        else{
+            return parent::novo()
+                ->with('produtos', $produtos)
+                ->with('cardapio', $cardapio);
+        }
     }
 
     public function editar($id){
         date_default_timezone_set('America/Fortaleza');
         $date = date('Y-m-d');
+        $hora = date('H:i');
 
-        $cardapio = Cardapio::where(['data'=>$date])->get();
+        if($hora >= '00:00' && $hora <= '11:59')
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
+        else
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
+
         $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
 
         $produtos = array();
@@ -81,9 +98,20 @@ class PedidoController extends AbstractCrudController
 
         $produtosPedido = ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $id])->get();
 
-        return parent::editar($id)
-            ->with('produtos', $produtos)
-            ->with('produtosPedido', $produtosPedido);
+        $pedido = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
+
+        //Checando se o tempo já acabou
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido[0]['id_cardapio']])->get();
+
+        if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final) {
+            return redirect('pedidos');
+        }
+        else {
+            return parent::editar($id)
+                ->with('produtos', $produtos)
+                ->with('produtosPedido', $produtosPedido)
+                ->with('cardapio', $cardapio);
+        }
     }
 
     public function salvar(PedidoRequest $request)
@@ -163,7 +191,8 @@ class PedidoController extends AbstractCrudController
             "preco" => $precoTotal,
             "observacao" => $request->observacao,
             "id_usuario" => Auth::user()->id,
-            "id_empregador" => Auth::user()->id_empregador
+            "id_cardapio" => $request->cardapio,
+            "id_empregador" => Auth::user()->id_empregador,
         );
 
         if($id != null) {
@@ -172,16 +201,16 @@ class PedidoController extends AbstractCrudController
             $pedido->save();
         }
         else
-        $pedido = Pedido::create($dadosPedido);
+            $pedido = Pedido::create($dadosPedido);
 
         for ($i = 0; $i < count($nomesProdutos); $i++) {
             $produto = array(
-                    "nome" => $nomesProdutos[$i],
-                    "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
-                    "preco_unitario" => $precosProdutos[$i],
-                    "preco_total" => $precosTotaisProdutos[$i],
-                    "id_pedido" => $pedido->id,
-                    "id_empregador" => Auth::user()->id_empregador
+                "nome" => $nomesProdutos[$i],
+                "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                "preco_unitario" => $precosProdutos[$i],
+                "preco_total" => $precosTotaisProdutos[$i],
+                "id_pedido" => $pedido->id,
+                "id_empregador" => Auth::user()->id_empregador
             );
 
             ProdutoPedido::create($produto);
@@ -208,6 +237,18 @@ class PedidoController extends AbstractCrudController
 
     protected function formatInputListagem($request)
     {
+        date_default_timezone_set('America/Fortaleza');
+        $date = date('Y-m-d');
+        $hora = date('H:i');
+
+        if($hora >= '00:00' && $hora <= '11:59')
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
+        else
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
+
+        //Busca um pedido se já tiver sido feito
+        $request[0]['pedido'] = Pedido::where(['data' => $date, 'id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $cardapio[0]->id])->get();
+
         foreach ($request as $produto) {
             $produto['preco'] = str_replace('.', ',', $produto['preco']);
 
@@ -217,6 +258,13 @@ class PedidoController extends AbstractCrudController
                 $produto['preco'] = "R$ ".$precoQ[0].",00";
             else
                 $produto['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+
+            //Checando se o tempo já acabou
+            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $produto['id_cardapio']])->get();
+
+            if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final) {
+                $produto['tempoEsgotado'] = true;
+            }
         }
 
         return $request;
