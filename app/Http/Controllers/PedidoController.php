@@ -27,13 +27,14 @@ class PedidoController extends AbstractCrudController
         if(parent::checkPermissao()) return redirect('error404');
         $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
 
-        date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
+
+        $date = $this->dataAtual();
         $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date])->get();
         $pedidos = $this->formatInputListagem($pedidos);
 
         foreach ($pedidos as $pedido){
             $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+
             $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
         }
 
@@ -43,14 +44,9 @@ class PedidoController extends AbstractCrudController
     }
 
     public function novo(){
-        date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
-        $hora = date('H:i');
-
-        if($hora >= '00:00' && $hora <= '11:59')
-            $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
-        else
-            $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
+        $cardapio = $this->getCardapioDia();
+        if(!$this->checaExistsCardapio($cardapio))
+            return redirect('pedidos');
 
         $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
 
@@ -63,9 +59,7 @@ class PedidoController extends AbstractCrudController
             $i++;
         }
 
-        $pedido = Pedido::where(['data' => $date, 'id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $cardapio[0]->id])->get();
-
-        if(count($pedido) != 0) {
+        if($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
             return redirect('pedidos');
         }
         else{
@@ -76,14 +70,9 @@ class PedidoController extends AbstractCrudController
     }
 
     public function editar($id){
-        date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
-        $hora = date('H:i');
-
-        if($hora >= '00:00' && $hora <= '11:59')
-            $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
-        else
-            $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
+        $cardapio = $this->getCardapioDia();
+        if(!$this->checaExistsCardapio($cardapio))
+            return redirect('pedidos');
 
         $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
 
@@ -100,10 +89,7 @@ class PedidoController extends AbstractCrudController
 
         $pedido = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
-        //Checando se o tempo já acabou
-        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido[0]['id_cardapio']])->get();
-
-        if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final) {
+        if($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
             return redirect('pedidos');
         }
         else {
@@ -116,6 +102,10 @@ class PedidoController extends AbstractCrudController
 
     public function salvar(PedidoRequest $request)
     {
+        $cardapio = $this->getCardapioDia();
+        if(!$this->checaExistsCardapio($cardapio))
+            return redirect('pedidos');
+
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
@@ -134,6 +124,10 @@ class PedidoController extends AbstractCrudController
 
     public function atualizar(PedidoRequest $request, $id)
     {
+        $cardapio = $this->getCardapioDia();
+        if(!$this->checaExistsCardapio($cardapio))
+            return redirect('pedidos');
+
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
@@ -183,8 +177,7 @@ class PedidoController extends AbstractCrudController
             $precoTotal = $precoTotal + $precosTotaisProdutos[$i];
         }
 
-        date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
+        $date = $this->dataAtual();
 
         $dadosPedido = array(
             "data" => $date,
@@ -237,43 +230,90 @@ class PedidoController extends AbstractCrudController
 
     protected function formatInputListagem($request)
     {
+        $cardapio = $this->getCardapioDia();
+
+        //Verificar
+        if($this->checaExistsCardapio($cardapio)) {
+            if($this->checaTempoCardapio($cardapio[0]['id'])) {
+                $request[0]['popover'] = true;
+                $request[0]['msg'] = "Espere o horário para lançamento de pedidos";
+            }
+            else {
+                $request[0]['popover'] = $this->checaExistsPedido($cardapio[0]['id']);
+                $request[0]['msg'] = "Já existe um pedido para este turno";
+            }
+        }
+        else {
+            $request[0]['popover'] = true;
+            $request[0]['msg'] = "Não existe um cardápio para este turno";
+        }
+
+        foreach ($request as $pedido) {
+            $pedido['preco'] = str_replace('.', ',', $pedido['preco']);
+
+            $precoQ = explode(",", $pedido['preco']);
+
+            if(!isset($precoQ[1]))
+                $pedido['preco'] = "R$ ".$precoQ[0].",00";
+            else
+                $pedido['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+
+            $pedido['tempoEsgotado'] = $this->checaTempoCardapio($pedido['id_cardapio']);
+        }
+
+        return $request;
+    }
+
+    private function dataAtual()
+    {
         date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
+        return $date = date('Y-m-d');
+    }
+
+    private function getCardapioDia()
+    {
+        $date = $this->dataAtual();
         $hora = date('H:i');
+        $cardapio = '';
 
         if($hora >= '00:00' && $hora <= '11:59')
             $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
         else
             $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
 
-        //Busca um pedido se já tiver sido feito
-        $request[0]['pedido'] = Pedido::where(['data' => $date, 'id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $cardapio[0]->id])->get();
+        return $cardapio;
+    }
 
-        foreach ($request as $produto) {
-            $produto['preco'] = str_replace('.', ',', $produto['preco']);
+    private function checaTempoCardapio($id)
+    {
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
-            $precoQ = explode(",", $produto['preco']);
+        $hora = date('H:i');
+        if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final)
+            return true;
+        else
+            return false;
+    }
 
-            if(!isset($precoQ[1]))
-                $produto['preco'] = "R$ ".$precoQ[0].",00";
-            else
-                $produto['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+    private function checaExistsPedido($id)
+    {
+        $date = $this->dataAtual();
+        $pedidos = Pedido::where(['data' => $date, 'id_usuario' => Auth::user()->id, 'id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $id])->get();
+        return count($pedidos) != 0 ? true : false;
+    }
 
-            //Checando se o tempo já acabou
-            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $produto['id_cardapio']])->get();
-
-            if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final) {
-                $produto['tempoEsgotado'] = true;
-            }
+    private function checaExistsCardapio($cardapio)
+    {
+        if(count($cardapio) != 0) {
+            return true;
         }
-
-        return $request;
+        else
+            return false;
     }
 
     protected function getFilter()
     {
-        date_default_timezone_set('America/Fortaleza');
-        $date = date('Y-m-d');
+        $date = $this->dataAtual();
         return ['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date];
     }
 }

@@ -10,7 +10,7 @@
         <div class="row conteudoPrincipal">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
-                    <a class="btn btn-success pull-right" {{count($pedidos[0]['pedido']) != 0 ? " disabled data-toggle=popover data-placement=bottom data-trigger=hover" : " href=pedidos/novo "}}  data-content="Já existe um pedido para este turno">
+                    <a class="btn btn-success pull-right" {{$pedidos[0]['popover'] ? " disabled data-toggle=popover data-placement=bottom data-trigger=hover" : " href=pedidos/novo "}}  data-content="{{$pedidos[0]['msg']}}">
                         <i class="fa fa-plus"></i>&nbsp;Novo
                     </a>
 
