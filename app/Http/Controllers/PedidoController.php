@@ -41,8 +41,13 @@ class PedidoController extends AbstractCrudController
     public function novo(){
         date_default_timezone_set('America/Fortaleza');
         $date = date('Y-m-d');
+        $hora = date('H:i');
 
-        $cardapio = Cardapio::where(['data'=>$date])->get();
+        if($hora >= '00:00' && $hora <= '11:59')
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
+        else
+            $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
+
         $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
 
         $produtos = array();

@@ -45,8 +45,11 @@ class CardapioController extends AbstractCrudController
             unset($request['produtos']);
 
             $c = array(
-              "data" => $request['data'],
-              "id_empregador" => $request['id_empregador']
+                "data" => $request['data'],
+                "id_empregador" => $request['id_empregador'],
+                "hora_inicio" => $request['hora_inicio'],
+                "hora_final" => $request['hora_final'],
+                "turno" => $request['turno']
             );
 
             $c = $this->formatOutput($c);

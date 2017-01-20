@@ -37,6 +37,32 @@
                         </div>
 
                         <div class="form-group col-md-3 col-xs-12">
+                            <label for="hora_inicio">Hora Início</label>
+                            <input type="time" class="form-control" name="hora_inicio"
+                                   value="{{old('hora_inicio') !== null ? old('hora_inicio') : $cardapio->hora_inicio}}"/>
+                        </div>
+
+                        <div class="form-group col-md-3 col-xs-12">
+                            <label for="hora_final">Hora Final</label>
+                            <input type="time" class="form-control" name="hora_final"
+                                   value="{{old('hora_final') !== null ? old('hora_final') : $cardapio->hora_final}}"/>
+                        </div>
+
+                        <div class="form-group col-md-1 col-xs-12">
+                            <label>Turno</label><br/>
+                            @if ((old('turno') !== null && old('turno') === '0') || (old('turno') === null && $cardapio->turno == '0'))
+                                <input type="radio" class="flat" name="turno" value="1"/> Manhã
+                                <input type="radio" class="flat" name="turno" checked="checked" value="0"/> Tarde
+                            @else
+                                <input type="radio" class="flat" name="turno" checked="checked" value="1"/> Manhã
+                                <input type="radio" class="flat" name="turno" value="0"/> Tarde
+                            @endif
+                            @if(isset($ids))
+                                <input type="radio" checked="checked" class="flat" name="turno" value=""/> NA
+                            @endif
+                        </div>
+
+                        <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Produtos</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
                                 <select class="select2_multiple form-control" multiple="multiple" name="produtos[]">

@@ -13,7 +13,10 @@ class Cardapio extends Model
     public static function getEmpty(){
         return (object)[
             'data' => '',
-            'id_produto' => ''
+            'hora_inicio' => '',
+            'hora_final' => '',
+            'id_produto' => '',
+            'turno' => ''
         ];
     }
 }
