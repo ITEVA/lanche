@@ -73,14 +73,7 @@ class ProdutoController extends AbstractCrudController
     protected function formatInput($request)
     {
         if($request->preco != '') {
-            $produto = str_replace('.', ',', $request->preco);
-
-            $precoQ = explode(",", $produto);
-
-            if (!isset($precoQ[1]))
-                $request->preco = $precoQ[0] . ",00";
-            else
-                $request->preco = $precoQ[1] < 10 ? $precoQ[0] . "," . $precoQ[1] . "0" : $precoQ[0] . "," . $precoQ[1];
+            $request->preco = number_format($request->preco, 2, ',', '.');
         }
 
         return $request;
@@ -89,14 +82,7 @@ class ProdutoController extends AbstractCrudController
     protected function formatInputListagem($request)
     {
         foreach ($request as $produto) {
-            $produto['preco'] = str_replace('.', ',', $produto['preco']);
-
-            $precoQ = explode(",", $produto['preco']);
-
-            if(!isset($precoQ[1]))
-                $produto['preco'] = "R$ ".$precoQ[0].",00";
-            else
-                $produto['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+            $produto['preco'] = "R$ ". number_format($produto['preco'], 2, ',', '.');
         }
 
         return $request;

@@ -36,8 +36,8 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(count($pedidos) > 0)
-                                @foreach($pedidos as $pedido)
+                            @if(count($pedidos[1]) > 0)
+                                @foreach($pedidos[1] as $pedido)
                                     <tr class="even pointer">
                                         <td class="a-center ">
 

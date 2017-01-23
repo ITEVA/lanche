@@ -68,8 +68,6 @@ class PerfilController extends Controller
             $produtosPedidos[$pedido->id]['id_pedido'] = $pedido->id;
         }
 
-        $consumo = str_replace(".", ",", $consumo);
-
         return view('adm.perfil.perfil')
             ->with('usuario', $usuario)
             ->with('itensPermitidos', $itensPermitidos)
@@ -113,14 +111,7 @@ class PerfilController extends Controller
     protected function formatInput($request)
     {
         foreach ($request as $pedido) {
-            $pedido['preco'] = str_replace('.', ',', $pedido['preco']);
-
-            $precoQ = explode(",", $pedido['preco']);
-
-            if(!isset($precoQ[1]))
-                $pedido['preco'] = "R$ ".$precoQ[0].",00";
-            else
-            $pedido['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+            $pedido['preco'] = "R$ ". number_format($pedido['preco'], 2, ',', '.');
         }
 
         return $request;

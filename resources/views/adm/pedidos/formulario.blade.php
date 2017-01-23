@@ -57,9 +57,9 @@
                                     @foreach($produtosPedido as $produtoPedido)
                                         <tr class="produtosTabela">
                                             <td><label class="nomeProduto">{{$produtoPedido->nome}}</label></td>
-                                            <td><label class="precoUnitario">R$ {{str_replace(".", ",", $produtoPedido->preco_unitario)}}</label></td>
+                                            <td><label class="precoUnitario">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label></td>
                                             <td><input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50"></td>
-                                            <td><label class="precoProduto">R$ {{str_replace(".", ",", $produtoPedido->preco_total)}}</label></td>
+                                            <td><label class="precoProduto">R$ {{"R$ ". number_format($produtoPedido->preco_total, 2, ',', '.')}}</label></td>
                                             <td><a href="" class="removerProduto"><i class="fa fa-trash"></i></a></td>
                                         </tr>
                                     @endforeach

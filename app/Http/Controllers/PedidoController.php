@@ -32,7 +32,7 @@ class PedidoController extends AbstractCrudController
         $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date])->get();
         $pedidos = $this->formatInputListagem($pedidos);
 
-        foreach ($pedidos as $pedido){
+        foreach ($pedidos[1] as $pedido) {
             $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
 
             $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
@@ -232,36 +232,32 @@ class PedidoController extends AbstractCrudController
     {
         $cardapio = $this->getCardapioDia();
 
-        //Verificar
+        $produtos = array();
+
         if($this->checaExistsCardapio($cardapio)) {
             if($this->checaTempoCardapio($cardapio[0]['id'])) {
-                $request[0]['popover'] = true;
-                $request[0]['msg'] = "Espere o horário para lançamento de pedidos";
+                $produtos[0]['popover'] = true;
+                $produtos[0]['msg'] = "Espere o horário para lançamento de pedidos";
             }
             else {
-                $request[0]['popover'] = $this->checaExistsPedido($cardapio[0]['id']);
-                $request[0]['msg'] = "Já existe um pedido para este turno";
+                $produtos[0]['popover'] = $this->checaExistsPedido($cardapio[0]['id']);
+                $produtos[0]['msg'] = "Já existe um pedido para este turno";
             }
         }
         else {
-            $request[0]['popover'] = true;
-            $request[0]['msg'] = "Não existe um cardápio para este turno";
+            $produtos[0]['popover'] = true;
+            $produtos[0]['msg'] = "Não existe um cardápio para este turno";
         }
 
         foreach ($request as $pedido) {
-            $pedido['preco'] = str_replace('.', ',', $pedido['preco']);
-
-            $precoQ = explode(",", $pedido['preco']);
-
-            if(!isset($precoQ[1]))
-                $pedido['preco'] = "R$ ".$precoQ[0].",00";
-            else
-                $pedido['preco'] = "R$ ".($precoQ[1] < 10 ? $precoQ[0].",".$precoQ[1]."0" : $precoQ[0].",".$precoQ[1]);
+            $pedido['preco'] = "R$ ". number_format($pedido['preco'], 2, ',', '.');
 
             $pedido['tempoEsgotado'] = $this->checaTempoCardapio($pedido['id_cardapio']);
         }
 
-        return $request;
+        $produtos[1] = $request;
+
+        return $produtos;
     }
 
     private function dataAtual()

@@ -20,7 +20,7 @@
                         <p class="pInxirido">{{$usuario->nome}}</p>
                         <p class="normal">{{$usuario->cargo}}</p>
 
-                        <p class="pInxirido">Gasto atual:<p class="normal">R$ {{$consumo}}</p></p>
+                        <p class="pInxirido">Gasto atual:<p class="normal">R$ {{number_format($consumo, 2, ',', '.')}}</p></p>
                     </div>
 
                     <div class="x_content">
@@ -48,7 +48,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="6" class="iconeListagem">Nenhum item encontrada</td>
+                                    <td colspan="6" class="iconeListagem">Nenhum item encontrado</td>
                                 </tr>
                             @endif
                             </tbody>
@@ -100,9 +100,9 @@
                                             @if(isset($produtoPedido['id_pedido']))
                                                 <tr>
                                                     <td>{{$produtoPedido['nome']}}</td>
-                                                    <td>R$ {{str_replace(".", ",", $produtoPedido['preco_unitario'])}}</td>
+                                                    <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
                                                     <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
-                                                    <td>R$ {{str_replace(".", ",", $produtoPedido['preco_total'])}}</td>
+                                                    <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>
                                                 </tr>
                                             @endif
                                         @endforeach
