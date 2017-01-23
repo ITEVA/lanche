@@ -179,10 +179,13 @@ class PedidoController extends AbstractCrudController
 
         $date = $this->dataAtual();
 
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
+
         $dadosPedido = array(
             "data" => $date,
             "preco" => $precoTotal,
             "observacao" => $request->observacao,
+            "turno" => $cardapio[0]->turno,
             "id_usuario" => Auth::user()->id,
             "id_cardapio" => $request->cardapio,
             "id_empregador" => Auth::user()->id_empregador,
@@ -200,6 +203,8 @@ class PedidoController extends AbstractCrudController
             $produto = array(
                 "nome" => $nomesProdutos[$i],
                 "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                "data" => $date,
+                "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
                 "preco_total" => $precosTotaisProdutos[$i],
                 "id_pedido" => $pedido->id,

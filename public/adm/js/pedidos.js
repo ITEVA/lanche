@@ -112,4 +112,12 @@ $(document).ready(function () {
 
         ativarMascaras();
     });
+
+    $('#imprimir').click(function(){
+        $('#filtro').attr('action', 'relatorios/pedidos/imprimir');
+        $('#filtro').attr('target', '_blank');
+        $('#filtro').submit();
+        $('#filtro').attr('action', 'relatorios/pedidos');
+        $('#filtro').attr('target', '_self');
+    });
 });

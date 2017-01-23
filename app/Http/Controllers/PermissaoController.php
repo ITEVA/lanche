@@ -40,18 +40,20 @@ class PermissaoController extends AbstractCrudController
         $dadosClasses['inicio'] = $request['inicio'];
         $dadosClasses['user'] = $request['user'];
         $dadosClasses['permissao'] = $request['permissao'];
-        $dadosClasses['cardapio'] = $request['cardapio'];
-        $dadosClasses['pedido'] = $request['pedido'];
-        $dadosClasses['perfil'] = $request['perfil'];
         $dadosClasses['produto'] = $request['produto'];
+        $dadosClasses['cardapio'] = $request['cardapio'];
+        $dadosClasses['perfil'] = $request['perfil'];
+        $dadosClasses['pedido'] = $request['pedido'];
+        $dadosClasses['relatorio'] = $request['relatorio'];
 
         unset($request['inicio']);
         unset($request['user']);
         unset($request['permissao']);
-        unset($request['cardapio']);
-        unset($request['pedido']);
-        unset($request['perfil']);
         unset($request['produto']);
+        unset($request['cardapio']);
+        unset($request['perfil']);
+        unset($request['pedido']);
+        unset($request['relatorio']);
 
         if(isset($request['salvar'])) unset($request['salvar']);
 
@@ -119,18 +121,18 @@ class PermissaoController extends AbstractCrudController
             PermissaoClasse::create($permissao);
         }
 
-        if($object['cardapio']) {
+        if($object['produto']) {
             $permissao = array(
-                'classe' => 'cardapio',
+                'classe' => 'produto',
                 'id_permissao' => $id,
                 'id_empregador' => Auth::user()->id_empregador
             );
             PermissaoClasse::create($permissao);
         }
 
-        if($object['pedido']) {
+        if($object['cardapio']) {
             $permissao = array(
-                'classe' => 'pedido',
+                'classe' => 'cardapio',
                 'id_permissao' => $id,
                 'id_empregador' => Auth::user()->id_empregador
             );
@@ -146,9 +148,18 @@ class PermissaoController extends AbstractCrudController
             PermissaoClasse::create($permissao);
         }
 
-        if($object['produto']) {
+        if($object['pedido']) {
             $permissao = array(
-                'classe' => 'produto',
+                'classe' => 'pedido',
+                'id_permissao' => $id,
+                'id_empregador' => Auth::user()->id_empregador
+            );
+            PermissaoClasse::create($permissao);
+        }
+
+        if($object['relatorio']) {
+            $permissao = array(
+                'classe' => 'relatorio',
                 'id_permissao' => $id,
                 'id_empregador' => Auth::user()->id_empregador
             );
@@ -158,10 +169,11 @@ class PermissaoController extends AbstractCrudController
         unset($object['inicio']);
         unset($object['user']);
         unset($object['permissao']);
-        unset($object['cardapio']);
-        unset($object['pedido']);
-        unset($object['perfil']);
         unset($object['produto']);
+        unset($object['cardapio']);
+        unset($object['perfil']);
+        unset($object['pedido']);
+        unset($object['relatorio']);
 
         return $object;
     }

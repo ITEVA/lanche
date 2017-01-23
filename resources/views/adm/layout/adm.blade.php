@@ -107,6 +107,16 @@
                                         <i class="fa fa-cutlery"></i>
                                         Pedido <span class="fa "></span></a></li>
                             @endif
+                            @if(isset($itensPermitidos['relatorio']))
+                                <li><a>
+                                        <i class="fa fa-file-text-o"></i>
+                                        Relatórios <span class="fa fa-chevron-down"></span></a>
+
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="relatorios/pedidos">Pedidos</a></li>
+                                    </ul>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </div>

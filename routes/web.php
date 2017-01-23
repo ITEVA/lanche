@@ -74,3 +74,9 @@ Route::post('/produtos/atualizar/{id}', 'ProdutoController@atualizar');
 Route::post('/produtos/removerLote', 'ProdutoController@removerLote');
 Route::post('/produtos/editarLote', 'ProdutoController@editarLote');
 Route::post('/produtos/atualizarLote', 'ProdutoController@atualizarLote');
+
+//Rotas para gestão de relatórios
+Route::get('/relatorios/teste', 'RelatorioController@teste');
+Route::get('/relatorios/pedidos', 'RelatorioController@listarPedidos');
+Route::post('/relatorios/pedidos', 'RelatorioController@listarFiltroPedidos');
+Route::post('/relatorios/pedidos/imprimir', 'RelatorioController@pedidosImprimir');
