@@ -120,4 +120,9 @@ $(document).ready(function () {
         $('#filtro').attr('action', 'relatorios/pedidos');
         $('#filtro').attr('target', '_self');
     });
+
+    $(".detalhesPedido").click(function () {
+        var id = $(this).attr('iid');
+        $("#detalhesPedido"+id).modal();
+    });
 });

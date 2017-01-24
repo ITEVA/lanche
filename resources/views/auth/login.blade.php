@@ -38,7 +38,7 @@
                     <br />
                     <div>
 
-                        <p>©2016 ITEVA - Instituto Tecnologico e Vocacional Avançado.</p>
+                        <p>Copyright © {{date('Y')}} Iteva - Todos os direitos reservados · Português (Brasil).</p>
                     </div>
                 </div>
             </form>
@@ -79,7 +79,7 @@
                     <div class="clearfix"></div>
                     <br />
                     <div>
-                        <p>©2016 ITEVA - Instituto Tecnologico e Vocacional Avançado.</p>
+                        <p>Copyright © {{date('Y')}} Iteva - Todos os direitos reservados · Português (Brasil).</p>
                     </div>
                 </div>
             </form>

@@ -28,13 +28,14 @@ class RelatorioController extends AbstractCrudController
         $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
 
         $date = $this->dataAtual();
-        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date, 'turno' => '1'])->get();
+        $turno = date('H:i') < '12:00' ? 1 : 0;
+        $pedidos = $this->getPedidos($date, $turno);
 
         return view('adm.relatorios.pedidos')
             ->with('itensPermitidos', $itensPermitidos)
             ->with('pedidos', $pedidos)
             ->with('dataRe', date('d/m/Y'))
-            ->with('turnoRe', '1');
+            ->with('turnoRe', $turno);
     }
 
     protected function listarFiltroPedidos(Request $request)
@@ -43,7 +44,7 @@ class RelatorioController extends AbstractCrudController
         $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
 
         $date = $this->formatarDataEn($request->data);
-        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date, 'turno' => $request->turno])->get();
+        $pedidos = $this->getPedidos($date, $request->turno);
 
         return view('adm.relatorios.pedidos')
             ->with('itensPermitidos', $itensPermitidos)
@@ -59,13 +60,7 @@ class RelatorioController extends AbstractCrudController
 
         $turno = $request->turno == 1 ? "Manhã" : "Tarde";
 
-        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'data' => $date, 'turno' => $request->turno])->get();
-
-        foreach ($pedidos as $pedido) {
-            //Pegando produtos do pedido
-            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
-            $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
-        }
+        $pedidos = $this->getPedidos($date, $request->turno);
 
         $produtosGeral = DB::select("SELECT nome, SUM(lanche.produto_pedido.quantidade) as qtdTotal
                                 FROM lanche.produto_pedido
@@ -194,16 +189,17 @@ class RelatorioController extends AbstractCrudController
         exit;
     }
 
-    public function teste(){
-        $fpdf = new Fpdf();
-        $usuarios = User::all();
-        foreach( $usuarios as $usuario )
-        {
-            $fpdf->AddPage();
-            $fpdf->Image('adm/images/perfil/' . $usuario->foto, 0, 0, 210, 270);
+    private function getPedidos($date, $turno)
+    {
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'data' => $date, 'turno' => $turno])->get();
+
+        foreach ($pedidos as $pedido) {
+            //Pegando produtos do pedido
+            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
+            $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
         }
-        $fpdf->Output();
-        exit;
+
+        return $pedidos;
     }
 
     private function diaSemana($data)

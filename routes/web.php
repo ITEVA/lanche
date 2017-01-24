@@ -32,6 +32,8 @@ Route::post('/users/atualizar/{id}', 'UserController@atualizar');
 Route::post('/users/removerLote', 'UserController@removerLote');
 Route::post('/users/editarLote', 'UserController@editarLote');
 Route::post('/users/atualizarLote', 'UserController@atualizarLote');
+Route::get('/users/editarPerfil/{id}', 'PerfilController@editarPerfil');
+Route::post('/users/atualizarPerfil/{id}', 'PerfilController@atualizarPerfil');
 
 //Rotas para gestão de permissões
 Route::get('/permissoes', 'PermissaoController@listar');
@@ -76,7 +78,6 @@ Route::post('/produtos/editarLote', 'ProdutoController@editarLote');
 Route::post('/produtos/atualizarLote', 'ProdutoController@atualizarLote');
 
 //Rotas para gestão de relatórios
-Route::get('/relatorios/teste', 'RelatorioController@teste');
 Route::get('/relatorios/pedidos', 'RelatorioController@listarPedidos');
 Route::post('/relatorios/pedidos', 'RelatorioController@listarFiltroPedidos');
 Route::post('/relatorios/pedidos/imprimir', 'RelatorioController@pedidosImprimir');

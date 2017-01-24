@@ -49,8 +49,8 @@
                         <tr class="headings">
                             <th id="checkboxs">
                             </th>
-                            <th>Data</th>
-                            <th>Preço</th>
+                            <th>Nome</th>
+                            <th>Visualizar</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -59,8 +59,8 @@
                                 <tr class="even pointer">
                                     <td class="a-center ">
                                     </td>
-                                    <td>{{$pedido->data}}</td>
-                                    <td>{{$pedido->preco}}</td>
+                                    <td>{{$pedido['nomeUsuario'][0]['nome']}}</td>
+                                    <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
                                 </tr>
                             @endforeach
                         @else
@@ -95,6 +95,41 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
+            @foreach($pedidos as $pedido)
+                <div class="modal fade" id="detalhesPedido{{$pedido->id}}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Itens do pedido</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço unitário</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço total</th>
+                                    </tr>
+                                    @foreach($pedido['produtos'] as $produtoPedido)
+                                        @if(isset($produtoPedido['id_pedido']))
+                                            <tr>
+                                                <td>{{$produtoPedido['nome']}}</td>
+                                                <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
+                                                <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
+                                                <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+
+                                </table>
+                                <input type="hidden" id="tipoRemocao" value="" />
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            @endforeach
         </div>
     </div>
 </div>
@@ -150,9 +185,7 @@
                 {'bSortable': false,
                     'aTargets': [0]},
                 {'bSortable': false,
-                    'aTargets': [3]},
-                {'bSortable': false,
-                    'aTargets': [4]}
+                    'aTargets': [2]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

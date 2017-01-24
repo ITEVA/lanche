@@ -140,7 +140,7 @@
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                                <li><a href="users/editar/{{Auth::user()->id}}">Perfil</a>
+                                <li><a href="users/editarPerfil/{{Auth::user()->id}}">Alterar Dados</a>
                                 </li>
                                 <li><a href="sair"><i class="fa fa-sign-out pull-right"></i>Sair</a>
                                 </li>
@@ -160,7 +160,7 @@
            <!-- footer content -->
             <footer>
                 <div class="copyright-info">
-                    <p class="pull-right">Copyright © 2016 ITEVA - Todos os direitos reservados · Português (Brasil).</a>
+                    <p class="pull-right">Copyright © {{date('Y')}} Iteva - Todos os direitos reservados · Português (Brasil).</a>
                     </p>
                 </div>
                 <div class="clearfix"></div>

@@ -77,6 +77,39 @@ class PerfilController extends Controller
             ->with('produtosPedidos', $produtosPedidos);
     }
 
+    public function editarPerfil($id)
+    {
+        if(Auth::user()->id != $id) return redirect('error404');
+        $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+        $usuario = User::find($id);
+
+        return view('adm.perfil.formulario')
+            ->with('action', 'users/atualizarPerfil/' . $id)
+            ->with('usuario', $usuario)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
+    public function atualizarPerfil(Request $request, $id)
+    {
+        if(Auth::user()->id != $id) return redirect('error404');
+
+        $dados = array (
+            'email' => $request->email,
+            'password' => $request->password != '' ? bcrypt($request->password) : ''
+        );
+
+        if($dados['password']) {
+            unset($dados['password']);
+        }
+
+        $usuario = User::find($id);
+        $usuario->fill($dados);
+        $usuario->save();
+
+        return redirect('perfil/'.$id);
+    }
+
     private function diaSemana($data)
     {
         $diaSemana = date("N", strtotime($data));
