@@ -55,6 +55,9 @@ class RelatorioController extends AbstractCrudController
     protected function pedidosImprimir(Request $request)
     {
         $date = $this->formatarDataEn($request->data);
+        $diaSemana = $this->diaSemana($date);
+
+        $turno = $request->turno == 1 ? "Manhã" : "Tarde";
 
         $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'data' => $date, 'turno' => $request->turno])->get();
 
@@ -73,19 +76,24 @@ class RelatorioController extends AbstractCrudController
         //Criando o objeto de PDF e inicializando suas configurações
         $pdf = new FPDF("P", "pt", "A4");
 
+        $pdf->SetTitle('Lanche '. $turno .' - '. $request->data);
+
         //Adiciona uma nova pagina para cada colaborador
         $pdf->AddPage();
 
         //Desenha o cabeçalho do relatorio
         $pdf->Image('adm/images/logo1.png');
+        $pdf->SetXY(245, 80);
+        $pdf->SetFont('arial', '', 10);
+        $pdf->Cell(595, 14, $diaSemana, 0, 0, "C");
         $pdf->Line(20, 100 , 575, 100);
 
-        $pdf->SetXY(0, 110);
+        $pdf->SetXY(0, 115);
         $pdf->SetFont('arial', 'B', 10);
-        $pdf->Cell(595, 14, "Relatório de pedidos dia: " . date('d/m/Y'), 0, 0, "C");
+        $pdf->Cell(595, 14, "RELATÓRIO DE PEDIDOS DIA: " . $request->data, 0, 0, "C");
 
         //Tabela total de produtos
-        $pdf->SetXY(20, 150);
+        $pdf->SetXY(20, 145);
         $pdf->SetFont('arial', 'B', 10);
         $pdf->Cell(278, 20, 'Produto', 1, 0, "C");
         $pdf->Cell(278, 20, 'Quantidade', 1, 0, "C");
@@ -111,20 +119,29 @@ class RelatorioController extends AbstractCrudController
         $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
 
         $i = 0;
+        $mod = 5;
+        $linhas = 4;
 
         $posicaoPedidoUsuario = 0;
 
         foreach ($pedidos as $pedido) {
-            if($i % 5 == 0) {
+            if($i % $mod == 0) {
                 $pdf->AddPage();
 
                 //Desenha o cabeçalho do relatorio
                 $pdf->Image('adm/images/logo1.png');
+                $pdf->SetXY(245, 80);
+                $pdf->SetFont('arial', '', 10);
+                $pdf->Cell(595, 14, $diaSemana, 0, 0, "C");
                 $pdf->Line(20, 100, 575, 100);
+
+                $pdf->SetXY(0, 115);
+                $pdf->SetFont('arial', 'B', 10);
+                $pdf->Cell(595, 14, "PEDIDOS INDIVIDUAIS DIA: " . $request->data, 0, 0, "C");
                 $posicaoPedidoUsuario = 0;
             }
 
-            $posicaoPedidoUsuario = $posicaoPedidoUsuario == 0 ? $posicaoPedidoUsuario + 130 : $posicaoPedidoUsuario + 115;
+            $posicaoPedidoUsuario = $posicaoPedidoUsuario == 0 ? $posicaoPedidoUsuario + 145 : $posicaoPedidoUsuario + 115;
 
             //Tabela total de produtos
             $pdf->SetXY(20, $posicaoPedidoUsuario);
@@ -139,15 +156,28 @@ class RelatorioController extends AbstractCrudController
             $pdf->SetFont('arial', '', 10);
             if(count($pedido['produtos']) > 0) {
                 $pdf->SetY($pdf->GetY() + 20);
-                foreach ($pedido['produtos'] as $produto) {
-                    $pdf->SetX(20);
-                    $pdf->Cell(278, 14, $produto['nome'], 1, 0, "C");
-                    $pdf->Cell(278, 14, $produto['quantidade'], 1, 0, "C");
-                    $pdf->SetY($pdf->GetY() + 14);
+                $j = 0;
+                while($j < $linhas) {
+                    if($j == 0) {
+                        foreach ($pedido['produtos'] as $produto) {
+                            $pdf->SetX(20);
+                            $pdf->Cell(278, 14, $produto['nome'], 1, 0, "C");
+                            $pdf->Cell(278, 14, $produto['quantidade'], 1, 0, "C");
+                            $pdf->SetY($pdf->GetY() + 14);
+                            $j++;
+                        }
+                    }
+                    if($j < $linhas) {
+                        $pdf->SetX(20);
+                        $pdf->Cell(278, 14, '', 1, 0, "C");
+                        $pdf->Cell(278, 14, '', 1, 0, "C");
+                        $pdf->SetY($pdf->GetY() + 14);
+                        $j++;
+                    }
                 }
             }
 
-            if($i % 5 == 0) {
+            if($i % $mod == 0) {
                 //Rodape
                 $pdf->SetAutoPageBreak(5);
                 $pdf->SetFont('arial', '', 10);
@@ -174,6 +204,25 @@ class RelatorioController extends AbstractCrudController
         }
         $fpdf->Output();
         exit;
+    }
+
+    private function diaSemana($data)
+    {
+        $diaSemana = date("N", strtotime($data));
+        if($diaSemana == 1)
+            return "Segunda-Feira";
+        else if($diaSemana == 2)
+            return "Terça-Feira";
+        else if($diaSemana == 3)
+            return "Quarta-Feira";
+        else if($diaSemana == 4)
+            return "Quinta-Feira";
+        else if($diaSemana == 5)
+            return "Sexta-Feira";
+        else if($diaSemana == 6)
+            return "Sábado";
+        else
+            return "Domingo";
     }
 
     private function formatarDataEn($dataBr)

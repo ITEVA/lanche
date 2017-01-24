@@ -134,7 +134,18 @@
                     </div>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="sair"><i class="fa fa-sign-out pull-right"></i>Sair</a></li>
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <img src="adm/images/perfil/{{Auth::user()->foto}}" alt="">{{Auth::user()->apelido}}
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
+                                <li><a href="users/editar/{{Auth::user()->id}}">Perfil</a>
+                                </li>
+                                <li><a href="sair"><i class="fa fa-sign-out pull-right"></i>Sair</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </div>

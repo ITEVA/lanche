@@ -66,6 +66,7 @@ class PerfilController extends Controller
             //Pegando produtos do pedido
             $produtosPedidos[$pedido->id] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
             $produtosPedidos[$pedido->id]['id_pedido'] = $pedido->id;
+            $pedido['diaSemana'] = $this->diaSemana($pedido->data);
         }
 
         return view('adm.perfil.perfil')
@@ -74,6 +75,25 @@ class PerfilController extends Controller
             ->with('consumo', $consumo)
             ->with('pedidos', $pedidos)
             ->with('produtosPedidos', $produtosPedidos);
+    }
+
+    private function diaSemana($data)
+    {
+        $diaSemana = date("N", strtotime($data));
+        if($diaSemana == 1)
+            return "Segunda-Feira";
+        else if($diaSemana == 2)
+            return "Terça-Feira";
+        else if($diaSemana == 3)
+            return "Quarta-Feira";
+        else if($diaSemana == 4)
+            return "Quinta-Feira";
+        else if($diaSemana == 5)
+            return "Sexta-Feira";
+        else if($diaSemana == 6)
+            return "Sábado";
+        else
+            return "Domingo";
     }
 
     protected function getClassesPermissao($id)

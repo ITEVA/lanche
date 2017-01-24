@@ -36,6 +36,7 @@ class PedidoController extends AbstractCrudController
             $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
 
             $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
+            $pedido['diaSemana'] = $this->diaSemana($pedido->data);
         }
 
         return view('adm.pedidos.listagem')
@@ -263,6 +264,25 @@ class PedidoController extends AbstractCrudController
         $produtos[1] = $request;
 
         return $produtos;
+    }
+
+    private function diaSemana($data)
+    {
+        $diaSemana = date("N", strtotime($data));
+        if($diaSemana == 1)
+            return "Segunda-Feira";
+        else if($diaSemana == 2)
+            return "Terça-Feira";
+        else if($diaSemana == 3)
+            return "Quarta-Feira";
+        else if($diaSemana == 4)
+            return "Quinta-Feira";
+        else if($diaSemana == 5)
+            return "Sexta-Feira";
+        else if($diaSemana == 6)
+            return "Sábado";
+        else
+            return "Domingo";
     }
 
     private function dataAtual()

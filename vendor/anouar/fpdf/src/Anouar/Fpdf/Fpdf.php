@@ -229,6 +229,7 @@ function SetCompression($compress)
 
 function SetTitle($title, $isUTF8=false)
 {
+    $title = utf8_decode($title);
 	// Title of document
 	if($isUTF8)
 		$title = $this->_UTF8toUTF16($title);

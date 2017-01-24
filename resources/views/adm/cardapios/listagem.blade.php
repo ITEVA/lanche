@@ -33,6 +33,7 @@
                                 <input type="checkbox" id="check-all" class="tableflat">
                             </th>
                             <th>Data</th>
+                            <th>Dia</th>
                             <th>Turno</th>
                             <th>Editar</th>
                             <th>Excluir</th>
@@ -46,6 +47,7 @@
                                         <input type="checkbox" id="row{{$cardapio->id}}" class="tableflat">
                                     </td>
                                     <td>{{$cardapio->data}}</td>
+                                    <td>{{$cardapio['diaSemana']}}</td>
                                     <td>{{$cardapio->turno == 1 ? "Manhã" : "Tarde"}}</td>
                                     <td class="iconeListagem"><a
                                                 href="cardapios/editar/{{$cardapio->id}}"><i
@@ -145,9 +147,9 @@
                     'aTargets': [1],
                     render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [3]},
+                    'aTargets': [4]},
                 {'bSortable': false,
-                    'aTargets': [4]}
+                    'aTargets': [5]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

@@ -31,6 +31,7 @@
 
                                 </th>
                                 <th>Data</th>
+                                <th>Dia</th>
                                 <th>Preço</th>
                                 <th>Visualizar</th>
                             </tr>
@@ -42,6 +43,7 @@
                                         <td class="a-center ">
                                         </td>
                                         <td>{{$pedido->data}}</td>
+                                        <td>{{$pedido['diaSemana']}}</td>
                                         <td>{{$pedido->preco}}</td>
                                         <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
                                     </tr>
@@ -173,9 +175,9 @@
                     'aTargets': [1],
                     render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [2]},
+                    'aTargets': [3]},
                 {'bSortable': false,
-                    'aTargets': [3]}
+                    'aTargets': [4]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

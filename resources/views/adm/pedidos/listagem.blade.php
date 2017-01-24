@@ -29,6 +29,7 @@
 
                                 </th>
                                 <th>Data</th>
+                                <th>Dia</th>
                                 <th>Preço</th>
                                 <th>Turno</th>
                                 <th>Editar</th>
@@ -43,6 +44,7 @@
 
                                         </td>
                                         <td>{{$pedido->data}}</td>
+                                        <td>{{$pedido['diaSemana']}}</td>
                                         <td>{{$pedido->preco}}</td>
                                         <td>{{$pedido['turno']}}</td>
                                         <td class="iconeListagem"><a {{$pedido->tempoEsgotado ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "href=pedidos/editar/$pedido->id"}} data-content="Tempo para edição esgotado"><i
@@ -143,9 +145,9 @@
                     'aTargets': [1],
                     render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [4]},
+                    'aTargets': [5]},
                 {'bSortable': false,
-                    'aTargets': [5]}
+                    'aTargets': [6]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

@@ -21,6 +21,22 @@ class CardapioController extends AbstractCrudController
         parent::__construct('auth');
     }
 
+    public function listar()
+    {
+        if(parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+
+        $cardapios = Cardapio::all();
+
+        foreach ($cardapios as $cardapio) {
+            $cardapio['diaSemana'] = $this->diaSemana($cardapio->data);
+        }
+
+        return view('adm.cardapios.listagem')
+            ->with('cardapios', $cardapios)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
     public function novo(){
         $produtos = Produto::all();
         return parent::novo()
@@ -133,6 +149,25 @@ class CardapioController extends AbstractCrudController
         foreach ($produtos as $produto) {
             $produto->delete();
         }
+    }
+
+    private function diaSemana($data)
+    {
+        $diaSemana = date("N", strtotime($data));
+        if($diaSemana == 1)
+            return "Segunda-Feira";
+        else if($diaSemana == 2)
+            return "Terça-Feira";
+        else if($diaSemana == 3)
+            return "Quarta-Feira";
+        else if($diaSemana == 4)
+            return "Quinta-Feira";
+        else if($diaSemana == 5)
+            return "Sexta-Feira";
+        else if($diaSemana == 6)
+            return "Sábado";
+        else
+            return "Domingo";
     }
 
     /**

@@ -39,8 +39,8 @@
                         </div>
 
                         <div class="form-group col-md-3 col-xs-12 quebrarDiv">
-                            <input type="submit" name="filtrar" class="btn btn-primary" value="Filtrar"/>
-                            <input type="button" id="imprimir" name="imprimir" class="btn btn-primary" value="Imprimir"/>
+                            <input type="submit" name="filtrar" class="btn btn-success" value="Filtrar"/>
+                            <input type="button" id="imprimir" name="imprimir" class="btn btn-success" value="Imprimir"/>
                         </div>
                     </form>
 
@@ -48,7 +48,6 @@
                         <thead>
                         <tr class="headings">
                             <th id="checkboxs">
-                                <input type="checkbox" id="check-all" class="tableflat">
                             </th>
                             <th>Data</th>
                             <th>Preço</th>
@@ -59,7 +58,6 @@
                             @foreach($pedidos as $pedido)
                                 <tr class="even pointer">
                                     <td class="a-center ">
-                                        <input type="checkbox" id="row{{$pedido->id}}" class="tableflat">
                                     </td>
                                     <td>{{$pedido->data}}</td>
                                     <td>{{$pedido->preco}}</td>
