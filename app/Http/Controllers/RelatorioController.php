@@ -110,18 +110,27 @@ class RelatorioController extends AbstractCrudController
         $pdf->SetXY(20, -30);
         $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
 
-        foreach ($pedidos as $pedido) {
-            $pdf->AddPage();
+        $i = 0;
 
-            //Desenha o cabeçalho do relatorio
-            $pdf->Image('adm/images/logo1.png');
-            $pdf->Line(20, 100 , 575, 100);
+        $posicaoPedidoUsuario = 0;
+
+        foreach ($pedidos as $pedido) {
+            if($i % 5 == 0) {
+                $pdf->AddPage();
+
+                //Desenha o cabeçalho do relatorio
+                $pdf->Image('adm/images/logo1.png');
+                $pdf->Line(20, 100, 575, 100);
+                $posicaoPedidoUsuario = 0;
+            }
+
+            $posicaoPedidoUsuario = $posicaoPedidoUsuario == 0 ? $posicaoPedidoUsuario + 130 : $posicaoPedidoUsuario + 115;
 
             //Tabela total de produtos
-            $pdf->SetXY(20, 150);
+            $pdf->SetXY(20, $posicaoPedidoUsuario);
             $pdf->SetFont('arial', 'B', 10);
             $pdf->Cell(556, 20, $pedido['nomeUsuario'][0]['apelido'], 1, 0, "C");
-            $pdf->SetXY(20, 170);
+            $pdf->SetXY(20, $posicaoPedidoUsuario + 20);
             $pdf->SetFont('arial', 'B', 10);
             $pdf->Cell(278, 20, 'Produto', 1, 0, "C");
             $pdf->Cell(278, 20, 'Quantidade', 1, 0, "C");
@@ -138,13 +147,17 @@ class RelatorioController extends AbstractCrudController
                 }
             }
 
-            //Rodape
-            $pdf->SetAutoPageBreak(5);
-            $pdf->SetFont('arial', '', 10);
-            $pdf->SetXY(20, -45);
-            $pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
-            $pdf->SetXY(20, -30);
-            $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
+            if($i % 5 == 0) {
+                //Rodape
+                $pdf->SetAutoPageBreak(5);
+                $pdf->SetFont('arial', '', 10);
+                $pdf->SetXY(20, -45);
+                $pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
+                $pdf->SetXY(20, -30);
+                $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
+            }
+
+            $i++;
         }
 
         $pdf->Output();
