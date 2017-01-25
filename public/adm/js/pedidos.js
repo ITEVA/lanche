@@ -27,11 +27,13 @@ $(document).ready(function () {
                 });
 
                 if(ctrl) {
+                    var preco = $(this).attr('precoE');
+                    preco = parseFloat(preco).toFixed(2);
                     $("#addTr").append("<tr class='produtosTabela'>" +
                         "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
-                        "<td><label class='precoUnitario'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
+                        "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
                         "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
-                        "<td class='td'><label class='precoProduto'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
+                        "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                         "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
 
@@ -49,6 +51,7 @@ $(document).ready(function () {
             var precoProdutoQ = precoProduto.split(' ');
 
             totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+            totalPedido = totalPedido.toFixed(2);
 
             $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
         });
@@ -89,6 +92,7 @@ $(document).ready(function () {
 
         if($('#addTr tr').length === 1){
             $("#addTr").css("visibility", "hidden");
+            $(".totalPedido").css("visibility", "hidden");
             $(".produtosPedidos").removeClass('tabelaProdutos');
         }
 
@@ -98,6 +102,7 @@ $(document).ready(function () {
             var precoProdutoQ = precoProduto.split(' ');
 
             totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+            totalPedido = totalPedido.toFixed(2);
 
             $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
         });
@@ -138,6 +143,7 @@ $(document).ready(function () {
             var precoProdutoQ = precoProduto.split(' ');
 
             totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+            totalPedido = totalPedido.toFixed(2);
 
             $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
         });

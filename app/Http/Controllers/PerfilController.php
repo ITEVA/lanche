@@ -12,9 +12,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
-class PerfilController extends Controller
+class PerfilController extends AbstractCrudController
 {
-    public function listar($id)
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct('auth');
+    }
+
+    public function listarPerfil($id)
     {
         if(Auth::user()->id != $id) return redirect('error404');
         if($this->checkPermissao()) return redirect('error404');
@@ -128,38 +138,6 @@ class PerfilController extends Controller
             return "Sábado";
         else
             return "Domingo";
-    }
-
-    protected function getClassesPermissao($id)
-    {
-        $permissoes = PermissaoClasse::where(['id_permissao'=>$id, 'id_empregador' => Auth::user()->id_empregador])->get();
-
-        $itensPermitidos = array();
-
-        foreach ($permissoes as $permissao) {
-            $itensPermitidos[$permissao->classe] = 1;
-        }
-
-        return $itensPermitidos;
-    }
-
-    /**
-     * Checa se o usuario logado tem permissão para acessar a classe solicitada
-     * @return ctrl permissao concedida ou não
-     */
-    protected function checkPermissao()
-    {
-        $permissoes = PermissaoClasse::where(['classe'=>'perfil', 'id_empregador' => Auth::user()->id_empregador])->get();
-        $i = 0;
-        $ctrl = true;
-        foreach ($permissoes as $permissao){
-            if (Auth::user()->permissao == $permissao->id_permissao) {
-                $ctrl = false;
-            }
-            $i++;
-        }
-
-        return $ctrl;
     }
 
     protected function formatInput($request)

@@ -46,7 +46,7 @@ Route::post('/permissoes/editarLote', 'PermissaoController@editarLote');
 Route::post('/permissoes/atualizarLote', 'PermissaoController@atualizarLote');
 
 //Rota para listar o consumo individual
-Route::get('/perfil/{id}', 'PerfilController@listar');
+Route::get('/perfil/{id}', 'PerfilController@listarPerfil');
 
 //Rotas para gestão de Cardápio
 Route::get('/cardapios', 'CardapioController@listar');
