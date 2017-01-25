@@ -144,9 +144,9 @@
                 {'bSortable': false,
                     'aTargets': [0]},
                 {'bSortable': false,
-                    'aTargets': [3]},
+                    'aTargets': [4]},
                 {'bSortable': false,
-                    'aTargets': [4]}
+                    'aTargets': [5]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

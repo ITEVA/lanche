@@ -30,6 +30,11 @@ class CardapioController extends AbstractCrudController
 
         foreach ($cardapios as $cardapio) {
             $cardapio['diaSemana'] = $this->diaSemana($cardapio->data);
+            $cardapio['produtos'] = ProdutoCardapio::where(['id_cardapio' => $cardapio->id, 'id_empregador' => Auth::user()->id_empregador])->get();
+
+            foreach ($cardapio['produtos'] as $produto) {
+                $produto['produto'] = Produto::where(['id' => $produto->id_produto, 'id_empregador' => Auth::user()->id_empregador])->get();
+            }
         }
 
         return view('adm.cardapios.listagem')
@@ -81,7 +86,7 @@ class CardapioController extends AbstractCrudController
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(array('Erro ao salvar produto. Tente mais tarde.'));
+                ->withErrors(array('Erro ao salvar cardapio. Tente mais tarde.'));
         }
     }
 

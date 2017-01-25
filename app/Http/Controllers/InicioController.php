@@ -26,7 +26,7 @@ class InicioController extends AbstractCrudController
      */
     public function index()
     {
-        if($this->checkPermissao()) return redirect('error404');
+        if($this->checkPermissao()) return redirect('perfil/'.Auth::user()->id);
         $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
 
         $usuarios = User::where($this->getFilter())->get();

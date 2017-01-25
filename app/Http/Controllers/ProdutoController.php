@@ -43,7 +43,7 @@ class ProdutoController extends AbstractCrudController
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(array('Erro ao salvar permissão. Tente mais tarde.'));
+                ->withErrors(array('Erro ao salvar produto. Nome já cadastrado.'));
         }
     }
 

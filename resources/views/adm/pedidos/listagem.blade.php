@@ -30,8 +30,9 @@
                                 </th>
                                 <th>Data</th>
                                 <th>Dia</th>
-                                <th>Preço</th>
                                 <th>Turno</th>
+                                <th>Preço</th>
+                                <th>Visualizar</th>
                                 <th>Editar</th>
                                 <th>Excluir</th>
                             </tr>
@@ -45,8 +46,9 @@
                                         </td>
                                         <td>{{$pedido->data}}</td>
                                         <td>{{$pedido['diaSemana']}}</td>
-                                        <td>{{$pedido->preco}}</td>
                                         <td>{{$pedido['turno']}}</td>
+                                        <td>{{$pedido->preco}}</td>
+                                        <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
                                         <td class="iconeListagem"><a {{$pedido->tempoEsgotado ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "href=pedidos/editar/$pedido->id"}} data-content="Tempo para edição esgotado"><i
                                                         class="fa fa-pencil-square-o"></i></a></td>
                                         <td class="iconeListagem"><a {{$pedido->tempoEsgotado ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "class=removerRegistro href=$pedido->id"}} data-content="Tempo para remoção esgotado">
@@ -56,7 +58,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="6" class="iconeListagem">Nenhum pedido encontrado</td>
+                                    <td colspan="8" class="iconeListagem">Nenhum pedido encontrado</td>
                                 </tr>
                             @endif
                             </tbody>
@@ -86,6 +88,41 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
+                @foreach($pedidos[1] as $pedido)
+                    <div class="modal fade" id="detalhesPedido{{$pedido->id}}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Itens do pedido</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Preço unitário</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço total</th>
+                                        </tr>
+                                        @foreach($pedido['produtos'] as $produtoPedido)
+                                            @if(isset($produtoPedido['id_pedido']))
+                                                <tr>
+                                                    <td>{{$produtoPedido['nome']}}</td>
+                                                    <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
+                                                    <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
+                                                    <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+
+                                    </table>
+                                    <input type="hidden" id="tipoRemocao" value="" />
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                @endforeach
             </div>
         </div>
     </div>
@@ -147,7 +184,9 @@
                 {'bSortable': false,
                     'aTargets': [5]},
                 {'bSortable': false,
-                    'aTargets': [6]}
+                    'aTargets': [6]},
+                {'bSortable': false,
+                    'aTargets': [7]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

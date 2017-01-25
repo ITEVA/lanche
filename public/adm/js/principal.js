@@ -18,12 +18,12 @@ $(document).ready(function () {
         $('#alertRemover').modal();
     });
 
-    $('.removerRegistro').click(function (e) {
+    $(document).on('click', '.removerRegistro', (function (e) {
         e.preventDefault();
         $('#tipoRemocao').val('unico');
         $('#ids').val($(this).attr('href'));
         $('#alertRemover').modal();
-    });
+    }));
 
     $('#confirmarRemocao').click(function () {
         enviarForm($('#removerLote').attr('href'));

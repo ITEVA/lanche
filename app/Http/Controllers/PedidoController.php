@@ -37,6 +37,7 @@ class PedidoController extends AbstractCrudController
 
             $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
             $pedido['diaSemana'] = $this->diaSemana($pedido->data);
+            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
         }
 
         return view('adm.pedidos.listagem')
@@ -119,7 +120,7 @@ class PedidoController extends AbstractCrudController
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(array('Erro ao salvar permissão. Tente mais tarde.'));
+                ->withErrors(array('Erro ao salvar pedido. Tente mais tarde.'));
         }
     }
 

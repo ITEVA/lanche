@@ -35,6 +35,7 @@
                             <th>Data</th>
                             <th>Dia</th>
                             <th>Turno</th>
+                            <th>Visualizar</th>
                             <th>Editar</th>
                             <th>Excluir</th>
                         </tr>
@@ -49,6 +50,7 @@
                                     <td>{{$cardapio->data}}</td>
                                     <td>{{$cardapio['diaSemana']}}</td>
                                     <td>{{$cardapio->turno == 1 ? "Manhã" : "Tarde"}}</td>
+                                    <td><i class="fa fa-search detalhesCardapio" iid="{{$cardapio->id}}" style="cursor: pointer"></i></td>
                                     <td class="iconeListagem"><a
                                                 href="cardapios/editar/{{$cardapio->id}}"><i
                                                     class="fa fa-pencil-square-o"></i></a></td>
@@ -60,7 +62,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="6" class="iconeListagem">Nenhum item encontrada</td>
+                                <td colspan="7" class="iconeListagem">Nenhum item encontrada</td>
                             </tr>
                         @endif
                         </tbody>
@@ -90,11 +92,43 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
+            @foreach($cardapios as $cardapio)
+                <div class="modal fade" id="detalhesCardapio{{$cardapio->id}}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Itens do cardápio</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço</th>
+                                    </tr>
+                                    @foreach($cardapio['produtos'] as $produto)
+                                        @if(isset($produto['id_cardapio']))
+                                            <tr>
+                                                <td>{{$produto['produto'][0]->nome}}</td>
+                                                <td>R$ {{number_format($produto['produto'][0]->preco, 2, ',', '.')}}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+
+                                </table>
+                                <input type="hidden" id="tipoRemocao" value="" />
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            @endforeach
         </div>
     </div>
 </div>
 @stop
 @section('js')
+    <script src="adm/js/cardapios.js"></script>
     <!-- Datatables -->
     <script src="adm/js/datatables/js/jquery.dataTables.js"></script>
     <script src="adm/js/datatables/tools/js/dataTables.tableTools.js"></script>
@@ -149,7 +183,9 @@
                 {'bSortable': false,
                     'aTargets': [4]},
                 {'bSortable': false,
-                    'aTargets': [5]}
+                    'aTargets': [5]},
+                {'bSortable': false,
+                    'aTargets': [6]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"
