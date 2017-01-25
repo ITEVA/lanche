@@ -111,10 +111,12 @@ class PedidoController extends AbstractCrudController
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
-            $this->salvarPedido($request);
+            if(count($request->nome) > 0) {
+                $this->salvarPedido($request);
 
-            return redirect()
-                ->action('PedidoController@listar');
+                return redirect()
+                    ->action('PedidoController@listar');
+            }
 
         } catch (QueryException $e) {
             return redirect()

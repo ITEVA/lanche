@@ -13,7 +13,7 @@
                 </div>
                 <div class="x_content">
                     <!-- start form for validation -->
-                    <form method="POST" action="{{$action}}" enctype="multipart/form-data" id="demo-form"
+                    <form method="POST" action="{{$action}}" enctype="multipart/form-data" id="frmPedido"
                           data-parsley-validate>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         @if(isset($ids))
@@ -105,7 +105,7 @@
 
                         <div class="ln_solid col-md-12 col-xs-12"></div>
                         <div class="form-group  col-md-12 col-xs-12">
-                            <input type="submit" name="salvar" value="Salvar" class="btn btn-success">
+                            <input id="salvarPedido" type="submit" name="salvar" value="Salvar" class="btn btn-success">
                             <a href="pedidos">Voltar</a>
                         </div>
                         <div class="form-group  col-md-12 col-xs-12">
@@ -130,6 +130,24 @@
                 </div>
                 <div class="modal-body">
                     <p>O produto já está no seu pedido, para alterar a quantidade use o campo da tabela!</p>
+                    <input type="hidden" id="tipoRemocao" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="erroSalvar" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Erro ao salvar pedido</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Para salvar o pedido adicione algum produto!</p>
                     <input type="hidden" id="tipoRemocao" value="" />
                 </div>
                 <div class="modal-footer">

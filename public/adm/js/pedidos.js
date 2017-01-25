@@ -1,4 +1,19 @@
-$(document).ready(function () {
+$(function () {
+    $("#salvarPedido").click(function (e) {
+        e.preventDefault();
+
+        var cont = 0;
+        $(".td").each(function () {
+            cont++;
+        });
+        if (cont == 0){
+            $("#erroSalvar").modal();
+        }else{
+            $('#frmPedido').submit();
+        }
+
+
+    });
 
     $('[data-toggle="popover"]').popover();
 
@@ -10,13 +25,13 @@ $(document).ready(function () {
     }
 
     $('#addProduto').click(function () {
-        if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
-            $(".produtosPedidos").addClass('tabelaProdutos');
-            $("#addTr").css("visibility", "visible");
-            $(".totalPedido").css("visibility", "visible");
-        }
         $(".produto").each(function () {
             if ($(this).val() == $('#produtos').val() && $('#produtos').val() != '') {
+                if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
+                    $(".produtosPedidos").addClass('tabelaProdutos');
+                    $("#addTr").css("visibility", "visible");
+                    $(".totalPedido").css("visibility", "visible");
+                }
                 var nome =  $(this).attr('nomeE');
                 var ctrl = 1;
 
@@ -135,6 +150,7 @@ $(document).ready(function () {
             }
         });
 
+        precoUnitario = parseFloat(precoUnitario).toFixed(2);
         $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
 
         var totalPedido = 0;

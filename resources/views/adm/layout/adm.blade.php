@@ -287,7 +287,7 @@
 <script type="text/javascript" src="adm/js/maps/jquery-jvectormap-us-aea-en.js"></script>
 
 <!-- pace -->
-<script src="adm/js/pace/pace.min.js"></script>
+<!-- <script src="adm/js/pace/pace.min.js"></script>
 <script>
     $(function() {
         $('#world-map-gdp').vectorMap({
@@ -306,7 +306,7 @@
             }
         });
     });
-</script>
+</script> -->
 
 <!-- skycons -->
 <script src="adm/js/skycons/skycons.min.js"></script>
