@@ -12,6 +12,7 @@ class Pedido extends Model
 
     public static function getEmpty(){
         return (object)[
+            'preco' => '',
             'observacao' => '',
             'data' => '',
             'id_produto' => '',

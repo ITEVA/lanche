@@ -2,6 +2,10 @@
     visibility: hidden;
 }
 
+.totalPedido {
+    visibility: hidden;
+}
+
 .selectsDuBom {
     display: none;
 }

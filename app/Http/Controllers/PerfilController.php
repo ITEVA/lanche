@@ -16,6 +16,7 @@ class PerfilController extends Controller
 {
     public function listar($id)
     {
+        if(Auth::user()->id != $id) return redirect('error404');
         if($this->checkPermissao()) return redirect('error404');
         $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
 

@@ -6,12 +6,14 @@ $(document).ready(function () {
 
     if(urlAtual[4] === 'editar') {
         $("#addTr").css("visibility", "visible");
+        $(".totalPedido").css("visibility", "visible");
     }
 
     $('#addProduto').click(function () {
         if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
             $(".produtosPedidos").addClass('tabelaProdutos');
             $("#addTr").css("visibility", "visible");
+            $(".totalPedido").css("visibility", "visible");
         }
         $(".produto").each(function () {
             if ($(this).val() == $('#produtos').val() && $('#produtos').val() != '') {
@@ -29,7 +31,7 @@ $(document).ready(function () {
                         "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
                         "<td><label class='precoUnitario'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
                         "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
-                        "<td><label class='precoProduto'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
+                        "<td class='td'><label class='precoProduto'>R$ " + ($(this).attr('precoE')).replace(".", ",") + "</label></td>" +
                         "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
 
@@ -40,6 +42,15 @@ $(document).ready(function () {
                 else
                     $('#alertRepetido').modal();
             }
+        });
+        var totalPedido = 0;
+        $(".td").each(function () {
+            var precoProduto = $(this).find('.precoProduto').html();
+            var precoProdutoQ = precoProduto.split(' ');
+
+            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+
+            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
         });
     });
 
@@ -81,6 +92,16 @@ $(document).ready(function () {
             $(".produtosPedidos").removeClass('tabelaProdutos');
         }
 
+        var totalPedido = 0;
+        $(".td").each(function () {
+            var precoProduto = $(this).find('.precoProduto').html();
+            var precoProdutoQ = precoProduto.split(' ');
+
+            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+
+            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
+        });
+
     });
 
     $(document).on('keyup', '.quantidadeProduto', function () {
@@ -89,6 +110,7 @@ $(document).ready(function () {
         var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
         var precoUnitarioQ = valuePrecoUnit.split(' ');
         var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
+        var totalPedido = $('#totalPedido').html();
         var cont = 0, contO = 0;
 
         $(".selectProduto").each(function () {
@@ -109,6 +131,16 @@ $(document).ready(function () {
         });
 
         $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
+
+        var totalPedido = 0;
+        $(".td").each(function () {
+            var precoProduto = $(this).find('.precoProduto').html();
+            var precoProdutoQ = precoProduto.split(' ');
+
+            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+
+            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
+        });
 
         ativarMascaras();
     });
