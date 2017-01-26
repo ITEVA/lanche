@@ -99,9 +99,12 @@
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Itens do cardápio</h4>
+                                <h4 class="modal-title">{{isset($cardapio->descricao) ? $cardapio->descricao : 'Itens do cardápio'}}</h4>
                             </div>
                             <div class="modal-body">
+                                @if(isset($cardapio->descricao))
+                                    <h4 class="modal-title">Itens do cardápio:</h4>
+                                @endif
                                 <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
                                     <tr>
                                         <th>Nome</th>

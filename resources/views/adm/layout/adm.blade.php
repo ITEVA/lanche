@@ -60,7 +60,7 @@
                         <img src="adm/images/perfil/{{Auth::user()->foto}}" alt="..." class="img-circle profile_img">
                     </div>
                     <div class="profile_info">
-                        <span>Bem vindo,</span>
+                        <span>Bem-vindo,</span>
                         <h2>{{Auth::user()->apelido}}</h2>
                     </div>
                 </div>

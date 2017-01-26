@@ -31,7 +31,11 @@
 
                         <input type="hidden" name="cardapio" value="{{$cardapio[0]['id']}}" />
 
-                        <div class="form-group col-md-2 col-xs-12">
+                        <div class="form-group col-md-12 col-xs-12">
+                            <label class="destaque">{{isset($cardapio[0]->descricao) ? $cardapio[0]->descricao : ''}}</label>
+                        </div>
+
+                        <div class="form-group col-md-2 col-xs-12 quebrarDiv">
                             <label>Produtos*</label>
                             <select id="produtos" name="produtos" class="select2_single form-control">
                                 <option {{(isset($ids) ? 'selected="selected"' : "")}} selected="selected" elemento="" class="produto" value="">Selecione um produto

@@ -3,4 +3,6 @@ $(document).ready(function () {
         var id = $(this).attr('iid');
         $("#detalhesCardapio"+id).modal();
     });
+
+    $("#produtos").parent().css('clear', 'both');
 });

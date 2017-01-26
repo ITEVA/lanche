@@ -14,8 +14,7 @@ class ProdutoRequest extends FormRequest
     public function rules()
     {
         return [
-            'nome' => 'required',
-            'preco' => 'required'
+            'nome' => 'required'
         ];
     }
 

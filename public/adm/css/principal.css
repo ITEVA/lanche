@@ -18,3 +18,7 @@ a.removerCampo {
 .status {
     cursor: pointer;
 }
+
+label.destaque {
+    font-size: 30px;
+}

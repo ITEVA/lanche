@@ -36,7 +36,12 @@
                                    value="{{old('data') !== null ? old('data') : $cardapio->data}}"/>
                         </div>
 
-                        <div class="form-group col-md-3 col-xs-12">
+                        <div class="form-group col-md-5 col-xs-12 quebrarDiv">
+                            <label for="descricao">Descrição</label>
+                            <textarea class="form-control" name="descricao">{{old('descricao') !== null ? old('descricao') : $cardapio->descricao}}</textarea>
+                        </div>
+
+                        <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <label for="hora_inicio">Hora Início</label>
                             <input type="time" class="form-control" name="hora_inicio"
                                    value="{{old('hora_inicio') !== null ? old('hora_inicio') : $cardapio->hora_inicio}}"/>
@@ -65,7 +70,7 @@
                         <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Produtos</label>
                             <div class="col-md-9 col-sm-9 col-xs-12">
-                                <select class="select2_multiple form-control" multiple="multiple" name="produtos[]">
+                                <select id="produtos" class="select2_multiple form-control" multiple="multiple" name="produtos[]">
                                     @if (count($produtos) > 0)
                                         @foreach ($produtos as $produto)
                                             @if(isset($produtosAtuais))
@@ -107,6 +112,8 @@
     </div>
 @stop
 @section('js')
+    <script src="adm/js/cardapios.js"></script>
+
     <!-- select2 -->
     <script src="adm/js/select/select2.full.js"></script>
     <!-- form validation -->

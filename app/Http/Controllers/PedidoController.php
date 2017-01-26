@@ -66,7 +66,8 @@ class PedidoController extends AbstractCrudController
 
         if ($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
             return redirect('pedidos');
-        } else {
+        }
+        else {
             return parent::novo()
                 ->with('produtos', $produtos)
                 ->with('cardapio', $cardapio);
@@ -203,7 +204,8 @@ class PedidoController extends AbstractCrudController
             $pedido = Pedido::find($id);
             $pedido->fill($dadosPedido);
             $pedido->save();
-        } else
+        }
+        else
             $pedido = Pedido::create($dadosPedido);
 
         for ($i = 0; $i < count($nomesProdutos); $i++) {
@@ -250,11 +252,13 @@ class PedidoController extends AbstractCrudController
             if ($this->checaTempoCardapio($cardapio[0]['id'])) {
                 $produtos[0]['popover'] = true;
                 $produtos[0]['msg'] = "Espere o horário para lançamento de pedidos";
-            } else {
+            }
+            else {
                 $produtos[0]['popover'] = $this->checaExistsPedido($cardapio[0]['id']);
                 $produtos[0]['msg'] = "Já existe um pedido para este turno";
             }
-        } else {
+        }
+        else {
             $produtos[0]['popover'] = true;
             $produtos[0]['msg'] = "Não existe um cardápio para este turno";
         }
