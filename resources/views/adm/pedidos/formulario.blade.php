@@ -1,6 +1,8 @@
 @extends('adm.layout.adm')
 @section('css')
     <link href="adm/css/pedidos.css" rel="stylesheet">
+    <!-- select2 -->
+    <link href="adm/css/select/select2.min.css" rel="stylesheet">
 @endsection
 @section('conteudo')
     <div class="row conteudoPrincipal">
@@ -31,15 +33,16 @@
 
                         <div class="form-group col-md-2 col-xs-12">
                             <label>Produtos*</label>
-                            <select id="produtos" name="produtos" class="form-control">
+                            <select id="produtos" name="produtos" class="select2_single form-control">
                                 <option {{(isset($ids) ? 'selected="selected"' : "")}} selected="selected" elemento="" class="produto" value="">Selecione um produto
                                 </option>
                                 @if (count($produtos) > 0)
                                     @foreach ($produtos as $produto)
-                                        <option nomeE="{{$produto[0]->nome}}" precoE="{{$produto[0]->preco}}" class="produto" value="{{$produto[0]->id}}">{{$produto[0]->nome}}</option>
+                                        <option nomeE="{{$produto->nome}}" precoE="{{$produto->preco}}" class="produto" value="{{$produto->id}}">{{$produto->nome}}</option>
                                     @endforeach
                                 @endif
                             </select>
+                            <br>
                             <br>
                             <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
                         </div>
@@ -159,4 +162,15 @@
 @stop
 @section('js')
     <script src="adm/js/pedidos.js"></script>
+    <!-- select2 -->
+    <script src="adm/js/select/select2.full.js"></script>
+    <!-- select2 -->
+    <script>
+        $(document).ready(function() {
+            $(".select2_single").select2({
+                placeholder: "Selecione um produto",
+                allowClear: true
+            });
+        });
+    </script>
 @endsection

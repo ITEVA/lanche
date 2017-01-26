@@ -110,7 +110,7 @@ class PerfilController extends AbstractCrudController
             'password' => $request->password != '' ? bcrypt($request->password) : ''
         );
 
-        if($dados['password']) {
+        if($dados['password'] == '') {
             unset($dados['password']);
         }
 

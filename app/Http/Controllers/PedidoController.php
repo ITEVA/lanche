@@ -24,12 +24,12 @@ class PedidoController extends AbstractCrudController
 
     public function listar()
     {
-        if(parent::checkPermissao()) return redirect('error404');
+        if (parent::checkPermissao()) return redirect('error404');
         $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
 
 
         $date = $this->dataAtual();
-        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date])->get();
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id, 'data' => $date])->get();
         $pedidos = $this->formatInputListagem($pedidos);
 
         foreach ($pedidos[1] as $pedido) {
@@ -45,56 +45,60 @@ class PedidoController extends AbstractCrudController
             ->with('itensPermitidos', $itensPermitidos);
     }
 
-    public function novo(){
+    public function novo()
+    {
         $cardapio = $this->getCardapioDia();
-        if(!$this->checaExistsCardapio($cardapio))
+        if (!$this->checaExistsCardapio($cardapio))
             return redirect('pedidos');
 
-        $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
+        $produtosDia = ProdutoCardapio::where(['id_cardapio' => $cardapio[0]->id])->get();
 
         $produtos = array();
 
         $i = 0;
-        foreach ($produtosDia as $produtoDia){
-            $produto = Produto::where(['id'=>$produtoDia->id_produto])->get();
+        foreach ($produtosDia as $produtoDia) {
+            $produto = Produto::find($produtoDia->id_produto);
             $produtos[$i] = $produto;
             $i++;
         }
 
-        if($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
+        $produtos = $this->insertionSort($produtos);
+
+        if ($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
             return redirect('pedidos');
-        }
-        else{
+        } else {
             return parent::novo()
                 ->with('produtos', $produtos)
                 ->with('cardapio', $cardapio);
         }
     }
 
-    public function editar($id){
+    public function editar($id)
+    {
         $cardapio = $this->getCardapioDia();
-        if(!$this->checaExistsCardapio($cardapio))
+        if (!$this->checaExistsCardapio($cardapio))
             return redirect('pedidos');
 
-        $produtosDia = ProdutoCardapio::where(['id_cardapio'=>$cardapio[0]->id])->get();
+        $produtosDia = ProdutoCardapio::where(['id_cardapio' => $cardapio[0]->id])->get();
 
         $produtos = array();
 
         $i = 0;
-        foreach ($produtosDia as $produtoDia){
-            $produto = Produto::where(['id'=>$produtoDia->id_produto])->get();
+        foreach ($produtosDia as $produtoDia) {
+            $produto = Produto::find($produtoDia->id_produto);
             $produtos[$i] = $produto;
             $i++;
         }
+
+        $produtos = $this->insertionSort($produtos);
 
         $produtosPedido = ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $id])->get();
 
         $pedido = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
-        if($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
+        if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
             return redirect('pedidos');
-        }
-        else {
+        } else {
             return parent::editar($id)
                 ->with('produtos', $produtos)
                 ->with('produtosPedido', $produtosPedido)
@@ -105,13 +109,13 @@ class PedidoController extends AbstractCrudController
     public function salvar(PedidoRequest $request)
     {
         $cardapio = $this->getCardapioDia();
-        if(!$this->checaExistsCardapio($cardapio))
+        if (!$this->checaExistsCardapio($cardapio) || $this->checaTempoCardapio($cardapio[0]['id']))
             return redirect('pedidos');
 
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
-            if(count($request->nome) > 0) {
+            if (count($request->nome) > 0) {
                 $this->salvarPedido($request);
 
                 return redirect()
@@ -129,7 +133,7 @@ class PedidoController extends AbstractCrudController
     public function atualizar(PedidoRequest $request, $id)
     {
         $cardapio = $this->getCardapioDia();
-        if(!$this->checaExistsCardapio($cardapio))
+        if (!$this->checaExistsCardapio($cardapio) || $this->checaTempoCardapio($cardapio[0]['id']))
             return redirect('pedidos');
 
         $request['id_empregador'] = Auth::user()->id_empregador;
@@ -195,12 +199,11 @@ class PedidoController extends AbstractCrudController
             "id_empregador" => Auth::user()->id_empregador,
         );
 
-        if($id != null) {
+        if ($id != null) {
             $pedido = Pedido::find($id);
             $pedido->fill($dadosPedido);
             $pedido->save();
-        }
-        else
+        } else
             $pedido = Pedido::create($dadosPedido);
 
         for ($i = 0; $i < count($nomesProdutos); $i++) {
@@ -221,7 +224,7 @@ class PedidoController extends AbstractCrudController
 
     private function removerProdutosPedido($id)
     {
-        $produtos = ProdutoPedido::where(['id_pedido'=>$id, 'id_empregador' => Auth::user()->id_empregador])->get();
+        $produtos = ProdutoPedido::where(['id_pedido' => $id, 'id_empregador' => Auth::user()->id_empregador])->get();
         foreach ($produtos as $produto) {
             $produto->delete();
         }
@@ -243,23 +246,21 @@ class PedidoController extends AbstractCrudController
 
         $produtos = array();
 
-        if($this->checaExistsCardapio($cardapio)) {
-            if($this->checaTempoCardapio($cardapio[0]['id'])) {
+        if ($this->checaExistsCardapio($cardapio)) {
+            if ($this->checaTempoCardapio($cardapio[0]['id'])) {
                 $produtos[0]['popover'] = true;
                 $produtos[0]['msg'] = "Espere o horário para lançamento de pedidos";
-            }
-            else {
+            } else {
                 $produtos[0]['popover'] = $this->checaExistsPedido($cardapio[0]['id']);
                 $produtos[0]['msg'] = "Já existe um pedido para este turno";
             }
-        }
-        else {
+        } else {
             $produtos[0]['popover'] = true;
             $produtos[0]['msg'] = "Não existe um cardápio para este turno";
         }
 
         foreach ($request as $pedido) {
-            $pedido['preco'] = "R$ ". number_format($pedido['preco'], 2, ',', '.');
+            $pedido['preco'] = "R$ " . number_format($pedido['preco'], 2, ',', '.');
 
             $pedido['tempoEsgotado'] = $this->checaTempoCardapio($pedido['id_cardapio']);
         }
@@ -272,17 +273,17 @@ class PedidoController extends AbstractCrudController
     private function diaSemana($data)
     {
         $diaSemana = date("N", strtotime($data));
-        if($diaSemana == 1)
+        if ($diaSemana == 1)
             return "Segunda-Feira";
-        else if($diaSemana == 2)
+        else if ($diaSemana == 2)
             return "Terça-Feira";
-        else if($diaSemana == 3)
+        else if ($diaSemana == 3)
             return "Quarta-Feira";
-        else if($diaSemana == 4)
+        else if ($diaSemana == 4)
             return "Quinta-Feira";
-        else if($diaSemana == 5)
+        else if ($diaSemana == 5)
             return "Sexta-Feira";
-        else if($diaSemana == 6)
+        else if ($diaSemana == 6)
             return "Sábado";
         else
             return "Domingo";
@@ -300,7 +301,7 @@ class PedidoController extends AbstractCrudController
         $hora = date('H:i');
         $cardapio = '';
 
-        if($hora >= '00:00' && $hora <= '11:59')
+        if ($hora >= '00:00' && $hora <= '11:59')
             $cardapio = Cardapio::where(['data' => $date, 'turno' => '1'])->get();
         else
             $cardapio = Cardapio::where(['data' => $date, 'turno' => '0'])->get();
@@ -313,7 +314,7 @@ class PedidoController extends AbstractCrudController
         $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
         $hora = date('H:i');
-        if($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final)
+        if ($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final)
             return true;
         else
             return false;
@@ -328,16 +329,33 @@ class PedidoController extends AbstractCrudController
 
     private function checaExistsCardapio($cardapio)
     {
-        if(count($cardapio) != 0) {
+        if (count($cardapio) != 0) {
             return true;
-        }
-        else
+        } else
             return false;
     }
 
     protected function getFilter()
     {
         $date = $this->dataAtual();
-        return ['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id , 'data' => $date];
+        return ['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id, 'data' => $date];
+    }
+
+    public function insertionSort(array $array)
+    {
+        $length = count($array);
+        $i = 0; $j = 0;
+        for ($i = 1; $i < $length; $i++) {
+            $element = $array[$i];
+            $j = $i;
+            while ($j > 0 && $array[$j - 1]->nome > $element->nome) {
+                //move value to right and key to previous smaller index
+                $array[$j] = $array[$j - 1];
+                $j = $j - 1;
+            }
+            //put the element at index $j
+            $array[$j] = $element;
+        }
+        return $array;
     }
 }
