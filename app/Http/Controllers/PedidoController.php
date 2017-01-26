@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PedidoRequest;
 use App\Cardapio;
+Use App\User;
 use App\Pedido;
 use App\Produto;
 use App\ProdutoCardapio;
@@ -27,7 +28,6 @@ class PedidoController extends AbstractCrudController
         if (parent::checkPermissao()) return redirect('error404');
         $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
 
-
         $date = $this->dataAtual();
         $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_usuario' => Auth::user()->id, 'data' => $date])->get();
         $pedidos = $this->formatInputListagem($pedidos);
@@ -41,6 +41,35 @@ class PedidoController extends AbstractCrudController
         }
 
         return view('adm.pedidos.listagem')
+            ->with('pedidos', $pedidos)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
+    public function listarCorrigir()
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists("corrigirPedido", $itensPermitidos))
+            return redirect('error404');
+
+        $dataIniFim = $this->dataIniFim();
+
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dataIniFim['ini'], $dataIniFim['fim']])->get();
+        $pedidos = $this->formatInputListagem($pedidos);
+
+        foreach ($pedidos[1] as $pedido) {
+            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+
+            $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
+            $pedido['diaSemana'] = $this->diaSemana($pedido->data);
+            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
+            $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
+
+            if ($pedido->data_correcao != '')
+                $pedido['dataAlteracao'] = date("d/m/Y H:i", strtotime($pedido->data_correcao));
+        }
+
+        return view('adm.pedidos.listagemCorrigir')
             ->with('pedidos', $pedidos)
             ->with('itensPermitidos', $itensPermitidos);
     }
@@ -74,6 +103,73 @@ class PedidoController extends AbstractCrudController
         }
     }
 
+    public function novoCorrigir()
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $dataIniFim = $this->dataIniFim();
+
+        $cardapios = Cardapio::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dataIniFim['ini'], $dataIniFim['fim']])->orderBy('data', 'asc')->orderBy('turno', 'desc')->get();
+
+        return view('adm.pedidos.formularioCorrigir')
+            ->with('actionFiltro', 'pedidos/corrigir/novo/1')
+            ->with('cardapios', $cardapios)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
+    public function novoProdutosCorrigir(Request $request)
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
+
+        if (!$this->checaExistsCardapio($cardapio))
+            return redirect('pedidos/corrigir');
+
+        $produtosDia = ProdutoCardapio::where(['id_cardapio' => $cardapio[0]->id])->get();
+
+        $produtos = array();
+
+        $i = 0;
+        foreach ($produtosDia as $produtoDia) {
+            $produto = Produto::find($produtoDia->id_produto);
+            $produtos[$i] = $produto;
+            $i++;
+        }
+
+        $produtos = $this->insertionSort($produtos);
+
+        $dataIniFim = $this->dataIniFim();
+
+        $cardapios = Cardapio::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dataIniFim['ini'], $dataIniFim['fim']])->get();
+
+        $pedido = (object)[
+            'preco' => '',
+            'observacao' => '',
+            'motivo_correcao' => '',
+            'data' => '',
+            'id_produto' => '',
+            'id_usuario' => ''
+        ];
+
+        $usuarios = User::where(['id_empregador' => Auth::user()->id_empregador])->orderBy('apelido', 'asc')->get();
+
+        return view('adm.pedidos.formularioCorrigir')
+            ->with('action', 'pedidos/corrigir/salvar')
+            ->with('cardapio', $cardapio)
+            ->with('cardapios', $cardapios)
+            ->with('produtos', $produtos)
+            ->with('pedido', $pedido)
+            ->with('usuarios', $usuarios)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
     public function editar($id)
     {
         $cardapio = $this->getCardapioDia();
@@ -97,6 +193,9 @@ class PedidoController extends AbstractCrudController
 
         $pedido = Pedido::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
+        if (count($pedido) > 0)
+            if(Auth::user()->id != $pedido[0]->id_usuario) return redirect('error404');
+
         if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
             return redirect('pedidos');
         } else {
@@ -105,6 +204,41 @@ class PedidoController extends AbstractCrudController
                 ->with('produtosPedido', $produtosPedido)
                 ->with('cardapio', $cardapio);
         }
+    }
+
+    public function editarCorrigir($id)
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $pedido = Pedido::find($id);
+
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+
+        $produtosDia = ProdutoCardapio::where(['id_cardapio' => $cardapio[0]->id])->get();
+
+        $produtos = array();
+
+        $i = 0;
+        foreach ($produtosDia as $produtoDia) {
+            $produto = Produto::find($produtoDia->id_produto);
+            $produtos[$i] = $produto;
+            $i++;
+        }
+
+        $produtos = $this->insertionSort($produtos);
+
+        $produtosPedido = ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $id])->get();
+
+        return view('adm.pedidos.formularioCorrigir')
+            ->with('action', 'pedidos/corrigir/atualizar/'.$id)
+            ->with('produtos', $produtos)
+            ->with('produtosPedido', $produtosPedido)
+            ->with('cardapio', $cardapio)
+            ->with('pedido', $pedido)
+            ->with('itensPermitidos', $itensPermitidos);
     }
 
     public function salvar(PedidoRequest $request)
@@ -131,8 +265,33 @@ class PedidoController extends AbstractCrudController
         }
     }
 
+    public function salvarCorrigir(PedidoRequest $request)
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $request['id_empregador'] = Auth::user()->id_empregador;
+
+        try {
+            if (count($request->nome) > 0) {
+                $this->salvarPedidoCorrigir($request);
+
+                return redirect()
+                    ->action('PedidoController@listarCorrigir');
+            }
+        } catch (QueryException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(array('Erro ao salvar pedido. Tente mais tarde.'));
+        }
+    }
+
     public function atualizar(PedidoRequest $request, $id)
     {
+        if(Auth::user()->id != $id) return redirect('error404');
         $cardapio = $this->getCardapioDia();
         if (!$this->checaExistsCardapio($cardapio) || $this->checaTempoCardapio($cardapio[0]['id']))
             return redirect('pedidos');
@@ -145,6 +304,30 @@ class PedidoController extends AbstractCrudController
 
             return redirect()
                 ->action('PedidoController@listar');
+
+        } catch (QueryException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(array($e->getMessage()));
+        }
+    }
+
+    public function atualizarCorrigir(PedidoRequest $request, $id)
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $request['id_empregador'] = Auth::user()->id_empregador;
+
+        try {
+            $this->removerProdutosPedido($id);
+            $this->salvarPedidoCorrigir($request, $id);
+
+            return redirect()
+                ->action('PedidoController@listarCorrigir');
 
         } catch (QueryException $e) {
             return redirect()
@@ -191,11 +374,87 @@ class PedidoController extends AbstractCrudController
         $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
 
         $dadosPedido = array(
-            "data" => $date,
+            "data" => $cardapio[0]->data,
             "preco" => $precoTotal,
             "observacao" => $request->observacao,
             "turno" => $cardapio[0]->turno,
             "id_usuario" => Auth::user()->id,
+            "id_cardapio" => $request->cardapio,
+            "id_empregador" => Auth::user()->id_empregador,
+        );
+
+        if ($id != null) {
+            $pedido = Pedido::find($id);
+            $pedido->fill($dadosPedido);
+            $pedido->save();
+        }
+        else
+            $pedido = Pedido::create($dadosPedido);
+
+        for ($i = 0; $i < count($nomesProdutos); $i++) {
+            $produto = array(
+                "nome" => $nomesProdutos[$i],
+                "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                "data" => $date,
+                "turno" => $cardapio[0]->turno,
+                "preco_unitario" => $precosProdutos[$i],
+                "preco_total" => $precosTotaisProdutos[$i],
+                "id_pedido" => $pedido->id,
+                "id_empregador" => Auth::user()->id_empregador
+            );
+
+            ProdutoPedido::create($produto);
+        }
+    }
+
+    private function salvarPedidoCorrigir($request, $id = null)
+    {
+        $nomesProdutos = array();
+        $quantidadesProdutos = array();
+        $precosProdutos = array();
+        $precosTotaisProdutos = array();
+
+        $i = 0;
+        foreach ($request->nome as $nomeProduto) {
+            $nomesProdutos[$i] = $nomeProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->quantidade as $quantidadeProduto) {
+            $quantidadesProdutos[$i] = $quantidadeProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->precoUnitario as $precoProduto) {
+            $precosProdutos[$i] = $precoProduto;
+            $i++;
+        }
+
+        $i = 0;
+        $precoTotal = 0;
+        for ($i = 0; $i < count($nomesProdutos); $i++) {
+            $precosTotaisProdutos[$i] = ($quantidadesProdutos[$i] * $precosProdutos[$i]);
+            $precoTotal = $precoTotal + $precosTotaisProdutos[$i];
+        }
+
+        $date = $this->dataAtual();
+
+        $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
+
+        date_default_timezone_set('America/Fortaleza');
+
+        $dadosPedido = array(
+            "data" => $cardapio[0]->data,
+            "preco" => $precoTotal,
+            "observacao" => $request->observacao,
+            "turno" => $cardapio[0]->turno,
+            "corrigido" => '1',
+            "motivo_correcao" => $request->motivo_correcao,
+            "data_correcao" => date("Y/m/d H:i"),
+            "responsavel_correcao" => Auth::user()->apelido,
+            "id_usuario" => $request->usuario,
             "id_cardapio" => $request->cardapio,
             "id_empregador" => Auth::user()->id_empregador,
         );
@@ -272,6 +531,41 @@ class PedidoController extends AbstractCrudController
         $produtos[1] = $request;
 
         return $produtos;
+    }
+
+    private function dataIniFim()
+    {
+        date_default_timezone_set('America/Fortaleza');
+        $date = date('Y-m-d');
+        $dateQ = explode("-", $date);
+        $dateI = $dateQ[0]."-".$dateQ[1]. "-01";
+        $dateF = $dateQ[0]."-".$dateQ[1];
+
+        if($dateQ[1] == 1 || $dateQ[1] == 3 || $dateQ[1] == 5 || $dateQ[1] == 7 || $dateQ[1] == 8 || $dateQ[1] == 10 || $dateQ[1] == 12)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-31";
+        else if($dateQ[1] == 4 || $dateQ[1] == 6 || $dateQ[1] == 9 || $dateQ[1] == 11)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-30";
+        else{
+            $bissexto = false;
+            if ($dateQ[0] % 400 == 0)
+                $bissexto = true;
+            else if (($dateQ[0] % 4 == 0) && ($dateQ[0] % 100 != 0))
+                $bissexto = true;
+            else
+                $bissexto = false;
+
+            if($bissexto)
+                $dateF = $dateQ[0]."-".$dateQ[1]."-29";
+            else
+                $dateF = $dateQ[0]."-".$dateQ[1]."-28";
+        }
+
+        $data = array(
+                "ini" => $dateI,
+                "fim" => $dateF
+        );
+
+        return $data;
     }
 
     private function diaSemana($data)

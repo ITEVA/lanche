@@ -62,6 +62,9 @@
                                 <input type="checkbox" class="permissao" value="pedido" name="pedido" {{isset($permissoesAtuais['pedido']) ? 'checked' : ''}}><label class="lblPermissao">Pedido</label>
                             </span>
                             <span class="quebraBox">
+                                <input type="checkbox" class="permissao" value="corrigirPedido" name="corrigirPedido" {{isset($permissoesAtuais['corrigirPedido']) ? 'checked' : ''}}><label class="lblPermissao">Corrigir Pedido</label>
+                            </span>
+                            <span class="quebraBox">
                                 <input type="checkbox" class="permissao" value="relatorio" name="relatorio" {{isset($permissoesAtuais['relatorio']) ? 'checked' : ''}}><label class="lblPermissao">Relatórios</label>
                             </span>
                         </div>

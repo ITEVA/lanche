@@ -4,55 +4,61 @@
     <link href="adm/css/custom.css" rel="stylesheet">
     <link href="adm/css/icheck/flat/green.css" rel="stylesheet">
     <link href="adm/css/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
-
-    <link href="adm/css/perfil.css" rel="stylesheet">
 @endsection
 @section('conteudo')
     <div class="">
         <div class="row conteudoPrincipal">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
-                    <div class="col-lg-2">
-                        <img src="adm/images/perfil/{{Auth::user()->foto}}" alt="..." class="img-circle profile_img">
+                    <a class="btn btn-success pull-right" href="pedidos/corrigir/novo">
+                        <i class="fa fa-plus"></i>&nbsp;Novo
+                    </a>
+
+                    <a href="pedidos/removerLote" id="removerLote" style="display: none"></a>
+
+                    <div class="x_title">
+                        <h2>Pedidos</h2>
+
+                        <div class="clearfix"></div>
                     </div>
-
-                    <div class="col-lg-10 usuario">
-                        <p class="pInxirido">{{$usuario->nome}}</p>
-                        <p class="normal">{{$usuario->cargo}}</p>
-
-                        <p class="pInxirido">Gasto atual:<p class="normal">R$ {{number_format($consumo, 2, ',', '.')}}</p></p>
-                    </div>
-
                     <div class="x_content">
                         <table id="example" class="table table-striped responsive-utilities jambo_table">
                             <thead>
                             <tr class="headings">
-                                <th id="checkboxs">
-
-                                </th>
-                                <th>Data</th>
+                                <th id="checkboxs"></th>
+                                <th>Nome</th>
+                                <th>Data do pedido</th>
                                 <th>Dia</th>
                                 <th>Turno</th>
-                                <th>Preço</th>
+                                <th>Data alteração</th>
+                                <th>Responsável alteração</th>
                                 <th>Visualizar</th>
+                                <th>Editar</th>
+                                <th>Excluir</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @if(count($pedidos) > 0)
-                                @foreach($pedidos as $pedido)
-                                    <tr class="even pointer">
-                                        <td class="a-center ">
-                                        </td>
+                            @if(count($pedidos[1]) > 0)
+                                @foreach($pedidos[1] as $pedido)
+                                    <tr class="even pointer" {{$pedido->corrigido == 1 ? "style=background-color:#f7ecb5;" : ""}}>
+                                        <td class="a-center "></td>
+                                        <td>{{$pedido['nomeUsuario'][0]->nome}}</td>
                                         <td>{{$pedido->data}}</td>
                                         <td>{{$pedido['diaSemana']}}</td>
-                                        <td>{{$pedido->turno == 1 ? "Manhã" : "Tarde"}}</td>
-                                        <td>{{$pedido->preco}}</td>
+                                        <td>{{$pedido['turno']}}</td>
+                                        <td>{{$pedido['dataAlteracao']}}</td>
+                                        <td>{{$pedido['responsavel_correcao']}}</td>
                                         <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
+                                        <td class="iconeListagem"><a href="pedidos/corrigir/editar/{{$pedido->id}}"><i
+                                                        class="fa fa-pencil-square-o"></i></a></td>
+                                        <td class="iconeListagem"><a class="removerRegistro" href="{{$pedido->id}}">
+                                                        <i class="fa fa-trash"></i></a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="iconeListagem">Nenhum item encontrado</td>
+                                    <td colspan="11" class="iconeListagem">Nenhum pedido encontrado</td>
                                 </tr>
                             @endif
                             </tbody>
@@ -82,17 +88,20 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-
-                @foreach($produtosPedidos as $produtosPedido)
-                    <div class="modal fade" id="detalhesPedido{{$produtosPedido['id_pedido']}}" tabindex="-1" role="dialog">
+                @foreach($pedidos[1] as $pedido)
+                    <div class="modal fade" id="detalhesPedido{{$pedido->id}}" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                                 aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Itens do pedido</h4>
+                                    <h4 class="modal-title">Resumo do item</h4>
                                 </div>
                                 <div class="modal-body">
+                                    @if($pedido->motivo_correcao != '')
+                                        <label>Motivo da alteração: </label>
+                                        <label>{{$pedido->motivo_correcao}}</label>
+                                    @endif
                                     <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
                                         <tr>
                                             <th>Nome</th>
@@ -100,7 +109,7 @@
                                             <th>Quantidade</th>
                                             <th>Preço total</th>
                                         </tr>
-                                        @foreach($produtosPedido as $produtoPedido)
+                                        @foreach($pedido['produtos'] as $produtoPedido)
                                             @if(isset($produtoPedido['id_pedido']))
                                                 <tr>
                                                     <td>{{$produtoPedido['nome']}}</td>
@@ -123,7 +132,7 @@
     </div>
 @stop
 @section('js')
-    <script src="adm/js/perfil.js"></script>
+    <script src="adm/js/pedidos.js"></script>
 
     <!-- Datatables -->
     <script src="adm/js/datatables/js/jquery.dataTables.js"></script>
@@ -145,7 +154,7 @@
 
         var asInitVals = new Array();
         var oTable = $('#example').dataTable({
-            //"bPaginate": false,
+            "bPaginate": false,
             "order": [[1, "asc"]],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
@@ -174,10 +183,14 @@
                 {'bSortable': false,
                     'aTargets': [0]},
                 {'bSortable': true,
-                    'aTargets': [1],
+                    'aTargets': [2],
                     render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [5]}
+                    'aTargets': [7]},
+                {'bSortable': false,
+                    'aTargets': [8]},
+                {'bSortable': false,
+                    'aTargets': [9]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

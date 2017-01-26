@@ -14,6 +14,9 @@ class Pedido extends Model
         return (object)[
             'preco' => '',
             'observacao' => '',
+            "corrigido" => '',
+            "motivo_correcao" => '',
+            "data_correcao" => '',
             'data' => '',
             'id_produto' => '',
             'id_usuario' => ''

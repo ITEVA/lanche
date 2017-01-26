@@ -2,24 +2,30 @@ $(function () {
     $("#salvarPedido").click(function (e) {
         e.preventDefault();
 
-        var cont = 0;
-        $(".td").each(function () {
-            cont++;
-        });
-        if (cont == 0){
-            $("#erroSalvar").modal();
-        }else{
-            $('#frmPedido').submit();
+        if ($('#usuarios').val() == '') {
+            $("#erroUsuario").modal();
         }
-
-
+        else if ($('#motivoCorrecao').val() == '') {
+            $("#erroMotivo").modal();
+        }
+        else {
+            var cont = 0;
+            $(".td").each(function () {
+                cont++;
+            });
+            if (cont == 0) {
+                $("#erroSalvar").modal();
+            } else {
+                $('#frmPedido').submit();
+            }
+        }
     });
 
     $('[data-toggle="popover"]').popover();
 
     var urlAtual = window.location.href.split('/');
 
-    if(urlAtual[4] === 'editar') {
+    if(urlAtual[4] === 'editar' || urlAtual[5] === 'editar') {
         $("#addTr").css("visibility", "visible");
         $(".totalPedido").css("visibility", "visible");
     }

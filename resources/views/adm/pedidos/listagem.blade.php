@@ -17,7 +17,7 @@
                     <a href="pedidos/removerLote" id="removerLote" style="display: none"></a>
 
                     <div class="x_title">
-                        <h2>Pedido</h2>
+                        <h2>Pedidos</h2>
 
                         <div class="clearfix"></div>
                     </div>

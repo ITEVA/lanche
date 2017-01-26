@@ -66,6 +66,13 @@ Route::get('/pedidos/editar/{id}', 'PedidoController@editar');
 Route::post('/pedidos/atualizar/{id}', 'PedidoController@atualizar');
 Route::post('/pedidos/removerLote', 'PedidoController@removerLote');
 Route::post('/pedidos/atualizarLote', 'PedidoController@atualizarLote');
+//Correçaõ de pedidos
+Route::get('/pedidos/corrigir', 'PedidoController@listarCorrigir');
+Route::get('/pedidos/corrigir/novo', 'PedidoController@novoCorrigir');
+Route::post('/pedidos/corrigir/novo/1', 'PedidoController@novoProdutosCorrigir');
+Route::post('/pedidos/corrigir/salvar', 'PedidoController@salvarCorrigir');
+Route::get('/pedidos/corrigir/editar/{id}', 'PedidoController@editarCorrigir');
+Route::post('/pedidos/corrigir/atualizar/{id}', 'PedidoController@atualizarCorrigir');
 
 //Rotas para gestão de Produtos
 Route::get('/produtos', 'ProdutoController@listar');

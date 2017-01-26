@@ -21,7 +21,7 @@
                 </a>
 
                 <div class="x_title">
-                    <h2>Cardápio</h2>
+                    <h2>Cardápios</h2>
 
                     <div class="clearfix"></div>
                 </div>

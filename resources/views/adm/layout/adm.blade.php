@@ -107,6 +107,11 @@
                                         <i class="fa fa-cutlery"></i>
                                         Pedido <span class="fa "></span></a></li>
                             @endif
+                            @if(isset($itensPermitidos['corrigirPedido']))
+                                <li><a href="pedidos/corrigir">
+                                        <i class="fa  fa-wrench"></i>
+                                        Corrigir Pedido <span class="fa "></span></a></li>
+                            @endif
                             @if(isset($itensPermitidos['relatorio']))
                                 <li><a>
                                         <i class="fa fa-file-text-o"></i>
