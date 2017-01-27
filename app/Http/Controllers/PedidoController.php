@@ -291,7 +291,6 @@ class PedidoController extends AbstractCrudController
 
     public function atualizar(PedidoRequest $request, $id)
     {
-        if(Auth::user()->id != $id) return redirect('error404');
         $cardapio = $this->getCardapioDia();
         if (!$this->checaExistsCardapio($cardapio) || $this->checaTempoCardapio($cardapio[0]['id']))
             return redirect('pedidos');
@@ -596,6 +595,7 @@ class PedidoController extends AbstractCrudController
     private function getCardapioDia()
     {
         $date = $this->dataAtual();
+        date_default_timezone_set('America/Fortaleza');
         $hora = date('H:i');
         $cardapio = '';
 
@@ -611,6 +611,7 @@ class PedidoController extends AbstractCrudController
     {
         $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $id])->get();
 
+        date_default_timezone_set('America/Fortaleza');
         $hora = date('H:i');
         if ($hora < $cardapio[0]->hora_inicio || $hora > $cardapio[0]->hora_final)
             return true;
