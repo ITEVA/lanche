@@ -173,14 +173,6 @@ $(function () {
         ativarMascaras();
     });
 
-    $('#imprimir').click(function(){
-        $('#filtro').attr('action', 'relatorios/pedidos/imprimir');
-        $('#filtro').attr('target', '_blank');
-        $('#filtro').submit();
-        $('#filtro').attr('action', 'relatorios/pedidos');
-        $('#filtro').attr('target', '_self');
-    });
-
     $(".detalhesPedido").click(function () {
         var id = $(this).attr('iid');
         $("#detalhesPedido"+id).modal();

@@ -22,6 +22,7 @@ class RelatorioController extends AbstractCrudController
         parent::__construct('auth');
     }
 
+    /* Relatório de pedidos */
     protected function listarPedidos()
     {
         if($this->checkPermissao()) return redirect('error404');
@@ -201,6 +202,119 @@ class RelatorioController extends AbstractCrudController
 
         return $pedidos;
     }
+    /* / Relatório de pedidos */
+
+    /* Relatório de gastos */
+    protected function listarGastos()
+    {
+        if($this->checkPermissao()) return redirect('error404');
+        $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+        $intervalo = $this->intevaloMes();
+
+        $usuarios = $this->getUsuarios($intervalo);
+
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
+
+        return view('adm.relatorios.gastos')
+            ->with('itensPermitidos', $itensPermitidos)
+            ->with('usuarios', $usuarios)
+            ->with('intervalo', $intervalo);
+    }
+
+    protected function listarFiltroGastos(Request $request)
+    {
+        if($this->checkPermissao()) return redirect('error404');
+        $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+        $intervalo = array(
+                "ini" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataIni))),
+                "fim" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataFim)))
+        );
+
+        $usuarios = $this->getUsuarios($intervalo);
+
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
+
+        return view('adm.relatorios.gastos')
+            ->with('itensPermitidos', $itensPermitidos)
+            ->with('usuarios', $usuarios)
+            ->with('intervalo', $intervalo);
+    }
+
+    protected function gastosImprimir(Request $request)
+    {
+        $intervalo = array(
+            "ini" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataIni))),
+            "fim" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataFim)))
+        );
+
+        $usuarios = $this->getUsuarios($intervalo);
+
+        //Criando o objeto de PDF e inicializando suas configurações
+        $pdf = new FPDF("P", "pt", "A4");
+
+        $pdf->SetTitle('Gstos: '. $request->dataIni. '-'. $request->dataFim);
+
+        //Adiciona uma nova pagina para cada colaborador
+        $pdf->AddPage();
+
+        //Desenha o cabeçalho do relatorio
+        $pdf->Image('adm/images/logo1.png');
+        $pdf->Line(20, 100 , 575, 100);
+
+        $pdf->SetXY(0, 115);
+        $pdf->SetFont('arial', 'B', 10);
+        $pdf->Cell(595, 14, "GASTOS: ". $request->dataIni. '-'. $request->dataFim, 0, 0, "C");
+
+        //Tabela total de produtos
+        $pdf->SetXY(20, 145);
+        $pdf->SetFont('arial', 'B', 10);
+        $pdf->Cell(278, 20, 'nome', 1, 0, "C");
+        $pdf->Cell(278, 20, 'Gasto Total', 1, 0, "C");
+
+        //linhas da tabela
+        $pdf->SetFont('arial', '', 10);
+        if(count($usuarios) > 0) {
+            $pdf->SetY($pdf->GetY() + 20);
+            foreach ($usuarios as $usuario) {
+                $pdf->SetX(20);
+                $pdf->Cell(278, 14, $usuario->nome, 1, 0, "C");
+                $pdf->Cell(278, 14, $usuario['consumo'], 1, 0, "C");
+                $pdf->SetY($pdf->GetY() + 14);
+            }
+        }
+
+        //Rodape
+        $pdf->SetAutoPageBreak(5);
+        $pdf->SetFont('arial', '', 10);
+        $pdf->SetXY(20, -45);
+        $pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
+        $pdf->SetXY(20, -30);
+        $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
+
+        $pdf->Output();
+        exit;
+    }
+
+    protected function getUsuarios ($intervalo)
+    {
+        $usuarios = User::where($this->getFilter())->orderBy('nome', 'asc')->get();
+
+        foreach ($usuarios as $usuario) {
+            $usuario['pedidos'] = Pedido::where(['id_usuario' => $usuario->id, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->get();
+            $consumo  = 0;
+            foreach ($usuario['pedidos'] as $pedido) {
+                $consumo = $consumo + floatval($pedido->preco);
+            }
+            $usuario['consumo'] = "R$ " . number_format($consumo, 2, ',', '.');
+        }
+
+        return $usuarios;
+    }
+    /* / Relatório de gastos */
 
     private function diaSemana($data)
     {
@@ -231,6 +345,43 @@ class RelatorioController extends AbstractCrudController
     {
         date_default_timezone_set('America/Fortaleza');
         return $date = date('Y-m-d');
+    }
+
+    private function intevaloMes()
+    {
+        date_default_timezone_set('America/Fortaleza');
+        $date = $this->dataAtual();
+        $dateQ = explode("-", $date);
+        $dateI = $dateQ[0]."-".$dateQ[1]. "-01";
+        $dateF = $dateQ[0]."-".$dateQ[1];
+        $intervalo = array(
+                "ini" => $dateI,
+                "fim" => ""
+        );
+
+        if($dateQ[1] == 1 || $dateQ[1] == 3 || $dateQ[1] == 5 || $dateQ[1] == 7 || $dateQ[1] == 8 || $dateQ[1] == 10 || $dateQ[1] == 12)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-31";
+        else if($dateQ[1] == 4 || $dateQ[1] == 6 || $dateQ[1] == 9 || $dateQ[1] == 11)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-30";
+        else{
+            $bissexto = false;
+            if ($dateQ[0] % 400 == 0)
+                $bissexto = true;
+            else if (($dateQ[0] % 4 == 0) && ($dateQ[0] % 100 != 0))
+                $bissexto = true;
+            else
+                $bissexto = false;
+
+            if($bissexto)
+                $dateF = $dateQ[0]."-".$dateQ[1]."-29";
+            else
+                $dateF = $dateQ[0]."-".$dateQ[1]."-28";
+
+        }
+
+        $intervalo['fim'] = $dateF;
+
+        return $intervalo;
     }
 
     protected function getFilter()

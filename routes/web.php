@@ -66,6 +66,7 @@ Route::get('/pedidos/editar/{id}', 'PedidoController@editar');
 Route::post('/pedidos/atualizar/{id}', 'PedidoController@atualizar');
 Route::post('/pedidos/removerLote', 'PedidoController@removerLote');
 Route::post('/pedidos/atualizarLote', 'PedidoController@atualizarLote');
+
 //Correçaõ de pedidos
 Route::get('/pedidos/corrigir', 'PedidoController@listarCorrigir');
 Route::get('/pedidos/corrigir/novo', 'PedidoController@novoCorrigir');
@@ -88,3 +89,7 @@ Route::post('/produtos/atualizarLote', 'ProdutoController@atualizarLote');
 Route::get('/relatorios/pedidos', 'RelatorioController@listarPedidos');
 Route::post('/relatorios/pedidos', 'RelatorioController@listarFiltroPedidos');
 Route::post('/relatorios/pedidos/imprimir', 'RelatorioController@pedidosImprimir');
+
+Route::get('/relatorios/gastos', 'RelatorioController@listarGastos');
+Route::post('/relatorios/gastos', 'RelatorioController@listarFiltroGastos');
+Route::post('/relatorios/gastos/imprimir', 'RelatorioController@gastosImprimir');

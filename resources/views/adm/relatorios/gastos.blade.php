@@ -12,35 +12,30 @@
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h2>Pedidos cadastradas no sistema</h2>
+                    <h2>Gastos</h2>
 
                     <div class="clearfix"></div>
                 </div>
 
                 <div class="x_content">
-                    <form method="POST" action="relatorios/pedidos" enctype="multipart/form-data" id="filtro" data-parsley-validate>
+                    <form method="POST" action="relatorios/gastos" enctype="multipart/form-data" id="filtro" data-parsley-validate>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
 
                         <div class="form-group col-md-1 col-xs-12">
-                            <label for="data">Data</label>
-                            <input type="text" class="form-control date-picker" name="data"
-                                   value="{{old('data') !== null ? old('data') : $dataRe}}"/>
+                            <label for="data">Data inicio</label>
+                            <input type="text" class="form-control date-picker" name="dataIni"
+                                   value="{{old('dataIni') !== null ? old('dataIni') : $intervalo['ini']}}"/>
                         </div>
 
                         <div class="form-group col-md-1 col-xs-12">
-                            <label>Turno</label><br/>
-                            @if ((old('turno') !== null && old('turno') === '0') || (old('turno') === null && $turnoRe == '0'))
-                                <input type="radio" class="flat" name="turno" value="1"/> Manhã
-                                <input type="radio" class="flat" name="turno" checked="checked" value="0"/> Tarde
-                            @else
-                                <input type="radio" class="flat" name="turno" checked="checked" value="1"/> Manhã
-                                <input type="radio" class="flat" name="turno" value="0"/> Tarde
-                            @endif
+                            <label for="data">Data fim</label>
+                            <input type="text" class="form-control date-picker" name="dataFim"
+                                   value="{{old('dataFim') !== null ? old('dataFim') : $intervalo['fim']}}"/>
                         </div>
 
                         <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <input type="submit" name="filtrar" class="btn btn-success" value="Filtrar"/>
-                            <input type="button" id="imprimir" name="imprimir" class="btn btn-success" value="Imprimir"/>
+                            <input type="button" id="imprimirGastos" name="imprimir" class="btn btn-success" value="Imprimir"/>
                         </div>
                     </form>
 
@@ -50,22 +45,22 @@
                             <th id="checkboxs">
                             </th>
                             <th>Nome</th>
-                            <th>Visualizar</th>
+                            <th>Gasto Total</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @if(count($pedidos) > 0)
-                            @foreach($pedidos as $pedido)
+                        @if(count($usuarios) > 0)
+                            @foreach($usuarios as $usuario)
                                 <tr class="even pointer">
                                     <td class="a-center ">
                                     </td>
-                                    <td>{{$pedido['nomeUsuario'][0]['nome']}}</td>
-                                    <td><i class="fa fa-search detalhesPedido" iid="{{$pedido->id}}" style="cursor: pointer"></i></td>
+                                    <td>{{$usuario->nome}}</td>
+                                    <td>{{$usuario['consumo']}}</td>
                                 </tr>
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="5" class="iconeListagem">Nenhum pedido encontrado</td>
+                                <td colspan="5" class="iconeListagem">Nenhum usuario com gasto nesse periodo encontrado</td>
                             </tr>
                         @endif
                         </tbody>
@@ -95,41 +90,6 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
-            @foreach($pedidos as $pedido)
-                <div class="modal fade" id="detalhesPedido{{$pedido->id}}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Itens do pedido</h4>
-                            </div>
-                            <div class="modal-body">
-                                <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Preço unitário</th>
-                                        <th>Quantidade</th>
-                                        <th>Preço total</th>
-                                    </tr>
-                                    @foreach($pedido['produtos'] as $produtoPedido)
-                                        @if(isset($produtoPedido['id_pedido']))
-                                            <tr>
-                                                <td>{{$produtoPedido['nome']}}</td>
-                                                <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
-                                                <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
-                                                <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-
-                                </table>
-                                <input type="hidden" id="tipoRemocao" value="" />
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
-            @endforeach
         </div>
     </div>
 </div>
