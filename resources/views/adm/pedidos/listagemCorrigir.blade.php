@@ -22,6 +22,26 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
+                        <form method="POST" action="pedidos/corrigir" enctype="multipart/form-data" id="filtro" data-parsley-validate>
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+
+                            <div class="form-group col-md-1 col-xs-12">
+                                <label for="data">Data inicio</label>
+                                <input type="text" class="form-control date-picker" name="dataIni"
+                                       value="{{old('dataIni') !== null ? old('dataIni') : $intervalo['ini']}}"/>
+                            </div>
+
+                            <div class="form-group col-md-1 col-xs-12">
+                                <label for="data">Data fim</label>
+                                <input type="text" class="form-control date-picker" name="dataFim"
+                                       value="{{old('dataFim') !== null ? old('dataFim') : $intervalo['fim']}}"/>
+                            </div>
+
+                            <div class="form-group col-md-3 col-xs-12 quebrarDiv">
+                                <input type="submit" name="filtrar" class="btn btn-success" value="Filtrar"/>
+                            </div>
+                        </form>
+
                         <table id="example" class="table table-striped responsive-utilities jambo_table">
                             <thead>
                             <tr class="headings">

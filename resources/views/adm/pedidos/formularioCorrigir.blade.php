@@ -22,6 +22,25 @@
                         </ul>
                     @endif
                     @if(isset($actionFiltro))
+                        <form method="POST" action="pedidos/corrigir/novo" enctype="multipart/form-data" id="filtro" data-parsley-validate>
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+
+                            <div class="form-group col-md-1 col-xs-12">
+                                <label for="data">Data inicio</label>
+                                <input type="text" class="form-control date-picker" name="dataIni"
+                                       value="{{old('dataIni') !== null ? old('dataIni') : $intervalo['ini']}}"/>
+                            </div>
+
+                            <div class="form-group col-md-1 col-xs-12">
+                                <label for="data">Data fim</label>
+                                <input type="text" class="form-control date-picker" name="dataFim"
+                                       value="{{old('dataFim') !== null ? old('dataFim') : $intervalo['fim']}}"/>
+                            </div>
+
+                            <div class="form-group col-md-3 col-xs-12 quebrarDiv">
+                                <input type="submit" name="filtrar" class="btn btn-success" value="Filtrar"/>
+                            </div>
+                        </form>
                         <!-- start form for validation -->
                         <form method="POST" action="{{$actionFiltro}}" enctype="multipart/form-data"
                               data-parsley-validate>
@@ -30,7 +49,7 @@
                             <div class="form-group col-md-2 col-xs-12 quebrarDiv">
                                 <label>Cardapios*</label>
                                 <select id="cardapios" name="cardapio" class="select2_single form-control">
-                                    <option selected="selected" class="produto" value="">Selecione um produto
+                                    <option selected="selected" class="produto" value="">Selecione um cardapio
                                     </option>
                                     @if (count($cardapios) > 0)
                                         @foreach ($cardapios as $cardapioF)

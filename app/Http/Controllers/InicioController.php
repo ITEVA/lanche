@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Permissao;
+use App\Produto;
+use App\Cardapio;
+use App\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,10 +34,16 @@ class InicioController extends AbstractCrudController
 
         $usuarios = User::where($this->getFilter())->get();
         $permissoes = Permissao::where($this->getFilter())->get();
+        $produtos = Produto::where($this->getFilter())->get();
+        $cardapios = Cardapio::where($this->getFilter())->get();
+        $pedidos = Pedido::where($this->getFilter())->get();
 
         return view('adm.inicio.paginaInicial')
-            ->with('permissoes', $permissoes)
             ->with('usuarios', $usuarios)
+            ->with('permissoes', $permissoes)
+            ->with('produtos', $produtos)
+            ->with('cardapios', $cardapios)
+            ->with('pedidos', $pedidos)
             ->with('itensPermitidos', $itensPermitidos);
     }
 

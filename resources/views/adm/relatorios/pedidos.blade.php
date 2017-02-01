@@ -40,7 +40,7 @@
 
                         <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <input type="submit" name="filtrar" class="btn btn-success" value="Filtrar"/>
-                            <input type="button" id="imprimir" name="imprimir" class="btn btn-success" value="Imprimir"/>
+                            <input type="button" id="imprimirPedidos" name="imprimir" class="btn btn-success" value="Imprimir"/>
                         </div>
                     </form>
 

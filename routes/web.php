@@ -69,7 +69,9 @@ Route::post('/pedidos/atualizarLote', 'PedidoController@atualizarLote');
 
 //Correçaõ de pedidos
 Route::get('/pedidos/corrigir', 'PedidoController@listarCorrigir');
+Route::post('/pedidos/corrigir', 'PedidoController@listarFiltroCorrigir');
 Route::get('/pedidos/corrigir/novo', 'PedidoController@novoCorrigir');
+Route::post('/pedidos/corrigir/novo', 'PedidoController@novoFiltroCorrigir');
 Route::post('/pedidos/corrigir/novo/1', 'PedidoController@novoProdutosCorrigir');
 Route::post('/pedidos/corrigir/salvar', 'PedidoController@salvarCorrigir');
 Route::get('/pedidos/corrigir/editar/{id}', 'PedidoController@editarCorrigir');

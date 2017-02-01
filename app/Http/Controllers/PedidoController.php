@@ -52,25 +52,43 @@ class PedidoController extends AbstractCrudController
         if(!array_key_exists("corrigirPedido", $itensPermitidos))
             return redirect('error404');
 
-        $dataIniFim = $this->dataIniFim();
+        $intervalo = $this->intevaloMes();
 
-        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dataIniFim['ini'], $dataIniFim['fim']])->get();
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->get();
         $pedidos = $this->formatInputListagem($pedidos);
 
-        foreach ($pedidos[1] as $pedido) {
-            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
 
-            $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
-            $pedido['diaSemana'] = $this->diaSemana($pedido->data);
-            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
-            $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
-
-            if ($pedido->data_correcao != '')
-                $pedido['dataAlteracao'] = date("d/m/Y H:i", strtotime($pedido->data_correcao));
-        }
+        $pedidos = $this->formatInputListagemCorrigir($pedidos);
 
         return view('adm.pedidos.listagemCorrigir')
             ->with('pedidos', $pedidos)
+            ->with('intervalo', $intervalo)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
+    protected function listarFiltroCorrigir(Request $request)
+    {
+        if($this->checkPermissao()) return redirect('error404');
+        $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+        $intervalo = array(
+            "ini" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataIni))),
+            "fim" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataFim)))
+        );
+
+        $pedidos = Pedido::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->get();
+        $pedidos = $this->formatInputListagem($pedidos);
+
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
+
+        $pedidos = $this->formatInputListagemCorrigir($pedidos);
+
+        return view('adm.pedidos.listagemCorrigir')
+            ->with('pedidos', $pedidos)
+            ->with('intervalo', $intervalo)
             ->with('itensPermitidos', $itensPermitidos);
     }
 
@@ -110,13 +128,41 @@ class PedidoController extends AbstractCrudController
         if(!array_key_exists('corrigirPedido', $itensPermitidos))
             return redirect('error404');
 
-        $dataIniFim = $this->dataIniFim();
+        $intervalo = $this->intevaloMes();
 
-        $cardapios = Cardapio::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$dataIniFim['ini'], $dataIniFim['fim']])->orderBy('data', 'asc')->orderBy('turno', 'desc')->get();
+        $cardapios = Cardapio::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->orderBy('data', 'asc')->orderBy('turno', 'desc')->get();
+
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
 
         return view('adm.pedidos.formularioCorrigir')
             ->with('actionFiltro', 'pedidos/corrigir/novo/1')
             ->with('cardapios', $cardapios)
+            ->with('intervalo', $intervalo)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
+    public function novoFiltroCorrigir(Request $request)
+    {
+        if (parent::checkPermissao()) return redirect('error404');
+        $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+        if(!array_key_exists('corrigirPedido', $itensPermitidos))
+            return redirect('error404');
+
+        $intervalo = array(
+            "ini" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataIni))),
+            "fim" => date('Y-m-d', strtotime(str_replace('/', '-', $request->dataFim)))
+        );
+
+        $cardapios = Cardapio::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->orderBy('data', 'asc')->orderBy('turno', 'desc')->get();
+
+        $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
+        $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
+
+        return view('adm.pedidos.formularioCorrigir')
+            ->with('actionFiltro', 'pedidos/corrigir/novo/1')
+            ->with('cardapios', $cardapios)
+            ->with('intervalo', $intervalo)
             ->with('itensPermitidos', $itensPermitidos);
     }
 
@@ -530,6 +576,60 @@ class PedidoController extends AbstractCrudController
         $produtos[1] = $request;
 
         return $produtos;
+    }
+
+    protected function formatInputListagemCorrigir($pedidos)
+    {
+        foreach ($pedidos[1] as $pedido) {
+            $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $pedido->id_cardapio])->get();
+
+            $pedido['turno'] = $cardapio[0]['turno'] ? "Manhã" : "Tarde";
+            $pedido['diaSemana'] = $this->diaSemana($pedido->data);
+            $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
+            $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
+
+            if ($pedido->data_correcao != '')
+                $pedido['dataAlteracao'] = date("d/m/Y H:i", strtotime($pedido->data_correcao));
+        }
+
+        return $pedidos;
+    }
+
+    private function intevaloMes()
+    {
+        date_default_timezone_set('America/Fortaleza');
+        $date = $this->dataAtual();
+        $dateQ = explode("-", $date);
+        $dateI = $dateQ[0]."-".$dateQ[1]. "-01";
+        $dateF = $dateQ[0]."-".$dateQ[1];
+        $intervalo = array(
+            "ini" => $dateI,
+            "fim" => ""
+        );
+
+        if($dateQ[1] == 1 || $dateQ[1] == 3 || $dateQ[1] == 5 || $dateQ[1] == 7 || $dateQ[1] == 8 || $dateQ[1] == 10 || $dateQ[1] == 12)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-31";
+        else if($dateQ[1] == 4 || $dateQ[1] == 6 || $dateQ[1] == 9 || $dateQ[1] == 11)
+            $dateF = $dateQ[0]."-".$dateQ[1]."-30";
+        else{
+            $bissexto = false;
+            if ($dateQ[0] % 400 == 0)
+                $bissexto = true;
+            else if (($dateQ[0] % 4 == 0) && ($dateQ[0] % 100 != 0))
+                $bissexto = true;
+            else
+                $bissexto = false;
+
+            if($bissexto)
+                $dateF = $dateQ[0]."-".$dateQ[1]."-29";
+            else
+                $dateF = $dateQ[0]."-".$dateQ[1]."-28";
+
+        }
+
+        $intervalo['fim'] = $dateF;
+
+        return $intervalo;
     }
 
     private function dataIniFim()
