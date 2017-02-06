@@ -338,7 +338,7 @@ class PedidoController extends AbstractCrudController
     public function atualizar(PedidoRequest $request, $id)
     {
         $cardapio = $this->getCardapioDia();
-        if (!$this->checaExistsCardapio($cardapio) || $this->checaExistsPedido($cardapio[0]['id']) || $this->checaTempoCardapio($cardapio[0]['id']))
+        if (!$this->checaExistsCardapio($cardapio) || $this->checaTempoCardapio($cardapio[0]['id']))
             return redirect('pedidos');
 
         $request['id_empregador'] = Auth::user()->id_empregador;
@@ -516,7 +516,7 @@ class PedidoController extends AbstractCrudController
             $produto = array(
                 "nome" => $nomesProdutos[$i],
                 "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
-                "data" => $date,
+                "data" => $cardapio[0]->data,
                 "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
                 "preco_total" => $precosTotaisProdutos[$i],
