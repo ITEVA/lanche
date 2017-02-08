@@ -117,7 +117,8 @@ class PedidoController extends AbstractCrudController
         else {
             return parent::novo()
                 ->with('produtos', $produtos)
-                ->with('cardapio', $cardapio);
+                ->with('cardapio', $cardapio)
+                ->with('sanduiche', '0');
         }
     }
 
@@ -242,13 +243,29 @@ class PedidoController extends AbstractCrudController
         if (count($pedido) > 0)
             if(Auth::user()->id != $pedido[0]->id_usuario) return redirect('error404');
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
+        $sanduiche  = 0;
+        foreach ($produtosPedido as $produtoPedido) {
+            $nomeQ = explode(" ", $produtoPedido->nome);
+            if ($nomeQ[0] === "Sand.") {
+                $produtoPedido['sanduiche'] = 1;
+                $sanduiche = 1;
+            }
+        }
+
         if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
             return redirect('pedidos');
         } else {
             return parent::editar($id)
                 ->with('produtos', $produtos)
                 ->with('produtosPedido', $produtosPedido)
-                ->with('cardapio', $cardapio);
+                ->with('cardapio', $cardapio)
+                ->with('tipoPaes', $tipoPaes)
+                ->with('tiposRecheio', $tiposRecheio)
+                ->with('sanduiche', $sanduiche);
         }
     }
 
@@ -387,6 +404,7 @@ class PedidoController extends AbstractCrudController
         $nomesProdutos = array();
         $quantidadesProdutos = array();
         $precosProdutos = array();
+        $precosFormadosProdutos = array();
         $precosTotaisProdutos = array();
 
         $i = 0;
@@ -408,9 +426,15 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->precoTotal as $precoFormadoProduto) {
+            $precosFormadosProdutos[$i] = $precoFormadoProduto;
+            $i++;
+        }
+
+        $i = 0;
         $precoTotal = 0;
         for ($i = 0; $i < count($nomesProdutos); $i++) {
-            $precosTotaisProdutos[$i] = ($quantidadesProdutos[$i] * $precosProdutos[$i]);
+            $precosTotaisProdutos[$i] = $precosFormadosProdutos[$i];
             $precoTotal = $precoTotal + $precosTotaisProdutos[$i];
         }
 
@@ -443,7 +467,7 @@ class PedidoController extends AbstractCrudController
                 "data" => $date,
                 "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
-                "preco_total" => $precosTotaisProdutos[$i],
+                "preco_total" => $precosFormadosProdutos[$i],
                 "id_pedido" => $pedido->id,
                 "id_empregador" => Auth::user()->id_empregador
             );
