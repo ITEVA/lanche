@@ -12,6 +12,7 @@ class ProdutoCardapio extends Model
 
     public static function getEmpty(){
         return (object)[
+            'quantidade' => '',
             'id_produto' => '',
             'id_cardapio' => '',
             'id_empregador' => ''

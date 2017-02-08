@@ -66,44 +66,37 @@
                                 </tr>
                                 @if(isset($produtosPedido))
                                     @foreach($produtosPedido as $produtoPedido)
-                                        <tr class="produtosTabela">
-                                            <input type="hidden" id="iid" value="{{$produtoPedido->id}}"/>
+                                        <tr class="produtosTabela" iid="{{$produtoPedido->id}}">
                                             <td><label id="nomeProduto{{$produtoPedido->id}}" nomeProduto="{{$produtoPedido->nome}}" class="nomeProduto">{{$produtoPedido->nome}}</label></td>
                                             <td><label class="precoUnitario">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label></td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
-                                                    <input class="tipoPao" type="radio" name="tipo_pao" checked="checked" nomePao="{{$tipoPaes[0]->nome}}" value="{{$tipoPaes[0]->preco}}"/>PC
-                                                    <input class="tipoPao" type="radio" name="tipo_pao" nomePao="{{$tipoPaes[1]->nome}}" value="{{$tipoPaes[1]->preco}}"/>PF
-                                                    <input class="tipoPao" type="radio" name="tipo_pao" nomePao="{{$tipoPaes[2]->nome}}" value="{{$tipoPaes[2]->preco}}"/>PI
-                                                    <input class="tipoPao" type="radio" name="tipo_pao" nomePao="{{$tipoPaes[3]->nome}}" value="{{$tipoPaes[3]->preco}}"/>PS
-                                                @else
-                                                    <label>sdf</label>
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" checked="checked" nomePao="{{$tipoPaes[0]->nome}}" value="{{$tipoPaes[0]->preco}}"/>PC
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[1]->nome}}" value="{{$tipoPaes[1]->preco}}"/>PF
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[2]->nome}}" value="{{$tipoPaes[2]->preco}}"/>PI
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[3]->nome}}" value="{{$tipoPaes[3]->preco}}"/>PS
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
                                                     @if ((old('status') !== null && old('status') === '0'))
-                                                        <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado" value="1"/> C
-                                                        <input class="chapado" type="radio" nomeChapado="Não chapado" name="chapado" checked="checked" value="0"/> N.C
+                                                        <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado{{$produtoPedido->id}}" value="1"/> C
+                                                        <input class="chapado" type="radio" nomeChapado="Não chapado" name="chapado{{$produtoPedido->id}}" checked="checked" value="0"/> N.C
                                                     @else
-                                                        <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado" checked="checked" value="1"/> C
-                                                        <input class="chapado" type="radio" nomeChapado="Não chapado" name="chapado" value="0"/> N.C
+                                                        <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado{{$produtoPedido->id}}" checked="checked" value="1"/> C
+                                                        <input class="chapado" type="radio" nomeChapado="Não chapado" name="chapado{{$produtoPedido->id}}" value="0"/> N.C
                                                     @endif
-                                                @else
-                                                    <label>fd</label>
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
-                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio" nomeRecheio="{{$tiposRecheio[0]->nome}}" checked="checked" value="{{$tiposRecheio[0]->preco}}"/>M
-                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio" nomeRecheio="{{$tiposRecheio[1]->nome}} " value="{{$tiposRecheio[1]->preco}}"/>R
-                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio" nomeRecheio="Nada" value="0.0"/> N/A
-                                                @else
-                                                    <label>dsf</label>
+                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="{{$tiposRecheio[0]->nome}}" checked="checked" value="{{$tiposRecheio[0]->preco}}"/>M
+                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="{{$tiposRecheio[1]->nome}} " value="{{$tiposRecheio[1]->preco}}"/>R
+                                                    <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="Nada" value="0.0"/> N/A
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
-                                                <label class="precoFormado">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label>
+                                                <label class="precoFormado{{$produtoPedido->id}}">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label>
                                             </td>
                                             <td><input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50"></td>
                                             <td class="td"><label class="precoProduto">R$ {{number_format($produtoPedido->preco_total, 2, ',', '.')}}</label></td>
@@ -124,6 +117,14 @@
                                 @if(isset($produtosPedido))
                                     @foreach($produtosPedido as $produtoPedido)
                                         <option selected="selected" class="selectProduto" value="{{$produtoPedido->nome}}">{{$produtoPedido->nome}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                            <select  name="nomeFormado[]" class="form-control selectNomeFormado" multiple="multiple">
+                                @if(isset($produtosPedido))
+                                    @foreach($produtosPedido as $produtoPedido)
+                                        <option selected="selected" class="selectProdutoFormado" value="{{$produtoPedido->nome_formado}}">{{$produtoPedido->nome_formado}}</option>
                                     @endforeach
                                 @endif
                             </select>

@@ -30,85 +30,85 @@ $(document).ready(function () {
         $(".totalPedido").css("visibility", "visible");
     }
 
+    var ctrlDuplicata = 1;
+
     $('#addProduto').click(function () {
-        $(".produto").each(function () {
-            if ($(this).val() == $('#produtos').val() && $('#produtos').val() != '') {
-                if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
-                    $(".produtosPedidos").addClass('tabelaProdutos');
-                    $("#addTr").css("visibility", "visible");
-                    $(".totalPedido").css("visibility", "visible");
-                }
-                var nome =  $(this).attr('nomeE');
-                var nomeQ = nome.split(" ");
-
-                var preco = $(this).attr('precoE');
-                preco = parseFloat(preco).toFixed(2);
-
-                if(nomeQ[0] == 'Sand.') {
-                    $("#addTr").append("<tr class='produtosTabela'>" +
-                        "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
-                        "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                        "<td class='sanduiche'>" +
-                            "<input class='tipoPao' type='radio' name='tipo_pao' checked='checked' nomePao='Pão carioca' value='0.25'/>PC" +
-                            "<input class='tipoPao' type='radio' name='tipo_pao' nomePao='Pão de forma' value='0.19'/>PF" +
-                            "<input class='tipoPao' type='radio' name='tipo_pao' nomePao='Pão integral' value='0.23'/>PI" +
-                            "<input class='tipoPao' type='radio' name='tipo_pao' nomePao='Pão sovado' value='0.25'/>PS" +
-                        "</td>" +
-                        "<td class='sanduiche'>" +
-                            "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado' value='1'/> C" +
-                            "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado' checked='checked' value='0'/> N.C" +
-                        "</td>" +
-                        "<td class='sanduiche'>" +
-                            "<input class='tipoRecheio' type='radio' name='tipo_recheio' nomeRecheio='Margarina' checked='checked' value='0.04'/>M" +
-                            "<input class='tipoRecheio' type='radio' name='tipo_recheio' nomeRecheio='Requeijão' value='0.09'/>R" +
-                            "<input class='tipoRecheio' type='radio' name='tipo_recheio' nomeRecheio='Nada' value='0.0'/> N/A" +
-                        "</td>" +
-                        "<td class='sanduiche'>" +
-                            "<label class='precoFormado'>R$ " + preco.replace(".", ",") + "</label>" +
-                        "</td> " +
-                        "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
-                        "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                        "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
-                        "</tr>");
-                    $(".sanduiche").removeClass('colunaInativa');
-                }
-                else {
-                    $("#addTr").append("<tr class='produtosTabela'>" +
-                        "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
-                        "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                        "<td class='sanduiche colunaInativa'>" +
-                        "</td>" +
-                        "<td class='sanduiche colunaInativa'>" +
-                        "</td>" +
-                        "<td class='sanduiche colunaInativa'>" +
-                        "</td>" +
-                        "<td class='sanduiche colunaInativa'>" +
-                        "<label class='precoFormado'>R$ " + preco.replace(".", ",") + "</label>" +
-                        "</td> " +
-                        "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
-                        "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                        "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
-                        "</tr>");
-                }
-                $('.tipoPao').change();
-
-                $(".selectNome").append("<option selected='selected' class='selectProduto' value='"+$(this).attr('nomeE')+"'>"+$(this).attr('nomeE')+"</option>");
-                $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
-                $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+$(this).attr('precoE')+"'>"+$(this).attr('precoE')+"</option>");
-                $(".selectPrecoFormado").append("<option selected='selected' class='selectPrecoTotal' value='"+$(this).attr('precoE')+"'>"+$(this).attr('precoE')+"</option>");
-
+        if ($('#produtos').val() != '') {
+            if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
+                $(".produtosPedidos").addClass('tabelaProdutos');
+                $("#addTr").css("visibility", "visible");
+                $(".totalPedido").css("visibility", "visible");
             }
-        });
-        var totalPedido = 0;
-        $(".td").each(function () {
-            var precoProduto = $(this).find('.precoProduto').html();
-            var precoProdutoQ = precoProduto.split(' ');
+            var id = $('#produtos').val();
+            var nome =  $('#produtos option:selected').attr('nomeE');
+            var nomeQ = nome.split(" ");
 
-            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
-            totalPedido = totalPedido.toFixed(2);
+            var preco = $('#produtos option:selected').attr('precoE');
 
-            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
-        });
+            preco = parseFloat(preco).toFixed(2);
+            var duplicata = buscaDuplicata(id);
+
+            var idSanduiche = duplicata ? id+"_"+ (ctrlDuplicata++) : id;
+
+            if(nomeQ[0] == 'Sand.') {
+                $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
+                    "<td><label id='nomeProduto" + id + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
+                    "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td class='sanduiche'>" +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão carioca' value='0.25'/>PC" +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão de forma' value='0.19'/>PF" +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão integral' value='0.23'/>PI" +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='0.25'/>PS" +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                        "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado" + idSanduiche + "' value='1'/> C" +
+                        "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado" + idSanduiche + "' checked='checked' value='0'/> N.C" +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='0.04'/>M" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='0.09'/>R" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Nada' value='0.0'/> N/A" +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                        "<label class='precoFormado" + id + "'>R$ " + preco.replace(".", ",") + "</label>" +
+                    "</td> " +
+                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
+                    "</tr>");
+                $(".sanduiche").removeClass('colunaInativa');
+            }
+            else {
+                $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
+                    "<td><label id='nomeProduto" + id + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
+                    "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td class='sanduiche colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduiche colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduiche colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduiche colunaInativa'>" +
+                    "<label class='precoFormado" + id + "'>R$ " + preco.replace(".", ",") + "</label>" +
+                    "</td> " +
+                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
+                    "</tr>");
+            }
+
+            $(".selectNome").append("<option selected='selected' class='selectProduto' value='"+ nome +"'>"+ nome +"</option>");
+            $(".selectNomeFormado").append("<option selected='selected' class='selectProdutoFormado' value='"+ nome +"'>"+ nome +"</option>");
+            $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
+            $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+ preco +"'>"+ preco +"</option>");
+
+            $('.tipoPao').change();
+
+            var precoFormado = ($(".precoFormado"+id).html()).split(' ');
+            $(".selectPrecoFormado").append("<option selected='selected' class='selectPrecoTotal' value='" + precoFormado[1].replace(",", ".") + "'>" + precoFormado[1].replace(",", ".")  + "</option>");
+
+        }
+        totalPedido();
     });
 
     $('#addTr').on("click",".removerProduto",function(e) {
@@ -129,10 +129,18 @@ $(document).ready(function () {
         });
 
         var contPreco = contO;
+        var contPrecoFormado = contO;
         var contQtd = contO;
         $(".selectPreco").each(function () {
             contPreco--;
             if(contPreco == 0) {
+                $(this).remove();
+            }
+        });
+
+        $(".selectPrecoTotal").each(function () {
+            contPrecoFormado--;
+            if(contPrecoFormado == 0) {
                 $(this).remove();
             }
         });
@@ -150,22 +158,14 @@ $(document).ready(function () {
             $(".produtosPedidos").removeClass('tabelaProdutos');
         }
 
-        var totalPedido = 0;
-        $(".td").each(function () {
-            var precoProduto = $(this).find('.precoProduto').html();
-            var precoProdutoQ = precoProduto.split(' ');
-
-            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
-            totalPedido = totalPedido.toFixed(2);
-
-            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
-        });
+        totalPedido();
 
     });
 
-    $(document).on('keyup', '.quantidadeProduto', function () {
+    $(document).on('keyup', '.quantidadeProduto', function (e) {
+        e.preventDefault();
         var nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
-        var valuePrecoUnit = $(this).parent().parent('tr').find('.precoFormado').html();
+        var valuePrecoUnit = $(this).parent().parent('tr').find('.precoFormado'+$(this).parent().parent('tr').attr('iid')).html();
         var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
         var precoUnitarioQ = valuePrecoUnit.split(' ');
         var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
@@ -210,57 +210,63 @@ $(document).ready(function () {
 
             totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
             totalPedido = totalPedido.toFixed(2);
-
             $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
         });
 
         ativarMascaras();
     });
 
-    var teste = false;
     var valorPao = 0;
     var nomePao = '';
     var chapado = '';
     var nomeRecheio = '';
 
+    var i = 1;
     $(document).on('change', '.tipoPao', function () {
         var valuePreco = ($(this).parent().parent('tr').find('.precoUnitario').html()).split(" ");
         var valorAtual = (valuePreco[1].toString()).replace(",", ".");
         var valorTotal = 0;
 
-        valorTotal = parseFloat(valorAtual) + parseFloat($('.tipoPao:checked').val());
+        valorTotal = parseFloat(valorAtual) + parseFloat(($(this).parent().parent('tr').find('.tipoPao:checked').val()));
 
         valorTotal = valorTotal.toFixed(2);
 
         valorPao = valorTotal;
 
-        $(this).parent().parent('tr').find('.precoFormado').html("R$ " + (valorTotal.toString()).replace(".", ","));
+        $(this).parent().parent('tr').find('.precoFormado'+$(this).parent().parent('tr').attr('iid')).html("R$ " + (valorTotal.toString()).replace(".", ","));
         $('.tipoRecheio').change();
     });
 
     $(document).on('change', '.tipoRecheio', function () {
-        var valuePreco = valorPao;
-        var valorAtual = (valuePreco.toString()).replace(",", ".");
+        var valuePreco = ($(this).parent().parent('tr').find('.precoUnitario').html()).split(" ");
+        var valorAtual = (valuePreco[1].toString()).replace(",", ".");
         var valorTotal = 0;
 
-        valorTotal = parseFloat(valorAtual) + parseFloat($('.tipoRecheio:checked').val());
+        valorTotal = parseFloat(valorAtual) + parseFloat(($(this).parent().parent('tr').find('.tipoPao:checked').val()));
 
         valorTotal = valorTotal.toFixed(2);
 
-        $(this).parent().parent('tr').find('.precoFormado').html("R$ " + (valorTotal.toString()).replace(".", ","));
+        var valorPao = (valorTotal.toString()).replace(",", ".");
+        var valorPaoRecheio = 0;
+
+        valorPaoRecheio = parseFloat(valorPao) + parseFloat(($(this).parent().parent('tr').find('.tipoRecheio:checked').val()));
+
+        valorPaoRecheio = valorPaoRecheio.toFixed(2);
+
+        $(this).parent().parent('tr').find('.precoFormado'+$(this).parent().parent('tr').attr('iid')).html("R$ " + (valorPaoRecheio.toString()).replace(".", ","));
         $('.quantidadeProduto').keyup();
 
-        var id = ($(this).parent().parent('tr').find('#iid').val());
+        var id = ($(this).parent().parent('tr').attr('iid'));
 
-        nomePao = ($('.tipoPao:checked').attr('nomePao')).toLowerCase();
-        nomeRecheio = ($('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
-        chapado = ($('.chapado:checked').attr('nomeChapado')).toLowerCase();
+        nomePao = ($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toLowerCase();
+        nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+        chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
 
         montarNomeSanduiche(id);
     });
 
     $(document).on('change', '.chapado', function () {
-        var id = ($(this).parent().parent('tr').find('#iid').val());
+        var id = ($(this).parent().parent('tr').attr('iid'));
 
         nomePao = ($('.tipoPao:checked').attr('nomePao')).toLowerCase();
         nomeRecheio = ($('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
@@ -268,17 +274,43 @@ $(document).ready(function () {
 
         montarNomeSanduiche(id);
     });
-    
+
     function montarNomeSanduiche (id) {
         var nome = $('#nomeProduto' + id).attr('nomeProduto');
+        var nomeAntigo = $('#nomeProduto' + id).html();
+
         $('#nomeProduto' + id).html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
 
-        $(".selectProduto").each(function () {
-            if(nome === $(this).html()) {
+        $(".selectProdutoFormado").each(function () {
+            if(nomeAntigo === $(this).html()) {
                 $(this).val(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
                 $(this).html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
             }
         });
+    }
+
+    function totalPedido() {
+        var totalPedido = 0;
+        $(".td").each(function () {
+            var precoProduto = $(this).find('.precoProduto').html();
+            var precoProdutoQ = precoProduto.split(' ');
+
+            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+            totalPedido = totalPedido.toFixed(2);
+            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
+        });
+
+        return totalPedido;
+    }
+
+    function buscaDuplicata(id) {
+        var retorno = false;
+        $(".produtosTabela").each(function () {
+            if(($(this).attr('iid')) == id) {
+                retorno = true;
+            }
+        });
+        return retorno;
     }
 
     $(".detalhesPedido").click(function () {
@@ -286,5 +318,5 @@ $(document).ready(function () {
         $("#detalhesPedido"+id).modal();
     });
 
-    $('.tipoPao').change();
+    //$('.tipoPao').change();
 });

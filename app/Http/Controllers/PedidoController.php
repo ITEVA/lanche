@@ -402,6 +402,7 @@ class PedidoController extends AbstractCrudController
     private function salvarPedido($request, $id = null)
     {
         $nomesProdutos = array();
+        $nomesProdutosFormados = array();
         $quantidadesProdutos = array();
         $precosProdutos = array();
         $precosFormadosProdutos = array();
@@ -410,6 +411,12 @@ class PedidoController extends AbstractCrudController
         $i = 0;
         foreach ($request->nome as $nomeProduto) {
             $nomesProdutos[$i] = $nomeProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->nomeFormado as $nomeProdutoFormado) {
+            $nomesProdutosFormados[$i] = $nomeProdutoFormado;
             $i++;
         }
 
@@ -463,6 +470,7 @@ class PedidoController extends AbstractCrudController
         for ($i = 0; $i < count($nomesProdutos); $i++) {
             $produto = array(
                 "nome" => $nomesProdutos[$i],
+                "nome_formado" => $nomesProdutosFormados[$i],
                 "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
                 "data" => $date,
                 "turno" => $cardapio[0]->turno,
