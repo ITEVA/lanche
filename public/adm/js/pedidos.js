@@ -10,8 +10,28 @@ $(document).ready(function () {
             $(this).remove();
         });
 
+        $(".selectPao").each(function () {
+            $(this).remove();
+        });
+
+        $(".selectChapado").each(function () {
+            $(this).remove();
+        });
+
+        $(".selectRecheio").each(function () {
+            $(this).remove();
+        });
+
         $(".nomeProduto").each(function () {
             $(".selectNomeFormado").append("<option selected='selected' class='selectProdutoFormado' value='"+ $(this).html() +"'>"+ $(this).html() +"</option>");
+
+            var tipoPao = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
+            var tipoChapado = $(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado');
+            var tipoRecheio = $(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio');
+
+            $(".selectTipoPao").append("<option selected='selected' class='selectPao' value='"+ tipoPao +"'>"+ tipoPao +"</option>");
+            $(".selectTipoChapado").append("<option selected='selected' class='selectChapado' value='"+ tipoChapado +"'>"+ tipoChapado +"</option>");
+            $(".selectTipoRecheio").append("<option selected='selected' class='selectRecheio' value='"+ tipoRecheio +"'>"+ tipoRecheio +"</option>");
         });
 
         $(".precoProduto").each(function () {
@@ -79,13 +99,13 @@ $(document).ready(function () {
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='0.25'/>PS " +
                     "</td>" +
                     "<td class='sanduiche'>" +
-                        "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado" + idSanduiche + "' checked='checked' value='1'/> C " +
-                        "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado" + idSanduiche + "' value='0'/> N.C " +
-                    "</td>" +
-                    "<td class='sanduiche'>" +
                         "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='0.04'/>M " +
                         "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='0.09'/>R " +
                         "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Nada' value='0.0'/> N/A " +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                        "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado" + idSanduiche + "' checked='checked' value='1'/> C " +
+                        "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado" + idSanduiche + "' value='0'/> N.C " +
                     "</td>" +
                     "<td class='sanduiche'>" +
                         "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
@@ -239,7 +259,12 @@ $(document).ready(function () {
         var valorAtual = (valuePreco[1].toString()).replace(",", ".");
         var valorTotal = 0;
 
-        valorTotal = parseFloat(valorAtual) + parseFloat(($(this).parent().parent('tr').find('.tipoPao:checked').val()));
+        var nomeQ = ($(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto')).split(" ");
+
+        if(nomeQ[0] == 'Sand.')
+            valorTotal = parseFloat(valorAtual) + parseFloat(($(this).parent().parent('tr').find('.tipoPao:checked').val()));
+        if (nomeQ[0] == 'Pão')
+            valorTotal = parseFloat(valorAtual);
 
         valorTotal = valorTotal.toFixed(2);
 
@@ -253,35 +278,48 @@ $(document).ready(function () {
         $(this).parent().parent('tr').find('.precoFormado').html("R$ " + (valorPaoRecheio.toString()).replace(".", ","));
         $('.quantidadeProduto').keyup();
 
-        nomePao = ($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toLowerCase();
-        nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
-        chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
+        var nome = "";
+        if(nomeQ[0] == 'Sand.') {
+            nomePao = ($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toLowerCase();
+            nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+            chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
 
-        var nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
-        var nomeAntigo = $(this).parent().parent('tr').find('.nomeProduto').html();
+            nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
 
-        $(this).parent().parent('tr').find('.nomeProduto').html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
+            $(this).parent().parent('tr').find('.nomeProduto').html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
+        }
+        else if (nomeQ[0] == 'Pão') {
+            nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+            chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
 
+            nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+
+            $(this).parent().parent('tr').find('.nomeProduto').html(nome + " c/ " + nomeRecheio + " " + chapado);
+        }
     });
 
     $(document).on('change', '.chapado', function () {
-        var id = ($(this).parent().parent('tr').attr('iid'));
+        var nomeQ = ($(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto')).split(" ");
 
-        nomePao = ($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toLowerCase();
-        nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
-        chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
+        var nome = "";
+        if(nomeQ[0] == 'Sand.') {
+            nomePao = ($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toLowerCase();
+            nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+            chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
 
-        var nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
-        var nomeAntigo = $(this).parent().parent('tr').find('.nomeProduto').html();
+            nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
 
-        $(this).parent().parent('tr').find('.nomeProduto').html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
+            $(this).parent().parent('tr').find('.nomeProduto').html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
+        }
+        else if (nomeQ[0] == 'Pão') {
+            nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+            chapado = ($(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado')).toLowerCase();
 
-        $(".selectProdutoFormado").each(function () {
-            if(nomeAntigo === $(this).html()) {
-                $(this).val(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
-                $(this).html(nome + " no " + nomePao + " c/ " + nomeRecheio + " " + chapado);
-            }
-        });
+            nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+
+            $(this).parent().parent('tr').find('.nomeProduto').html(nome + " c/ " + nomeRecheio + " " + chapado);
+        }
+
     });
 
     function totalPedido() {

@@ -255,6 +255,12 @@ class PedidoController extends AbstractCrudController
                 $produtoPedido['sanduiche'] = 1;
                 $sanduiche = 1;
             }
+            if ($nomeQ[0] === "Pão") {
+                $produtoPedido['pao'] = 1;
+                $pao = 1;
+            }
+
+            $produtoPedido['valorFormado'] = ($produtoPedido->preco_total) / ($produtoPedido->quantidade);
         }
 
         if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
@@ -266,7 +272,8 @@ class PedidoController extends AbstractCrudController
                 ->with('cardapio', $cardapio)
                 ->with('tipoPaes', $tipoPaes)
                 ->with('tiposRecheio', $tiposRecheio)
-                ->with('sanduiche', $sanduiche);
+                ->with('sanduiche', $sanduiche)
+                ->with('pao', $pao);
         }
     }
 
@@ -408,6 +415,9 @@ class PedidoController extends AbstractCrudController
         $precosProdutos = array();
         $precosFormadosProdutos = array();
         $precosTotaisProdutos = array();
+        $tiposPao = array();
+        $tiposChapado = array();
+        $tiposRecheios = array();
 
         $i = 0;
         foreach ($request->nome as $nomeProduto) {
@@ -436,6 +446,24 @@ class PedidoController extends AbstractCrudController
         $i = 0;
         foreach ($request->precoTotal as $precoFormadoProduto) {
             $precosFormadosProdutos[$i] = $precoFormadoProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoPao as $tipoPao) {
+            $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoChapado as $tipoChapado) {
+            $tiposChapado[$i] = $tipoChapado == "undefined" ? "" : $tipoChapado;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoRecheio as $tipoRecheio) {
+            $tiposRecheios[$i] = $tipoRecheio == "undefined" ? "" : $tipoRecheio;
             $i++;
         }
 
@@ -473,6 +501,9 @@ class PedidoController extends AbstractCrudController
                 "nome" => $nomesProdutos[$i],
                 "nome_formado" => $nomesProdutosFormados[$i],
                 "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                "tipo_pao" => $tiposPao[$i],
+                "chapado" => $tiposChapado[$i],
+                "tipo_recheio" => $tiposRecheios[$i],
                 "data" => $date,
                 "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
