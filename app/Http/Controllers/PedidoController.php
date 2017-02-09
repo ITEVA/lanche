@@ -247,6 +247,7 @@ class PedidoController extends AbstractCrudController
 
         $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
 
+        $pao  = 0;
         $sanduiche  = 0;
         foreach ($produtosPedido as $produtoPedido) {
             $nomeQ = explode(" ", $produtoPedido->nome);

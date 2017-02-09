@@ -67,7 +67,7 @@
                                 @if(isset($produtosPedido))
                                     @foreach($produtosPedido as $produtoPedido)
                                         <tr class="produtosTabela" iid="{{$produtoPedido->id}}">
-                                            <td><label id="nomeProduto{{$produtoPedido->id}}" nomeProduto="{{$produtoPedido->nome}}" class="nomeProduto">{{$produtoPedido->nome}}</label></td>
+                                            <td><label id="nomeProduto" nomeProduto="{{$produtoPedido->nome}}" class="nomeProduto">{{$produtoPedido->nome_formado}}</label></td>
                                             <td><label class="precoUnitario">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label></td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
@@ -78,7 +78,7 @@
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
-                                                @if($produtoPedido['sanduiche'] == 1)
+                                                @if($produtoPedido['sanduiche'] == 1 || $produtoPedido['pao'] == 1)
                                                     @if ((old('status') !== null && old('status') === '0'))
                                                         <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado{{$produtoPedido->id}}" value="1"/> C
                                                         <input class="chapado" type="radio" nomeChapado="Não chapado" name="chapado{{$produtoPedido->id}}" checked="checked" value="0"/> N.C
@@ -89,14 +89,14 @@
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
-                                                @if($produtoPedido['sanduiche'] == 1)
+                                                @if($produtoPedido['sanduiche'] == 1 || $produtoPedido['pao'] == 1)
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="{{$tiposRecheio[0]->nome}}" checked="checked" value="{{$tiposRecheio[0]->preco}}"/>M
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="{{$tiposRecheio[1]->nome}} " value="{{$tiposRecheio[1]->preco}}"/>R
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido->id}}" nomeRecheio="Nada" value="0.0"/> N/A
                                                 @endif
                                             </td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
-                                                <label class="precoFormado{{$produtoPedido->id}}">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label>
+                                                <label class="precoFormado {{$produtoPedido->id}}">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label>
                                             </td>
                                             <td><input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50"></td>
                                             <td class="td"><label class="precoProduto">R$ {{number_format($produtoPedido->preco_total, 2, ',', '.')}}</label></td>
