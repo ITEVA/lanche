@@ -71,8 +71,8 @@
                                             <td><label class="precoUnitario">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label></td>
                                             <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
-                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" checked="checked" nomePao="{{$tipoPaes[0]->nome}}" value="{{$tipoPaes[0]->preco}}"/>PC
-                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[1]->nome}}" value="{{$tipoPaes[1]->preco}}"/>PF
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[0]->nome}}" value="{{$tipoPaes[0]->preco}}"/>PC
+                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" checked="checked" nomePao="{{$tipoPaes[1]->nome}}" value="{{$tipoPaes[1]->preco}}"/>PF
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[2]->nome}}" value="{{$tipoPaes[2]->preco}}"/>PI
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido->id}}" nomePao="{{$tipoPaes[3]->nome}}" value="{{$tipoPaes[3]->preco}}"/>PS
                                                 @endif
