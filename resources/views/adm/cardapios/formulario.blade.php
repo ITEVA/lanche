@@ -3,6 +3,8 @@
 @section('css')
     <!-- select2 -->
     <link href="adm/css/select/select2.min.css" rel="stylesheet">
+
+    <link href="adm/css/cardapios.css" rel="stylesheet">
 @endsection
 
 @section('conteudo')
@@ -16,7 +18,7 @@
                 </div>
                 <div class="x_content">
                     <!-- start form for validation -->
-                    <form method="POST" action="{{$action}}" enctype="multipart/form-data" id="demo-form"
+                    <form method="POST" action="{{$action}}" enctype="multipart/form-data" id="formCardapio"
                           data-parsley-validate>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         @if(isset($ids))
@@ -67,36 +69,70 @@
                             @endif
                         </div>
 
-                        <div class="form-group col-md-3 col-xs-12 quebrarDiv">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Produtos</label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <select id="produtos" class="select2_multiple form-control" multiple="multiple" name="produtos[]">
-                                    @if (count($produtos) > 0)
-                                        @foreach ($produtos as $produto)
-                                            @if(isset($produtosAtuais))
-                                                {{$ctrl = 0}}
-                                                @for($i = 0; $i < count($produtosAtuais); $i++)
-                                                    @if($produto->id == $produtosAtuais[$i]->id_produto)
-                                                        <option selected="selected" value="{{$produto->id}}">{{$produto->nome}}</option>
-                                                        {{$i = count($produtosAtuais)}}
-                                                        {{$ctrl = 1}}
-                                                    @endif
-                                                @endfor
-                                                @if(!$ctrl)
-                                                    <option value="{{$produto->id}}">{{$produto->nome}}</option>
-                                                @endif
-                                            @else
-                                                <option value="{{$produto->id}}">{{$produto->nome}}</option>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
+                        <div class="form-group col-md-2 col-xs-12 quebrarDiv">
+                            <label>Produtos*</label>
+                            <select id="produtos" name="produtos" class="select2_single form-control">
+                                <option {{(isset($ids) ? 'selected="selected"' : "")}} selected="selected" class="produto" value="">Selecione um produto
+                                </option>
+                                @if (count($produtos) > 0)
+                                    @foreach ($produtos as $produto)
+                                        <option nomeE="{{$produto->nome}}" class="produto" value="{{$produto->id}}">{{$produto->nome}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <br>
+                            <br>
+                            <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
+                        </div>
+
+                        <div class="produtosPedidos">
+                            <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Excluir</th>
+                                </tr>
+                                @if(isset($produtosAtuais))
+                                    @foreach($produtosAtuais as $produtoAtual)
+                                        <tr class="produtosTabela" iid="{{$produtoAtual->id_produto}}" nomeProduto="{{$produtoAtual->nome}}">
+                                            <td><label class="nomeProduto">{{$produtoAtual->nome}}</label></td>
+                                            <td><input class="quantidadeProduto quantidadeCardapio" type="text" value="{{$produtoAtual->quantidade}}" min="1" max="1000"></td>
+                                            <td><a href="" class="removerProduto"><i class="fa fa-trash"></i></a></td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </table>
+                        </div>
+
+                        <div class="selects">
+                            <select  name="ids[]" class="form-control selectIds" multiple="multiple">
+                                @if(isset($produtosAtuais))
+                                    @foreach($produtosAtuais as $produtoAtual)
+                                        <option selected="selected" class="selectId" value="{{$produtoAtual->id_produto}}">{{$produtoAtual->id_produto}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                            <select  name="nome[]" class="form-control selectNome" multiple="multiple">
+                                @if(isset($produtosAtuais))
+                                    @foreach($produtosAtuais as $produtoAtual)
+                                        <option selected="selected" class="selectProduto" value="{{$produtoAtual->nome}}">{{$produtoAtual->nome}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                            <select  name="quantidade[]" class="form-control selectQuantidade" multiple="multiple">
+                                @if(isset($produtosAtuais))
+                                    @foreach($produtosAtuais as $produtoAtual)
+                                        <option selected="selected" class="selectQtd" value="{{$produtoAtual->quantidade}}">{{$produtoAtual->quantidade}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
 
                         <div class="ln_solid col-md-12 col-xs-12"></div>
                         <div class="form-group  col-md-12 col-xs-12">
-                            <input type="submit" name="salvar" value="Salvar" class="btn btn-success">
+                            <input id="salvarPedido" type="submit" name="salvar" value="Salvar" class="btn btn-success">
                             <a href="cardapios">Voltar</a>
                         </div>
                         <div class="form-group  col-md-12 col-xs-12">
@@ -110,6 +146,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="alertRepetido" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Produto repetido</h4>
+                </div>
+                <div class="modal-body">
+                    <p>O produto já está no seu cardápio!</p>
+                    <input type="hidden" id="tipoRemocao" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @stop
 @section('js')
     <script src="adm/js/cardapios.js"></script>
@@ -121,13 +175,7 @@
     <script>
         $(document).ready(function() {
             $(".select2_single").select2({
-                placeholder: "Select a state",
-                allowClear: true
-            });
-            $(".select2_group").select2({});
-            $(".select2_multiple").select2({
-                maximumSelectionLength: 1000,
-                placeholder: "Selecione os produtos do dia",
+                placeholder: "Selecione um produto",
                 allowClear: true
             });
         });

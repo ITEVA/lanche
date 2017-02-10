@@ -62,9 +62,6 @@ class CardapioController extends AbstractCrudController
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
-            $produtos = $request['produtos'];
-            unset($request['produtos']);
-
             $c = array(
                 "data" => $request['data'],
                 "descricao" => $request['descricao'],
@@ -78,7 +75,7 @@ class CardapioController extends AbstractCrudController
 
             $cardapio = Cardapio::create($c);
 
-            $this->salvarProdutosCardapio($produtos, $cardapio->id);
+            $this->salvarProdutosCardapio($request, $cardapio->id);
 
             return redirect()
                 ->action('CardapioController@listar');
@@ -97,9 +94,12 @@ class CardapioController extends AbstractCrudController
 
         try {
             $this->removerProdutosCardapio($id);
-            $this->salvarProdutosCardapio($request['produtos'], $id);
+            $this->salvarProdutosCardapio($request, $id);
 
             unset($request['produtos']);
+            unset($request['ids']);
+            unset($request['nome']);
+            unset($request['quantidade']);
 
             return parent::atualizarDados($request, $id);
 
@@ -131,22 +131,40 @@ class CardapioController extends AbstractCrudController
         return parent::atualizarLote($request);
     }
 
-    public function salvarProdutosCardapio($object, $id)
+    public function salvarProdutosCardapio($request, $id)
     {
-        if($object != NULL){
-            foreach ($object as $produto){
-                $produtoSelec = array(
-                    "id_cardapio" => $id,
-                    "id_produto" => $produto,
-                    "id_empregador" => Auth::user()->id_empregador
-                );
+        $idsProdutos = array();
+        $nomesProdutos = array();
+        $quantidadesProdutos = array();
 
-                ProdutoCardapio::create($produtoSelec);
-            }
+        $i = 0;
+        foreach ($request->ids as $idProduto) {
+            $idsProdutos[$i] = $idProduto;
+            $i++;
         }
 
+        $i = 0;
+        foreach ($request->nome as $nomeProduto) {
+            $nomesProdutos[$i] = $nomeProduto;
+            $i++;
+        }
 
-        return $object;
+        $i = 0;
+        foreach ($request->quantidade as $quantidadeProduto) {
+            $quantidadesProdutos[$i] = $quantidadeProduto;
+            $i++;
+        }
+
+        for ($i = 0; $i < count($nomesProdutos); $i++) {
+            $produto = array(
+                "nome" => $nomesProdutos[$i],
+                "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                "id_cardapio" => $id,
+                "id_produto" => $idsProdutos[$i],
+                "id_empregador" => Auth::user()->id_empregador
+            );
+            ProdutoCardapio::create($produto);
+        }
     }
 
     public function removerProdutosCardapio($id)
