@@ -249,6 +249,9 @@ class PedidoController extends AbstractCrudController
 
         $pao  = 0;
         $sanduiche  = 0;
+        $ids = array();
+        $i = 0;
+        $j = 1;
         foreach ($produtosPedido as $produtoPedido) {
             $nomeQ = explode(" ", $produtoPedido->nome);
             if ($nomeQ[0] === "Sand.") {
@@ -261,6 +264,13 @@ class PedidoController extends AbstractCrudController
             }
 
             $produtoPedido['valorFormado'] = ($produtoPedido->preco_total) / ($produtoPedido->quantidade);
+
+            if (in_array($produtoPedido->id_produto, $ids))
+                $produtoPedido['idSanduiche'] = $produtoPedido->id_produto . "_" . $j++;
+            else {
+                $produtoPedido['idSanduiche'] = $produtoPedido->id_produto;
+                $ids[$i++] = $produtoPedido->id_produto;
+            }
         }
 
         if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
@@ -409,6 +419,7 @@ class PedidoController extends AbstractCrudController
 
     private function salvarPedido($request, $id = null)
     {
+        $idsProdutos = array();
         $nomesProdutos = array();
         $nomesProdutosFormados = array();
         $quantidadesProdutos = array();
@@ -418,6 +429,12 @@ class PedidoController extends AbstractCrudController
         $tiposPao = array();
         $tiposChapado = array();
         $tiposRecheios = array();
+
+        $i = 0;
+        foreach ($request->ids as $idProduto) {
+            $idsProdutos[$i] = $idProduto;
+            $i++;
+        }
 
         $i = 0;
         foreach ($request->nome as $nomeProduto) {
@@ -508,6 +525,7 @@ class PedidoController extends AbstractCrudController
                 "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
                 "preco_total" => $precosFormadosProdutos[$i],
+                "id_produto" => $idsProdutos[$i],
                 "id_pedido" => $pedido->id,
                 "id_empregador" => Auth::user()->id_empregador
             );

@@ -114,7 +114,6 @@ $(document).ready(function () {
                     "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
-                $(".sanduiche").removeClass('colunaInativa');
             }
             else {
                 $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
@@ -135,9 +134,20 @@ $(document).ready(function () {
                     "</tr>");
             }
 
+            var count = 0;
+
+            $(".tipoPao").each(function () {
+                count++;
+            });
+
+            if (count > 0) {
+                $(".sanduiche").removeClass('colunaInativa');
+            }
+
             $(".selectNome").append("<option selected='selected' iid='" + idSanduiche + "' class='selectProduto' value='"+ nome +"'>"+ nome +"</option>");
             $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
             $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+ preco +"'>"+ preco +"</option>");
+            $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
 
             $('.tipoPao').change();
         }
@@ -153,7 +163,7 @@ $(document).ready(function () {
         $(this).parent().parent('tr').remove();
 
         $(".selectProduto").each(function () {
-            if(nomeRemove !== $(this).html()) {
+            if(nomeRemove !== $(this).html() || id !== $(this).attr('iid')) {
                 cont++;
             }
             if(nomeRemove === $(this).html() && id === $(this).attr('iid')) {
@@ -162,8 +172,17 @@ $(document).ready(function () {
             }
         });
 
+        var contIds = contO;
         var contPreco = contO;
         var contQtd = contO;
+
+        $(".selectId").each(function () {
+            contIds--;
+            if(contIds == 0) {
+                $(this).remove();
+            }
+        });
+
         $(".selectPreco").each(function () {
             contPreco--;
             if(contPreco == 0) {
@@ -182,6 +201,16 @@ $(document).ready(function () {
             $("#addTr").css("visibility", "hidden");
             $(".totalPedido").css("visibility", "hidden");
             $(".produtosPedidos").removeClass('tabelaProdutos');
+        }
+
+        var count = 0;
+
+        $(".tipoPao").each(function () {
+            count++;
+        });
+
+        if (count === 0) {
+            $(".sanduiche").addClass('colunaInativa');
         }
 
         totalPedido();
