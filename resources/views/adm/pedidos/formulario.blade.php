@@ -37,7 +37,7 @@
 
                         <div class="form-group col-md-2 col-xs-12 quebrarDiv">
                             <label>Produtos*</label>
-                            <select id="produtos" name="produtos" class="select2_single form-control">
+                            <select id="produtos" name="produtos" class="select2_single form-control" pCarioca="{{$tipoPaes[0]->preco}}" pForma="{{$tipoPaes[1]->preco}}" pIntegral="{{$tipoPaes[2]->preco}}" pSovado="{{$tipoPaes[3]->preco}}" pMargarina="{{$tiposRecheio[0]->preco}}" pRequeijao="{{$tiposRecheio[1]->preco}}">
                                 <option {{(isset($ids) ? 'selected="selected"' : "")}} selected="selected" elemento="" class="produto" value="">Selecione um produto
                                 </option>
                                 @if (count($produtos) > 0)
@@ -56,20 +56,20 @@
                                 <tr>
                                     <th>Produto</th>
                                     <th>Preço unitário</th>
-                                    <th class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">Tipo de pão</th>
-                                    <th class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">Mant / Req</th>
-                                    <th class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">Chap / N. Chap</th>
-                                    <th class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">Preço formado</th>
+                                    <th class="sanduicheTp {{$sanduiche == 0 ? "colunaInativa" : ""}}">Tipo de pão</th>
+                                    <th class="sanduicheTr {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">Mant / Req</th>
+                                    <th class="sanduicheC {{$sanduiche == 0 && $pao == 0 ? "colunaInativa" : ""}}">Chap / N. Chap</th>
+                                    <th class="sanduiche {{$sanduiche == 0 && $pao == 0 && $tapioca == 0  ? "colunaInativa" : ""}}">Preço formado</th>
                                     <th>Quantidade</th>
                                     <th>Preço total</th>
                                     <th>Excluir</th>
                                 </tr>
                                 @if(isset($produtosPedido))
                                     @foreach($produtosPedido as $produtoPedido)
-                                        <tr class="produtosTabela" iid="{{$produtoPedido->id}}">
+                                        <tr class="produtosTabela" iid="{{$produtoPedido->id_produto}}">
                                             <td><label id="nomeProduto" iid="{{$produtoPedido['idSanduiche']}}" nomeProduto="{{$produtoPedido->nome}}" class="nomeProduto">{{$produtoPedido->nome_formado}}</label></td>
                                             <td><label class="precoUnitario">{{"R$ ". number_format($produtoPedido->preco_unitario, 2, ',', '.')}}</label></td>
-                                            <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
+                                            <td class="sanduicheTp {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[0]->nome}}" {{$produtoPedido->tipo_pao == 'Pão carioca' ? "checked='checked'" : ""}} value="{{$tipoPaes[0]->preco}}"/>PC
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[1]->nome}}" {{$produtoPedido->tipo_pao == 'Pão de forma' ? "checked='checked'" : ""}} value="{{$tipoPaes[1]->preco}}"/>PF
@@ -77,14 +77,14 @@
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[3]->nome}}" {{$produtoPedido->tipo_pao == 'Pão sovado' ? "checked='checked'" : ""}} value="{{$tipoPaes[3]->preco}}"/>PS
                                                 @endif
                                             </td>
-                                            <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
-                                                @if($produtoPedido['sanduiche'] == 1 || $produtoPedido['pao'] == 1)
+                                            <td class="sanduicheTr {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">
+                                                @if($produtoPedido['sanduiche'] == 1 || $produtoPedido['pao'] == 1 || $produtoPedido['tapioca'] == 1)
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido['idSanduiche']}}" nomeRecheio="{{$tiposRecheio[0]->nome}}" {{$produtoPedido->tipo_recheio == 'Margarina' ? "checked='checked'" : ""}} value="{{$tiposRecheio[0]->preco}}"/>M
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido['idSanduiche']}}" nomeRecheio="{{$tiposRecheio[1]->nome}}" {{$produtoPedido->tipo_recheio == 'Requeijão' ? "checked='checked'" : ""}} value="{{$tiposRecheio[1]->preco}}"/>R
                                                     <input class="tipoRecheio" type="radio" name="tipo_recheio{{$produtoPedido['idSanduiche']}}" nomeRecheio="Nada" {{$produtoPedido->tipo_recheio == 'Nada' ? "checked='checked'" : ""}} value="0.0"/> N/A
                                                 @endif
                                             </td>
-                                            <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
+                                            <td class="sanduicheC {{$sanduiche == 0 && $pao == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1 || $produtoPedido['pao'] == 1)
                                                     @if ($produtoPedido->chapado == 'Não chapado')
                                                         <input class="chapado" type="radio" nomeChapado="Chapado" name="chapado{{$produtoPedido['idSanduiche']}}" value="1"/> C
@@ -95,7 +95,7 @@
                                                     @endif
                                                 @endif
                                             </td>
-                                            <td class="sanduiche {{$sanduiche == 0 ? "colunaInativa" : ""}}">
+                                            <td class="sanduiche {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">
                                                 <label class="precoFormado {{$produtoPedido['idSanduiche']}}">{{"R$ ". number_format($produtoPedido['valorFormado'], 2, ',', '.')}}</label>
                                             </td>
                                             <td><input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50"></td>

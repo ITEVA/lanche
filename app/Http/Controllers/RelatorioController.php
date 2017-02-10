@@ -63,11 +63,11 @@ class RelatorioController extends AbstractCrudController
 
         $pedidos = $this->getPedidos($date, $request->turno);
 
-        $produtosGeral = DB::select("SELECT nome, SUM(lanche.produto_pedido.quantidade) as qtdTotal
+        $produtosGeral = DB::select("SELECT nome_formado, SUM(lanche.produto_pedido.quantidade) as qtdTotal
                                 FROM lanche.produto_pedido
                                 where data = '{$date}'
                                 AND turno = '{$request->turno}'
-                                GROUP BY lanche.produto_pedido.nome");
+                                GROUP BY lanche.produto_pedido.nome_formado");
 
         //Criando o objeto de PDF e inicializando suas configurações
         $pdf = new FPDF("P", "pt", "A4");
@@ -100,7 +100,7 @@ class RelatorioController extends AbstractCrudController
             $pdf->SetY($pdf->GetY() + 20);
             foreach ($produtosGeral as $produto) {
                 $pdf->SetX(20);
-                $pdf->Cell(278, 14, $produto->nome, 1, 0, "C");
+                $pdf->Cell(278, 14, $produto->nome_formado, 1, 0, "C");
                 $pdf->Cell(278, 14, $produto->qtdTotal, 1, 0, "C");
                 $pdf->SetY($pdf->GetY() + 14);
             }
@@ -157,7 +157,7 @@ class RelatorioController extends AbstractCrudController
                     if($j == 0) {
                         foreach ($pedido['produtos'] as $produto) {
                             $pdf->SetX(20);
-                            $pdf->Cell(278, 14, $produto['nome'], 1, 0, "C");
+                            $pdf->Cell(278, 14, $produto['nome_formado'], 1, 0, "C");
                             $pdf->Cell(278, 14, $produto['quantidade'], 1, 0, "C");
                             $pdf->SetY($pdf->GetY() + 14);
                             $j++;

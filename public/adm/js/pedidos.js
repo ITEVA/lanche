@@ -87,23 +87,29 @@ $(document).ready(function () {
             var duplicata = buscaDuplicata(id);
 
             var idSanduiche = duplicata ? id+"_"+ (ctrlDuplicata++) : id;
+            var pCarioca = $('#produtos').attr('pCarioca');
+            var pForma = $('#produtos').attr('pForma');
+            var pIntegral = $('#produtos').attr('pIntegral');
+            var pSovado = $('#produtos').attr('pSovado');
+            var pMargarina = $('#produtos').attr('pMargarina');
+            var pRequeijao = $('#produtos').attr('pRequeijao');
 
             if(nomeQ[0] == 'Sand.') {
                 $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
                     "<td><label id='nomeProduto' iid='" + idSanduiche + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
                     "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                    "<td class='sanduiche'>" +
-                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão carioca' value='0.25'/>PC " +
-                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão de forma' value='0.19'/>PF " +
-                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão integral' value='0.23'/>PI " +
-                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='0.25'/>PS " +
+                    "<td class='sanduicheTp'>" +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão carioca' value='" + pCarioca + "'/>PC " +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão de forma' value='" + pForma + "'/>PF " +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão integral' value='" + pIntegral + "'/>PI " +
+                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='" + pSovado + "'/>PS " +
                     "</td>" +
-                    "<td class='sanduiche'>" +
-                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='0.04'/>M " +
-                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='0.09'/>R " +
+                    "<td class='sanduicheTr'>" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='" + pMargarina + "'/>M " +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='" + pRequeijao + "'/>R " +
                         "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Nada' value='0.0'/> N/A " +
                     "</td>" +
-                    "<td class='sanduiche'>" +
+                    "<td class='sanduicheC'>" +
                         "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado" + idSanduiche + "' checked='checked' value='1'/> C " +
                         "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado" + idSanduiche + "' value='0'/> N.C " +
                     "</td>" +
@@ -115,15 +121,59 @@ $(document).ready(function () {
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
             }
+            else if(nomeQ[0] == 'Pão') {
+                $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
+                    "<td><label id='nomeProduto' iid='" + idSanduiche + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
+                    "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td class='sanduicheTp colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduicheTr'>" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='" + pMargarina + "'/>M " +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='" + pRequeijao + "'/>R " +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Nada' value='0.0'/> N/A " +
+                    "</td>" +
+                    "<td class='sanduicheC'>" +
+                        "<input class='chapado' type='radio' nomeChapado='Chapado' name='chapado" + idSanduiche + "' checked='checked' value='1'/> C " +
+                        "<input class='chapado' type='radio' nomeChapado='Não chapado' name='chapado" + idSanduiche + "' value='0'/> N.C " +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                        "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
+                    "</td> " +
+                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
+                    "</tr>");
+            }
+            else if(nomeQ[0] == 'Tapioca') {
+                $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
+                    "<td><label id='nomeProduto' iid='" + idSanduiche + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
+                    "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td class='sanduicheTp colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduicheTr'>" +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='" + pMargarina + "'/>M " +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Requeijão' value='" + pRequeijao + "'/>R " +
+                        "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Nada' value='0.0'/> N/A " +
+                    "</td>" +
+                    "<td class='sanduicheC  colunaInativa'>" +
+                    "</td>" +
+                    "<td class='sanduiche'>" +
+                    "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
+                    "</td> " +
+                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
+                    "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
+                    "</tr>");
+            }
             else {
                 $("#addTr").append("<tr class='produtosTabela' iid='" + id + "'>" +
                     "<td><label id='nomeProduto' iid='" + idSanduiche + "' nomeProduto='" + nome + "' class='nomeProduto'>" + nome + "</label></td>" +
                     "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
-                    "<td class='sanduiche colunaInativa'>" +
+                    "<td class='sanduicheTp colunaInativa'>" +
                     "</td>" +
-                    "<td class='sanduiche colunaInativa'>" +
+                    "<td class='sanduicheTr colunaInativa'>" +
                     "</td>" +
-                    "<td class='sanduiche colunaInativa'>" +
+                    "<td class='sanduicheC colunaInativa'>" +
                     "</td>" +
                     "<td class='sanduiche colunaInativa'>" +
                         "<label class='precoFormado  "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
@@ -134,13 +184,38 @@ $(document).ready(function () {
                     "</tr>");
             }
 
-            var count = 0;
+            var countTp = 0;
+            var countTr = 0;
+            var countC = 0;
 
             $(".tipoPao").each(function () {
-                count++;
+                countTp++;
             });
 
-            if (count > 0) {
+            if (countTp > 0) {
+                $(".sanduicheTp").removeClass('colunaInativa');
+                $('.tipoPao').change();
+            }
+
+            $(".tipoRecheio").each(function () {
+                countTr++;
+            });
+
+            if (countTr > 0) {
+                $(".sanduicheTr").removeClass('colunaInativa');
+                $('.tipoRecheio').change();
+            }
+
+            $(".chapado").each(function () {
+                countC++;
+            });
+
+            if (countC > 0) {
+                $(".sanduicheC").removeClass('colunaInativa');
+                $('.tipoRecheio').change();
+            }
+
+            if (countTp > 0 || countTr > 0 || countC > 0) {
                 $(".sanduiche").removeClass('colunaInativa');
             }
 
@@ -148,8 +223,6 @@ $(document).ready(function () {
             $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
             $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+ preco +"'>"+ preco +"</option>");
             $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
-
-            $('.tipoPao').change();
         }
         totalPedido();
     });
@@ -203,13 +276,35 @@ $(document).ready(function () {
             $(".produtosPedidos").removeClass('tabelaProdutos');
         }
 
-        var count = 0;
+        var countTp = 0;
+        var countTr = 0;
+        var countC = 0;
 
         $(".tipoPao").each(function () {
-            count++;
+            countTp++;
         });
 
-        if (count === 0) {
+        if (countTp === 0) {
+            $(".sanduicheTp").addClass('colunaInativa');
+        }
+
+        $(".tipoRecheio").each(function () {
+            countTr++;
+        });
+
+        if (countTr === 0) {
+            $(".sanduicheTr").addClass('colunaInativa');
+        }
+
+        $(".chapado").each(function () {
+            countC++;
+        });
+
+        if (countC === 0) {
+            $(".sanduicheC").addClass('colunaInativa');
+        }
+
+        if (countTp === 0 && countTr === 0 && countC === 0) {
             $(".sanduiche").addClass('colunaInativa');
         }
 
@@ -294,6 +389,8 @@ $(document).ready(function () {
             valorTotal = parseFloat(valorAtual) + parseFloat(($(this).parent().parent('tr').find('.tipoPao:checked').val()));
         if (nomeQ[0] == 'Pão')
             valorTotal = parseFloat(valorAtual);
+        if (nomeQ[0] == 'Tapioca')
+            valorTotal = parseFloat(valorAtual);
 
         valorTotal = valorTotal.toFixed(2);
 
@@ -324,6 +421,13 @@ $(document).ready(function () {
             nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
 
             $(this).parent().parent('tr').find('.nomeProduto').html(nome + " c/ " + nomeRecheio + " " + chapado);
+        }
+        else if (nomeQ[0] == 'Tapioca') {
+            nomeRecheio = ($(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio')).toLowerCase();
+
+            nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+
+            $(this).parent().parent('tr').find('.nomeProduto').html(nome + " c/ " + nomeRecheio);
         }
     });
 

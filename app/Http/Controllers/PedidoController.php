@@ -111,6 +111,10 @@ class PedidoController extends AbstractCrudController
 
         $produtos = $this->insertionSort($produtos);
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
         if ($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
             return redirect('pedidos');
         }
@@ -118,6 +122,8 @@ class PedidoController extends AbstractCrudController
             return parent::novo()
                 ->with('produtos', $produtos)
                 ->with('cardapio', $cardapio)
+                ->with('tipoPaes', $tipoPaes)
+                ->with('tiposRecheio', $tiposRecheio)
                 ->with('sanduiche', '0');
         }
     }
@@ -249,6 +255,7 @@ class PedidoController extends AbstractCrudController
 
         $pao  = 0;
         $sanduiche  = 0;
+        $tapioca  = 0;
         $ids = array();
         $i = 0;
         $j = 1;
@@ -261,6 +268,10 @@ class PedidoController extends AbstractCrudController
             if ($nomeQ[0] === "Pão") {
                 $produtoPedido['pao'] = 1;
                 $pao = 1;
+            }
+            if ($nomeQ[0] === "Tapioca") {
+                $produtoPedido['tapioca'] = 1;
+                $tapioca = 1;
             }
 
             $produtoPedido['valorFormado'] = ($produtoPedido->preco_total) / ($produtoPedido->quantidade);
@@ -283,7 +294,8 @@ class PedidoController extends AbstractCrudController
                 ->with('tipoPaes', $tipoPaes)
                 ->with('tiposRecheio', $tiposRecheio)
                 ->with('sanduiche', $sanduiche)
-                ->with('pao', $pao);
+                ->with('pao', $pao)
+                ->with('tapioca', $tapioca);
         }
     }
 
