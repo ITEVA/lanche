@@ -132,7 +132,7 @@
                                         @foreach($pedido['produtos'] as $produtoPedido)
                                             @if(isset($produtoPedido['id_pedido']))
                                                 <tr>
-                                                    <td>{{$produtoPedido['nome']}}</td>
+                                                    <td>{{$produtoPedido['nome_formado']}}</td>
                                                     <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
                                                     <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
                                                     <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>

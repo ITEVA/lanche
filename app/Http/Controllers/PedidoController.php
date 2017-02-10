@@ -112,7 +112,6 @@ class PedidoController extends AbstractCrudController
         $produtos = $this->insertionSort($produtos);
 
         $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
-
         $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
 
         if ($this->checaExistsPedido($cardapio[0]['id']) != 0 || $this->checaTempoCardapio($cardapio[0]['id'])) {
@@ -124,7 +123,9 @@ class PedidoController extends AbstractCrudController
                 ->with('cardapio', $cardapio)
                 ->with('tipoPaes', $tipoPaes)
                 ->with('tiposRecheio', $tiposRecheio)
-                ->with('sanduiche', '0');
+                ->with('sanduiche', '0')
+                ->with('pao', '0')
+                ->with('tapioca', '0');
         }
     }
 
@@ -142,11 +143,19 @@ class PedidoController extends AbstractCrudController
         $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
         $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
         return view('adm.pedidos.formularioCorrigir')
             ->with('actionFiltro', 'pedidos/corrigir/novo/1')
             ->with('cardapios', $cardapios)
             ->with('intervalo', $intervalo)
-            ->with('itensPermitidos', $itensPermitidos);
+            ->with('tipoPaes', $tipoPaes)
+            ->with('tiposRecheio', $tiposRecheio)
+            ->with('itensPermitidos', $itensPermitidos)
+            ->with('sanduiche', '0')
+            ->with('pao', '0')
+            ->with('tapioca', '0');
     }
 
     public function novoFiltroCorrigir(Request $request)
@@ -166,11 +175,19 @@ class PedidoController extends AbstractCrudController
         $intervalo['ini']  = date('d/m/Y', strtotime($intervalo['ini']));
         $intervalo['fim']  = date('d/m/Y', strtotime($intervalo['fim']));
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
         return view('adm.pedidos.formularioCorrigir')
             ->with('actionFiltro', 'pedidos/corrigir/novo/1')
             ->with('cardapios', $cardapios)
             ->with('intervalo', $intervalo)
-            ->with('itensPermitidos', $itensPermitidos);
+            ->with('tipoPaes', $tipoPaes)
+            ->with('tiposRecheio', $tiposRecheio)
+            ->with('itensPermitidos', $itensPermitidos)
+            ->with('sanduiche', '0')
+            ->with('pao', '0')
+            ->with('tapioca', '0');
     }
 
     public function novoProdutosCorrigir(Request $request)
@@ -213,6 +230,9 @@ class PedidoController extends AbstractCrudController
 
         $usuarios = User::where(['id_empregador' => Auth::user()->id_empregador])->orderBy('apelido', 'asc')->get();
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
         return view('adm.pedidos.formularioCorrigir')
             ->with('action', 'pedidos/corrigir/salvar')
             ->with('cardapio', $cardapio)
@@ -220,7 +240,12 @@ class PedidoController extends AbstractCrudController
             ->with('produtos', $produtos)
             ->with('pedido', $pedido)
             ->with('usuarios', $usuarios)
-            ->with('itensPermitidos', $itensPermitidos);
+            ->with('tipoPaes', $tipoPaes)
+            ->with('tiposRecheio', $tiposRecheio)
+            ->with('itensPermitidos', $itensPermitidos)
+            ->with('sanduiche', '0')
+            ->with('pao', '0')
+            ->with('tapioca', '0');
     }
 
     public function editar($id)
@@ -250,7 +275,6 @@ class PedidoController extends AbstractCrudController
             if(Auth::user()->id != $pedido[0]->id_usuario) return redirect('error404');
 
         $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
-
         $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
 
         $pao  = 0;
@@ -325,12 +349,51 @@ class PedidoController extends AbstractCrudController
 
         $produtosPedido = ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $id])->get();
 
+        $tipoPaes = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Pão carioca', 'Pão de forma', 'Pão integral', 'Pão sovado'])->get();
+        $tiposRecheio = Produto::where(['id_empregador' => Auth::user()->id_empregador])->whereIn('nome', ['Margarina', 'Requeijão'])->get();
+
+        $pao  = 0;
+        $sanduiche  = 0;
+        $tapioca  = 0;
+        $ids = array();
+        $i = 0;
+        $j = 1;
+        foreach ($produtosPedido as $produtoPedido) {
+            $nomeQ = explode(" ", $produtoPedido->nome);
+            if ($nomeQ[0] === "Sand.") {
+                $produtoPedido['sanduiche'] = 1;
+                $sanduiche = 1;
+            }
+            if ($nomeQ[0] === "Pão") {
+                $produtoPedido['pao'] = 1;
+                $pao = 1;
+            }
+            if ($nomeQ[0] === "Tapioca") {
+                $produtoPedido['tapioca'] = 1;
+                $tapioca = 1;
+            }
+
+            $produtoPedido['valorFormado'] = ($produtoPedido->preco_total) / ($produtoPedido->quantidade);
+
+            if (in_array($produtoPedido->id_produto, $ids))
+                $produtoPedido['idSanduiche'] = $produtoPedido->id_produto . "_" . $j++;
+            else {
+                $produtoPedido['idSanduiche'] = $produtoPedido->id_produto;
+                $ids[$i++] = $produtoPedido->id_produto;
+            }
+        }
+
         return view('adm.pedidos.formularioCorrigir')
             ->with('action', 'pedidos/corrigir/atualizar/'.$id)
             ->with('produtos', $produtos)
             ->with('produtosPedido', $produtosPedido)
             ->with('cardapio', $cardapio)
             ->with('pedido', $pedido)
+            ->with('tipoPaes', $tipoPaes)
+            ->with('tiposRecheio', $tiposRecheio)
+            ->with('sanduiche', $sanduiche)
+            ->with('pao', $pao)
+            ->with('tapioca', $tapioca)
             ->with('itensPermitidos', $itensPermitidos);
     }
 
@@ -548,14 +611,32 @@ class PedidoController extends AbstractCrudController
 
     private function salvarPedidoCorrigir($request, $id = null)
     {
+        $idsProdutos = array();
         $nomesProdutos = array();
+        $nomesProdutosFormados = array();
         $quantidadesProdutos = array();
         $precosProdutos = array();
+        $precosFormadosProdutos = array();
         $precosTotaisProdutos = array();
+        $tiposPao = array();
+        $tiposChapado = array();
+        $tiposRecheios = array();
+
+        $i = 0;
+        foreach ($request->ids as $idProduto) {
+            $idsProdutos[$i] = $idProduto;
+            $i++;
+        }
 
         $i = 0;
         foreach ($request->nome as $nomeProduto) {
             $nomesProdutos[$i] = $nomeProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->nomeFormado as $nomeProdutoFormado) {
+            $nomesProdutosFormados[$i] = $nomeProdutoFormado;
             $i++;
         }
 
@@ -572,9 +653,33 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->precoTotal as $precoFormadoProduto) {
+            $precosFormadosProdutos[$i] = $precoFormadoProduto;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoPao as $tipoPao) {
+            $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoChapado as $tipoChapado) {
+            $tiposChapado[$i] = $tipoChapado == "undefined" ? "" : $tipoChapado;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->tipoRecheio as $tipoRecheio) {
+            $tiposRecheios[$i] = $tipoRecheio == "undefined" ? "" : $tipoRecheio;
+            $i++;
+        }
+
+        $i = 0;
         $precoTotal = 0;
         for ($i = 0; $i < count($nomesProdutos); $i++) {
-            $precosTotaisProdutos[$i] = ($quantidadesProdutos[$i] * $precosProdutos[$i]);
+            $precosTotaisProdutos[$i] = $precosFormadosProdutos[$i];
             $precoTotal = $precoTotal + $precosTotaisProdutos[$i];
         }
 
@@ -609,11 +714,16 @@ class PedidoController extends AbstractCrudController
         for ($i = 0; $i < count($nomesProdutos); $i++) {
             $produto = array(
                 "nome" => $nomesProdutos[$i],
+                "nome_formado" => $nomesProdutosFormados[$i],
                 "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
-                "data" => $cardapio[0]->data,
+                "tipo_pao" => $tiposPao[$i],
+                "chapado" => $tiposChapado[$i],
+                "tipo_recheio" => $tiposRecheios[$i],
+                "data" => $date,
                 "turno" => $cardapio[0]->turno,
                 "preco_unitario" => $precosProdutos[$i],
-                "preco_total" => $precosTotaisProdutos[$i],
+                "preco_total" => $precosFormadosProdutos[$i],
+                "id_produto" => $idsProdutos[$i],
                 "id_pedido" => $pedido->id,
                 "id_empregador" => Auth::user()->id_empregador
             );
