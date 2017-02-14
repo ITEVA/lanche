@@ -105,6 +105,8 @@ class PedidoController extends AbstractCrudController
         $i = 0;
         foreach ($produtosDia as $produtoDia) {
             $produto = Produto::find($produtoDia->id_produto);
+            $produto['quantidade'] = $produtoDia->quantidade;
+
             $produtos[$i] = $produto;
             $i++;
         }
@@ -261,6 +263,8 @@ class PedidoController extends AbstractCrudController
         $i = 0;
         foreach ($produtosDia as $produtoDia) {
             $produto = Produto::find($produtoDia->id_produto);
+            $produto['quantidade'] = $produtoDia->quantidade;
+
             $produtos[$i] = $produto;
             $i++;
         }

@@ -35,6 +35,12 @@
                             <label class="destaque">{{isset($cardapio[0]->descricao) ? $cardapio[0]->descricao : ''}}</label>
                         </div>
 
+                        @foreach ($produtos as $produto)
+                            @if($produto['quantidade'] != '')
+                                <input type="text" id="{{$produto['id']}}" value="{{$produto['quantidade']}}">
+                            @endif
+                        @endforeach
+
                         <div class="form-group col-md-2 col-xs-12 quebrarDiv">
                             <label>Produtos*</label>
                             <select id="produtos" name="produtos" class="select2_single form-control" pCarioca="{{$tipoPaes[0]->preco}}" pForma="{{$tipoPaes[1]->preco}}" pIntegral="{{$tipoPaes[2]->preco}}" pSovado="{{$tipoPaes[3]->preco}}" pMargarina="{{$tiposRecheio[0]->preco}}" pRequeijao="{{$tiposRecheio[1]->preco}}">
@@ -111,6 +117,14 @@
                                 <label id="totalPedido" class="totalPedido">{{$pedido->preco == '' ? '' : number_format($pedido->preco, 2, ',', '.')}}</label>
                             </div>
                         </div>
+
+                        <select  name="deduzido[]" class="form-control selectValorDeduzido" multiple="multiple">
+                            @if(isset($produtosPedido))
+                                @foreach($produtosPedido as $produtoPedido)
+                                    <option selected="selected" class="selectDeduzido" value="{{$produtoPedido->quantidade}}">{{$produtoPedido->quantidade}}</option>
+                                @endforeach
+                            @endif
+                        </select>
 
                         <div class="selects">
                             <select  name="ids[]" class="form-control selectIds" multiple="multiple">
@@ -236,6 +250,42 @@
                 </div>
                 <div class="modal-body">
                     <p>Para salvar o pedido adicione algum produto!</p>
+                    <input type="hidden" id="tipoRemocao" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="produtoEsgotado" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Erro ao adiconar produto</h4>
+                </div>
+                <div class="modal-body">
+                    <p>O produto não está mais disponível!</p>
+                    <input type="hidden" id="tipoRemocao" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="qtdNDisponivel" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Erro ao adiconar produto</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Quantidade desejada não disponível!</p>
                     <input type="hidden" id="tipoRemocao" value="" />
                 </div>
                 <div class="modal-footer">

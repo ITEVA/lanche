@@ -223,6 +223,7 @@ $(document).ready(function () {
             $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
             $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+ preco +"'>"+ preco +"</option>");
             $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
+            $(".selectValorDeduzido").append("<option iid='" + idSanduiche + "' selected='selected' class='selectDeduzido' value='1'>1</option>");
         }
         totalPedido();
     });
@@ -312,47 +313,99 @@ $(document).ready(function () {
 
     });
 
+    var valorDeduzido = 0;
+
     $(document).on('keyup', '.quantidadeProduto', function (e) {
         e.preventDefault();
         var id = $(this).parent().parent('tr').find('.nomeProduto').attr('iid');
+        var iid = $(this).parent().parent('tr').attr('iid');
         var nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
         var valuePrecoUnit = $(this).parent().parent('tr').find('.precoFormado').html();
         var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
         var precoUnitarioQ = valuePrecoUnit.split(' ');
         var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
         var cont = 0, contO = 0;
+        var qtdDisponivel = $("#"+iid).val();
 
-        $(".selectProduto").each(function () {
-            if(nome !== $(this).html() || id !== $(this).attr('iid')) {
-                cont++;
+        if (qtd != '') {
+            if (qtdDisponivel > 0) {
+                var comp;
+                if (valorDeduzido < qtd)
+                    comp = qtd - valorDeduzido;
+                else
+                    comp = qtdDisponivel;
+                if (comp <= qtdDisponivel) {
+                    if (qtd !== valorDeduzido) {
+                        $(".selectProduto").each(function () {
+                            if (nome !== $(this).html() || id !== $(this).attr('iid')) {
+                                cont++;
+                            }
+                            if (nome === $(this).html() && id === $(this).attr('iid')) {
+                                contO = cont + 1;
+                            }
+                        });
+
+                        var contQtd = contO;
+                        var contDeduzido = contO;
+
+                        $(".selectQtd").each(function () {
+                            contQtd--;
+                            if (contQtd == 0) {
+                                $(this).val(qtd);
+                                $(this).html(qtd);
+                            }
+                        });
+
+                        precoUnitario = parseFloat(precoUnitario).toFixed(2);
+                        $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
+
+                        var totalPedido = 0;
+                        $(".td").each(function () {
+                            var precoProduto = $(this).find('.precoProduto').html();
+                            var precoProdutoQ = precoProduto.split(' ');
+
+                            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+                            totalPedido = totalPedido.toFixed(2);
+                            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
+                        });
+
+                        if (qtd != '') {
+                            if (valorDeduzido == 0) {
+                                valorDeduzido = qtd;
+                                $("#" + id).val(qtdDisponivel - qtd);
+                            }
+                            else if (valorDeduzido != qtd) {
+                                if (valorDeduzido > qtd) {
+                                    var aux = qtd;
+                                    qtd = valorDeduzido - qtd;
+                                    valorDeduzido = aux;
+                                    $("#" + id).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+                                }
+                                else {
+                                    var aux = qtd;
+                                    qtd = qtd - valorDeduzido;
+                                    valorDeduzido = aux;
+                                    $("#" + id).val(qtdDisponivel - qtd);
+                                }
+                            }
+                            $(".selectDeduzido").each(function () {
+                                contDeduzido--;
+                                if (contDeduzido == 0) {
+                                    $(this).val(valorDeduzido);
+                                    $(this).html(valorDeduzido);
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    $("#qtdNDisponivel").modal();
+                }
             }
-            if(nome === $(this).html() && id === $(this).attr('iid')) {
-                contO = cont + 1;
+            else {
+                $("#produtoEsgotado").modal();
             }
-        });
-
-        var contQtd = contO;
-
-        $(".selectQtd").each(function () {
-            contQtd--;
-            if(contQtd == 0) {
-                $(this).val(qtd);
-                $(this).html(qtd);
-            }
-        });
-
-        precoUnitario = parseFloat(precoUnitario).toFixed(2);
-        $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
-
-        var totalPedido = 0;
-        $(".td").each(function () {
-            var precoProduto = $(this).find('.precoProduto').html();
-            var precoProdutoQ = precoProduto.split(' ');
-
-            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
-            totalPedido = totalPedido.toFixed(2);
-            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
-        });
+        }
 
         ativarMascaras();
     });
