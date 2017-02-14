@@ -51,13 +51,19 @@
                             <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
                         </div>
 
-                        @foreach ($produtos as $produto)
-                                <div class="form-group col-md-2 col-xs-12">
-                                    <label>{{$produto['nome']}}</label>
-                                    <input type="text" class="form-control" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
-
-                                </div>
-                        @endforeach
+                        <div class="form-group col-md-3 col-xs-12 quebrarDiv">
+                            <label>Disponibilidades de produtos: </label>
+                        </div>
+                        <div class="form-group col-md-12 col-xs-12 quebrarDiv">
+                            @foreach ($produtos as $produto)
+                                @if($produto['quantidade'] != '')
+                                    <div class="form-group col-md-3 col-xs-12">
+                                        <label>{{$produto['nome']}}: </label>
+                                        <input type="text" class="disponiveis" iid="{{$produto['nome']}}" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
 
                         <div class="produtosPedidos">
                             <table class='table table-striped responsive-utilities jambo_table' id='addTr'>

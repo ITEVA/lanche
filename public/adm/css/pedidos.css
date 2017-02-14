@@ -13,3 +13,8 @@
 .colunaInativa {
     display: none;
 }
+
+.disponiveis {
+    border: transparent;
+    box-shadow: none;
+}
