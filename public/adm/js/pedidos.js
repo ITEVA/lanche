@@ -116,7 +116,10 @@ $(document).ready(function () {
                     "<td class='sanduiche'>" +
                         "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
                     "</td> " +
-                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td>" +
+                        "<input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'>" +
+                        "<input class='deduzido' type='hidden' value='0'>" +
+                    "</td>" +
                     "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
@@ -139,7 +142,10 @@ $(document).ready(function () {
                     "<td class='sanduiche'>" +
                         "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
                     "</td> " +
-                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td>" +
+                        "<input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'>" +
+                        "<input class='deduzido' type='hidden' value='0'>" +
+                    "</td>" +
                     "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
@@ -160,7 +166,10 @@ $(document).ready(function () {
                     "<td class='sanduiche'>" +
                     "<label class='precoFormado "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
                     "</td> " +
-                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td>" +
+                        "<input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'>" +
+                        "<input class='deduzido' type='hidden' value='0'>" +
+                    "</td>" +
                     "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
@@ -178,7 +187,10 @@ $(document).ready(function () {
                     "<td class='sanduiche colunaInativa'>" +
                         "<label class='precoFormado  "+ idSanduiche +"'>R$ " + preco.replace(".", ",") + "</label>" +
                     "</td> " +
-                    "<td><input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'></td>" +
+                    "<td>" +
+                        "<input class='quantidadeProduto quantidade' type='text' value='1' min='1' max='10'>" +
+                        "<input class='deduzido' type='hidden' value='0'>" +
+                    "</td>" +
                     "<td class='td'><label class='precoProduto'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                     "</tr>");
@@ -223,7 +235,6 @@ $(document).ready(function () {
             $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
             $(".selectPrecoUnitario").append("<option selected='selected' class='selectPreco' value='"+ preco +"'>"+ preco +"</option>");
             $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
-            $(".selectValorDeduzido").append("<option iid='" + idSanduiche + "' selected='selected' class='selectDeduzido' value='1'>1</option>");
         }
         totalPedido();
     });
@@ -231,8 +242,15 @@ $(document).ready(function () {
     $('#addTr').on("click",".removerProduto",function(e) {
         e.preventDefault();
         var id = $(this).parent().parent('tr').find('.nomeProduto').attr('iid');
+        var iid = $(this).parent().parent('tr').attr('iid');
         var nomeRemove = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+        var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
+        var qtdDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
+        var qtdDisponivel = $("#"+iid).val();
         var cont = 0, contO = 0, ctrl = 0;
+        var novaQtdDisponivel = parseFloat(qtdDisponivel) + parseFloat(qtdDeduzido);
+
+        $("#"+iid).val(novaQtdDisponivel);
 
         $(this).parent().parent('tr').remove();
 
@@ -313,8 +331,6 @@ $(document).ready(function () {
 
     });
 
-    var valorDeduzido = 0;
-
     $(document).on('keyup', '.quantidadeProduto', function (e) {
         e.preventDefault();
         var id = $(this).parent().parent('tr').find('.nomeProduto').attr('iid');
@@ -326,84 +342,80 @@ $(document).ready(function () {
         var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
         var cont = 0, contO = 0;
         var qtdDisponivel = $("#"+iid).val();
+        var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
 
         if (qtd != '') {
-            if (qtdDisponivel > 0) {
-                var comp;
-                if (valorDeduzido < qtd)
-                    comp = qtd - valorDeduzido;
-                else
-                    comp = qtdDisponivel;
-                if (comp <= qtdDisponivel) {
-                    if (qtd !== valorDeduzido) {
-                        $(".selectProduto").each(function () {
-                            if (nome !== $(this).html() || id !== $(this).attr('iid')) {
-                                cont++;
-                            }
-                            if (nome === $(this).html() && id === $(this).attr('iid')) {
-                                contO = cont + 1;
-                            }
-                        });
+            $(".selectProduto").each(function () {
+                if (nome !== $(this).html() || id !== $(this).attr('iid')) {
+                    cont++;
+                }
+                if (nome === $(this).html() && id === $(this).attr('iid')) {
+                    contO = cont + 1;
+                }
+            });
 
-                        var contQtd = contO;
-                        var contDeduzido = contO;
+            var contQtd = contO;
 
-                        $(".selectQtd").each(function () {
-                            contQtd--;
-                            if (contQtd == 0) {
-                                $(this).val(qtd);
-                                $(this).html(qtd);
-                            }
-                        });
+            $(".selectQtd").each(function () {
+                contQtd--;
+                if (contQtd == 0) {
+                    $(this).val(qtd);
+                    $(this).html(qtd);
+                }
+            });
 
-                        precoUnitario = parseFloat(precoUnitario).toFixed(2);
-                        $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
+            precoUnitario = parseFloat(precoUnitario).toFixed(2);
+            $(this).parent().parent('tr').find('.precoProduto').html("R$ " + precoUnitario.replace(".", ","));
 
-                        var totalPedido = 0;
-                        $(".td").each(function () {
-                            var precoProduto = $(this).find('.precoProduto').html();
-                            var precoProdutoQ = precoProduto.split(' ');
+            var totalPedido = 0;
+            $(".td").each(function () {
+                var precoProduto = $(this).find('.precoProduto').html();
+                var precoProdutoQ = precoProduto.split(' ');
 
-                            totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
-                            totalPedido = totalPedido.toFixed(2);
-                            $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
-                        });
+                totalPedido = parseFloat(totalPedido) + parseFloat(precoProdutoQ[1].replace(",", "."));
+                totalPedido = totalPedido.toFixed(2);
+                $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
+            });
 
-                        if (qtd != '') {
-                            if (valorDeduzido == 0) {
-                                valorDeduzido = qtd;
-                                $("#" + id).val(qtdDisponivel - qtd);
-                            }
-                            else if (valorDeduzido != qtd) {
-                                if (valorDeduzido > qtd) {
-                                    var aux = qtd;
-                                    qtd = valorDeduzido - qtd;
-                                    valorDeduzido = aux;
-                                    $("#" + id).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+            if (qtdDisponivel !== '') {
+                if (qtdDisponivel > 0) {
+                    var comp;
+                    if (valorDeduzido < qtd)
+                        comp = qtd - valorDeduzido;
+                    else
+                        comp = qtdDisponivel;
+                    if (comp <= qtdDisponivel) {
+                        if (qtd !== valorDeduzido) {
+                            if (qtd != '') {
+                                if (valorDeduzido == 0) {
+                                    valorDeduzido = qtd;
+                                    $("#" + iid).val(qtdDisponivel - qtd);
                                 }
-                                else {
-                                    var aux = qtd;
-                                    qtd = qtd - valorDeduzido;
-                                    valorDeduzido = aux;
-                                    $("#" + id).val(qtdDisponivel - qtd);
+                                else if (valorDeduzido != qtd) {
+                                    if (valorDeduzido > qtd) {
+                                        var aux = qtd;
+                                        qtd = valorDeduzido - qtd;
+                                        valorDeduzido = aux;
+                                        $("#" + iid).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+                                    }
+                                    else {
+                                        var aux = qtd;
+                                        qtd = qtd - valorDeduzido;
+                                        valorDeduzido = aux;
+                                        $("#" + iid).val(qtdDisponivel - qtd);
+                                    }
                                 }
+                                $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
                             }
-                            $(".selectDeduzido").each(function () {
-                                contDeduzido--;
-                                if (contDeduzido == 0) {
-                                    $(this).val(valorDeduzido);
-                                    $(this).html(valorDeduzido);
-                                }
-                            });
                         }
+                    }
+                    else {
+                        $("#qtdNDisponivel").modal();
                     }
                 }
                 else {
-                    $("#qtdNDisponivel").modal();
+                    $("#produtoEsgotado").modal();
                 }
-            }
-            else {
-                $("#produtoEsgotado").modal();
             }
         }
 

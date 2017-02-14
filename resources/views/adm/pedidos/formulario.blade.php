@@ -35,12 +35,6 @@
                             <label class="destaque">{{isset($cardapio[0]->descricao) ? $cardapio[0]->descricao : ''}}</label>
                         </div>
 
-                        @foreach ($produtos as $produto)
-                            @if($produto['quantidade'] != '')
-                                <input type="text" id="{{$produto['id']}}" value="{{$produto['quantidade']}}">
-                            @endif
-                        @endforeach
-
                         <div class="form-group col-md-2 col-xs-12 quebrarDiv">
                             <label>Produtos*</label>
                             <select id="produtos" name="produtos" class="select2_single form-control" pCarioca="{{$tipoPaes[0]->preco}}" pForma="{{$tipoPaes[1]->preco}}" pIntegral="{{$tipoPaes[2]->preco}}" pSovado="{{$tipoPaes[3]->preco}}" pMargarina="{{$tiposRecheio[0]->preco}}" pRequeijao="{{$tiposRecheio[1]->preco}}">
@@ -56,6 +50,14 @@
                             <br>
                             <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
                         </div>
+
+                        @foreach ($produtos as $produto)
+                                <div class="form-group col-md-2 col-xs-12">
+                                    <label>{{$produto['nome']}}</label>
+                                    <input type="text" class="form-control" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
+
+                                </div>
+                        @endforeach
 
                         <div class="produtosPedidos">
                             <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
@@ -104,7 +106,10 @@
                                             <td class="sanduiche {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">
                                                 <label class="precoFormado {{$produtoPedido['idSanduiche']}}">{{"R$ ". number_format($produtoPedido['valorFormado'], 2, ',', '.')}}</label>
                                             </td>
-                                            <td><input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50"></td>
+                                            <td>
+                                                <input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50">
+                                                <input class="deduzido" type="hidden" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}">
+                                            </td>
                                             <td class="td"><label class="precoProduto">R$ {{number_format($produtoPedido->preco_total, 2, ',', '.')}}</label></td>
                                             <td><a href="" class="removerProduto"><i class="fa fa-trash"></i></a></td>
                                         </tr>
@@ -117,14 +122,6 @@
                                 <label id="totalPedido" class="totalPedido">{{$pedido->preco == '' ? '' : number_format($pedido->preco, 2, ',', '.')}}</label>
                             </div>
                         </div>
-
-                        <select  name="deduzido[]" class="form-control selectValorDeduzido" multiple="multiple">
-                            @if(isset($produtosPedido))
-                                @foreach($produtosPedido as $produtoPedido)
-                                    <option selected="selected" class="selectDeduzido" value="{{$produtoPedido->quantidade}}">{{$produtoPedido->quantidade}}</option>
-                                @endforeach
-                            @endif
-                        </select>
 
                         <div class="selects">
                             <select  name="ids[]" class="form-control selectIds" multiple="multiple">
