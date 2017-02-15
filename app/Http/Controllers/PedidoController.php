@@ -411,10 +411,15 @@ class PedidoController extends AbstractCrudController
 
         try {
             if (count($request->nome) > 0) {
-                $this->salvarPedido($request);
+                $retorno = $this->salvarPedido($request);
 
-                return redirect()
-                    ->action('PedidoController@listar');
+                if ($retorno == false)
+                    return redirect()
+                        ->action('PedidoController@novo')
+                        ->withErrors(array('O estoque de algum porduto pode ter acabado enquanto seu pedido era feito. Faça-o novamente.'));
+                else
+                    return redirect()
+                        ->action('PedidoController@listar');
             }
 
         } catch (QueryException $e) {
@@ -508,6 +513,8 @@ class PedidoController extends AbstractCrudController
         $tiposPao = array();
         $tiposChapado = array();
         $tiposRecheios = array();
+        $idsDisponiveis = array();
+        $disponiveis = array();
 
         $i = 0;
         foreach ($request->ids as $idProduto) {
@@ -546,6 +553,18 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->idDisponiveis as $idDisponivel) {
+            $idsDisponiveis[$i] = $idDisponivel;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->disponiveis as $disponivel) {
+            $disponiveis[$i] = $disponivel;
+            $i++;
+        }
+
+        $i = 0;
         foreach ($request->tipoPao as $tipoPao) {
             $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
             $i++;
@@ -574,43 +593,83 @@ class PedidoController extends AbstractCrudController
 
         $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
 
-        $dadosPedido = array(
-            "data" => $cardapio[0]->data,
-            "preco" => $precoTotal,
-            "observacao" => $request->observacao,
-            "turno" => $cardapio[0]->turno,
-            "id_usuario" => Auth::user()->id,
-            "id_cardapio" => $request->cardapio,
-            "id_empregador" => Auth::user()->id_empregador,
-        );
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
 
-        if ($id != null) {
-            $pedido = Pedido::find($id);
-            $pedido->fill($dadosPedido);
-            $pedido->save();
+
+        $salvar = true;
+        $i = 0;
+        foreach ($produtosCardapio as $produtoCardapio) {
+            $j = 0;
+            $pos = 0;
+            foreach ($idsDisponiveis as $idsDisponivei) {
+                if ($idsDisponivei != $produtoCardapio->id_produto) {
+                    $j++;
+                }
+                else
+                    $pos = $j;
+            }
+            if (($produtoCardapio->quantidade + $disponiveis[$pos]) < 0) {
+                $salvar = false;
+            }
         }
-        else
-            $pedido = Pedido::create($dadosPedido);
 
-        for ($i = 0; $i < count($nomesProdutos); $i++) {
-            $produto = array(
-                "nome" => $nomesProdutos[$i],
-                "nome_formado" => $nomesProdutosFormados[$i],
-                "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
-                "tipo_pao" => $tiposPao[$i],
-                "chapado" => $tiposChapado[$i],
-                "tipo_recheio" => $tiposRecheios[$i],
-                "data" => $date,
+        if ($salvar == true) {
+            $dadosPedido = array(
+                "data" => $cardapio[0]->data,
+                "preco" => $precoTotal,
+                "observacao" => $request->observacao,
                 "turno" => $cardapio[0]->turno,
-                "preco_unitario" => $precosProdutos[$i],
-                "preco_total" => $precosFormadosProdutos[$i],
-                "id_produto" => $idsProdutos[$i],
-                "id_pedido" => $pedido->id,
-                "id_empregador" => Auth::user()->id_empregador
+                "id_usuario" => Auth::user()->id,
+                "id_cardapio" => $request->cardapio,
+                "id_empregador" => Auth::user()->id_empregador,
             );
 
-            ProdutoPedido::create($produto);
+            if ($id != null) {
+                $pedido = Pedido::find($id);
+                $pedido->fill($dadosPedido);
+                $pedido->save();
+            }
+            else
+                $pedido = Pedido::create($dadosPedido);
+
+            for ($i = 0; $i < count($nomesProdutos); $i++) {
+                $produto = array(
+                    "nome" => $nomesProdutos[$i],
+                    "nome_formado" => $nomesProdutosFormados[$i],
+                    "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                    "tipo_pao" => $tiposPao[$i],
+                    "chapado" => $tiposChapado[$i],
+                    "tipo_recheio" => $tiposRecheios[$i],
+                    "data" => $date,
+                    "turno" => $cardapio[0]->turno,
+                    "preco_unitario" => $precosProdutos[$i],
+                    "preco_total" => $precosFormadosProdutos[$i],
+                    "id_produto" => $idsProdutos[$i],
+                    "id_pedido" => $pedido->id,
+                    "id_empregador" => Auth::user()->id_empregador
+                );
+
+                ProdutoPedido::create($produto);
+            }
+
+            $i = 0;
+            foreach ($produtosCardapio as $produtoCardapio) {
+                $j = 0;
+                foreach ($idsDisponiveis as $idsDisponivei) {
+                    if ($idsDisponivei == $produtoCardapio->id_produto) {
+                        $dados = array(
+                            "quantidade" => $disponiveis[$j]
+                        );
+                        $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                        $produtoCardapio->fill($dados);
+                        $produtoCardapio->save();
+                    }
+                    $j++;
+                }
+            }
         }
+        else
+            return false;
     }
 
     private function salvarPedidoCorrigir($request, $id = null)

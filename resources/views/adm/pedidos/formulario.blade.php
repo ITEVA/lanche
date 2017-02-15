@@ -59,7 +59,8 @@
                                 @if($produto['quantidade'] != '')
                                     <div class="form-group col-md-3 col-xs-12">
                                         <label>{{$produto['nome']}}: </label>
-                                        <input type="text" class="disponiveis" nomeP="{{$produto->nome}}" iid="{{$produto['nome']}}" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
+                                        <input type="hidden" name="idDisponiveis[]" value="{{$produto->id}}"/>
+                                        <input type="text" class="disponiveis" name="disponiveis[]" nomeP="{{$produto->nome}}" iid="{{$produto['nome']}}" id="{{$produto['id']}}" qtdDisponivel="{{$produto['quantidade']}}" value="{{$produto['quantidade']}}"/>
                                     </div>
                                 @endif
                             @endforeach
@@ -289,6 +290,24 @@
                 </div>
                 <div class="modal-body">
                     <p>Quantidade desejada não disponível!</p>
+                    <input type="hidden" id="tipoRemocao" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="erroSalvarQuantidade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Erro ao salvar</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Cheque se os produtos pedidos estão disponíveis!</p>
                     <input type="hidden" id="tipoRemocao" value="" />
                 </div>
                 <div class="modal-footer">

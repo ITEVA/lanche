@@ -22,41 +22,52 @@ $(document).ready(function () {
             $(this).remove();
         });
 
-        $(".nomeProduto").each(function () {
-            $(".selectNomeFormado").append("<option selected='selected' class='selectProdutoFormado' value='"+ $(this).html() +"'>"+ $(this).html() +"</option>");
+        var salvar = true;
+        var teste = true;
 
-            var tipoPao = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
-            var tipoChapado = $(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado');
-            var tipoRecheio = $(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio');
-
-            $(".selectTipoPao").append("<option selected='selected' class='selectPao' value='"+ tipoPao +"'>"+ tipoPao +"</option>");
-            $(".selectTipoChapado").append("<option selected='selected' class='selectChapado' value='"+ tipoChapado +"'>"+ tipoChapado +"</option>");
-            $(".selectTipoRecheio").append("<option selected='selected' class='selectRecheio' value='"+ tipoRecheio +"'>"+ tipoRecheio +"</option>");
+        $(".disponiveis").each(function () {
+            if($(this).val() < 0)
+                salvar = false;
         });
 
-        $(".precoProduto").each(function () {
-            var precoFormado = ($(this).html()).split(" ");
-            $(".selectPrecoFormado").append("<option selected='selected' class='selectPrecoTotal' value='"+ (precoFormado[1].toString()).replace(",", ".") +"'>"+ (precoFormado[1].toString()).replace(",", ".") +"</option>");
-        });
+        if (salvar) {
+            $(".nomeProduto").each(function () {
+                $(".selectNomeFormado").append("<option selected='selected' class='selectProdutoFormado' value='" + $(this).html() + "'>" + $(this).html() + "</option>");
 
+                var tipoPao = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
+                var tipoChapado = $(this).parent().parent('tr').find('.chapado:checked').attr('nomeChapado');
+                var tipoRecheio = $(this).parent().parent('tr').find('.tipoRecheio:checked').attr('nomeRecheio');
 
-        if ($('#usuarios').val() == '') {
-            $("#erroUsuario").modal();
-        }
-        else if ($('#motivoCorrecao').val() == '') {
-            $("#erroMotivo").modal();
-        }
-        else {
-            var cont = 0;
-            $(".td").each(function () {
-                cont++;
+                $(".selectTipoPao").append("<option selected='selected' class='selectPao' value='" + tipoPao + "'>" + tipoPao + "</option>");
+                $(".selectTipoChapado").append("<option selected='selected' class='selectChapado' value='" + tipoChapado + "'>" + tipoChapado + "</option>");
+                $(".selectTipoRecheio").append("<option selected='selected' class='selectRecheio' value='" + tipoRecheio + "'>" + tipoRecheio + "</option>");
             });
-            if (cont == 0) {
-                $("#erroSalvar").modal();
-            } else {
-                $('#frmPedido').submit();
+
+            $(".precoProduto").each(function () {
+                var precoFormado = ($(this).html()).split(" ");
+                $(".selectPrecoFormado").append("<option selected='selected' class='selectPrecoTotal' value='" + (precoFormado[1].toString()).replace(",", ".") + "'>" + (precoFormado[1].toString()).replace(",", ".") + "</option>");
+            });
+
+            if ($('#usuarios').val() == '') {
+                $("#erroUsuario").modal();
+            }
+            else if ($('#motivoCorrecao').val() == '') {
+                $("#erroMotivo").modal();
+            }
+            else {
+                var cont = 0;
+                $(".td").each(function () {
+                    cont++;
+                });
+                if (cont == 0) {
+                    $("#erroSalvar").modal();
+                } else {
+                    $('#frmPedido').submit();
+                }
             }
         }
+        else
+            $("#erroSalvarQuantidade").modal();
     });
 
     $('[data-toggle="popover"]').popover();
@@ -394,43 +405,33 @@ $(document).ready(function () {
             var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
 
             if (qtdDisponivel !== '') {
-                if (qtdDisponivel > 0) {
-                    var comp;
-                    if (valorDeduzido < qtd)
-                        comp = qtd - valorDeduzido;
-                    else
-                        comp = qtdDisponivel;
-                    if (comp <= qtdDisponivel) {
-                        if (qtd !== valorDeduzido) {
-                            if (qtd != '') {
-                                if (valorDeduzido == 0) {
-                                    valorDeduzido = qtd;
-                                    $("#" + iid).val(qtdDisponivel - qtd);
-                                }
-                                else if (valorDeduzido != qtd) {
-                                    if (valorDeduzido > qtd) {
-                                        var aux = qtd;
-                                        qtd = valorDeduzido - qtd;
-                                        valorDeduzido = aux;
-                                        $("#" + iid).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
-                                    }
-                                    else {
-                                        var aux = qtd;
-                                        qtd = qtd - valorDeduzido;
-                                        valorDeduzido = aux;
-                                        $("#" + iid).val(qtdDisponivel - qtd);
-                                    }
-                                }
-                                $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
+                var comp;
+                if (valorDeduzido < qtd)
+                    comp = qtd - valorDeduzido;
+                else
+                    comp = qtdDisponivel;
+                if (qtd !== valorDeduzido) {
+                    if (qtd != '') {
+                        if (valorDeduzido == 0) {
+                            valorDeduzido = qtd;
+                            $("#" + iid).val(qtdDisponivel - qtd);
+                        }
+                        else if (valorDeduzido != qtd) {
+                            if (valorDeduzido > qtd) {
+                                var aux = qtd;
+                                qtd = valorDeduzido - qtd;
+                                valorDeduzido = aux;
+                                $("#" + iid).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+                            }
+                            else {
+                                var aux = qtd;
+                                qtd = qtd - valorDeduzido;
+                                valorDeduzido = aux;
+                                $("#" + iid).val(qtdDisponivel - qtd);
                             }
                         }
+                        $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
                     }
-                    else {
-                        $("#qtdNDisponivel").modal();
-                    }
-                }
-                else {
-                    $("#produtoEsgotado").modal();
                 }
             }
         }
@@ -479,48 +480,38 @@ $(document).ready(function () {
             var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
 
             if (qtdDisponivel !== '') {
-                if (qtdDisponivel > 0) {
-                    var comp;
-                    if (valorDeduzido < qtd)
-                        comp = qtd - valorDeduzido;
-                    else
-                        comp = qtdDisponivel;
-                    if (comp <= qtdDisponivel) {
-                        if (qtd !== valorDeduzido || paoAnterior != paoAtual) {
-                            if (qtd != '') {
-                                if (valorDeduzido == 0) {
-                                    valorDeduzido = qtd;
-                                    $("#" + idAtual).val(qtdDisponivel - qtd);
-                                }
-                                else if (valorDeduzido != qtd) {
-                                    if (valorDeduzido > qtd) {
-                                        var aux = qtd;
-                                        qtd = valorDeduzido - qtd;
-                                        valorDeduzido = aux;
-                                        $("#" + idAtual).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
-                                    }
-                                    else {
-                                        var aux = qtd;
-                                        qtd = qtd - valorDeduzido;
-                                        valorDeduzido = aux;
-                                        $("#" + idAtual).val(qtdDisponivel - qtd);
-                                    }
-                                }
-                                else if (valorDeduzido == qtd) {
-                                    $("#" + idAtual).val(parseFloat(qtdDisponivel) - parseFloat(qtd));
-                                    $("#" + idAnterior).val(parseFloat(qtdDisponivelAnterior) + parseFloat(qtd));
-                                }
-                                $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
-                                $(this).parent().parent('tr').find('.tipoPaoDeducao').val(paoAtual);
+                var comp;
+                if (valorDeduzido < qtd)
+                    comp = qtd - valorDeduzido;
+                else
+                    comp = qtdDisponivel;
+                if (qtd !== valorDeduzido || paoAnterior != paoAtual) {
+                    if (qtd != '') {
+                        if (valorDeduzido == 0) {
+                            valorDeduzido = qtd;
+                            $("#" + idAtual).val(qtdDisponivel - qtd);
+                        }
+                        else if (valorDeduzido != qtd) {
+                            if (valorDeduzido > qtd) {
+                                var aux = qtd;
+                                qtd = valorDeduzido - qtd;
+                                valorDeduzido = aux;
+                                $("#" + idAtual).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+                            }
+                            else {
+                                var aux = qtd;
+                                qtd = qtd - valorDeduzido;
+                                valorDeduzido = aux;
+                                $("#" + idAtual).val(qtdDisponivel - qtd);
                             }
                         }
+                        else if (valorDeduzido == qtd) {
+                            $("#" + idAtual).val(parseFloat(qtdDisponivel) - parseFloat(qtd));
+                            $("#" + idAnterior).val(parseFloat(qtdDisponivelAnterior) + parseFloat(qtd));
+                        }
+                        $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
+                        $(this).parent().parent('tr').find('.tipoPaoDeducao').val(paoAtual);
                     }
-                    else {
-                        $("#qtdNDisponivel").modal();
-                    }
-                }
-                else {
-                    $("#produtoEsgotado").modal();
                 }
             }
         }
