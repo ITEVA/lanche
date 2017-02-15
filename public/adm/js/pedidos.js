@@ -103,6 +103,7 @@ $(document).ready(function () {
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão de forma' value='" + pForma + "'/>PF " +
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão integral' value='" + pIntegral + "'/>PI " +
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='" + pSovado + "'/>PS " +
+                        "<input class='tipoPaoDeducao' type='hidden' value='Pão de forma'/>"+
                     "</td>" +
                     "<td class='sanduicheTr'>" +
                         "<input class='tipoRecheio' type='radio' name='tipo_recheio" + idSanduiche + "' nomeRecheio='Margarina' checked='checked' value='" + pMargarina + "'/>M " +
@@ -334,15 +335,12 @@ $(document).ready(function () {
     $(document).on('keyup', '.quantidadeProduto', function (e) {
         e.preventDefault();
         var id = $(this).parent().parent('tr').find('.nomeProduto').attr('iid');
-        var iid = $(this).parent().parent('tr').attr('iid');
         var nome = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
         var valuePrecoUnit = $(this).parent().parent('tr').find('.precoFormado').html();
         var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
         var precoUnitarioQ = valuePrecoUnit.split(' ');
         var precoUnitario = ((precoUnitarioQ[1].replace(",", ".")) * qtd).toString();
         var cont = 0, contO = 0;
-        var qtdDisponivel = $("#"+iid).val();
-        var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
 
         if (qtd != '') {
             $(".selectProduto").each(function () {
@@ -376,6 +374,24 @@ $(document).ready(function () {
                 totalPedido = totalPedido.toFixed(2);
                 $("#totalPedido").html((totalPedido.toString()).replace(".", ","));
             });
+
+            var nomeQ = nome.split(" ");
+            var iid = "";
+
+            if (nomeQ[0] == "Sand.") {
+                var paoAtual = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
+                $(".disponiveis").each(function () {
+                    if ($(this).attr('nomeP') === paoAtual) {
+                        iid = $(this).attr('id');
+                    }
+                });
+            }
+            else {
+                iid = $(this).parent().parent('tr').attr('iid');
+            }
+
+            var qtdDisponivel = $("#"+iid).val();
+            var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
 
             if (qtdDisponivel !== '') {
                 if (qtdDisponivel > 0) {
@@ -440,6 +456,75 @@ $(document).ready(function () {
         valorPao = valorTotal;
 
         $(this).parent().parent('tr').find('.precoFormado').html("R$ " + (valorTotal.toString()).replace(".", ","));
+
+        var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
+
+        if (qtd != '') {
+            var paoAnterior = $(this).parent().parent('tr').find('.tipoPaoDeducao').val();
+            var paoAtual = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
+            var idAnterior = '';
+            var idAtual = '';
+
+            $(".disponiveis").each(function () {
+                if ($(this).attr('nomeP') === paoAnterior) {
+                    idAnterior = $(this).attr('id');
+                }
+                if ($(this).attr('nomeP') === paoAtual) {
+                    idAtual = $(this).attr('id');
+                }
+            });
+
+            var qtdDisponivelAnterior = $("#" + idAnterior).val();
+            var qtdDisponivel = $("#" + idAtual).val();
+            var valorDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
+
+            if (qtdDisponivel !== '') {
+                if (qtdDisponivel > 0) {
+                    var comp;
+                    if (valorDeduzido < qtd)
+                        comp = qtd - valorDeduzido;
+                    else
+                        comp = qtdDisponivel;
+                    if (comp <= qtdDisponivel) {
+                        if (qtd !== valorDeduzido || paoAnterior != paoAtual) {
+                            if (qtd != '') {
+                                if (valorDeduzido == 0) {
+                                    valorDeduzido = qtd;
+                                    $("#" + idAtual).val(qtdDisponivel - qtd);
+                                }
+                                else if (valorDeduzido != qtd) {
+                                    if (valorDeduzido > qtd) {
+                                        var aux = qtd;
+                                        qtd = valorDeduzido - qtd;
+                                        valorDeduzido = aux;
+                                        $("#" + idAtual).val(parseFloat(qtdDisponivel) + parseFloat(qtd));
+                                    }
+                                    else {
+                                        var aux = qtd;
+                                        qtd = qtd - valorDeduzido;
+                                        valorDeduzido = aux;
+                                        $("#" + idAtual).val(qtdDisponivel - qtd);
+                                    }
+                                }
+                                else if (valorDeduzido == qtd) {
+                                    $("#" + idAtual).val(parseFloat(qtdDisponivel) - parseFloat(qtd));
+                                    $("#" + idAnterior).val(parseFloat(qtdDisponivelAnterior) + parseFloat(qtd));
+                                }
+                                $(this).parent().parent('tr').find('.deduzido').val(valorDeduzido);
+                                $(this).parent().parent('tr').find('.tipoPaoDeducao').val(paoAtual);
+                            }
+                        }
+                    }
+                    else {
+                        $("#qtdNDisponivel").modal();
+                    }
+                }
+                else {
+                    $("#produtoEsgotado").modal();
+                }
+            }
+        }
+
         $('.tipoRecheio').change();
     });
 

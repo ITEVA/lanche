@@ -59,7 +59,7 @@
                                 @if($produto['quantidade'] != '')
                                     <div class="form-group col-md-3 col-xs-12">
                                         <label>{{$produto['nome']}}: </label>
-                                        <input type="text" class="disponiveis" iid="{{$produto['nome']}}" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
+                                        <input type="text" class="disponiveis" nomeP="{{$produto->nome}}" iid="{{$produto['nome']}}" id="{{$produto['id']}}" value="{{$produto['quantidade']}}"/>
                                     </div>
                                 @endif
                             @endforeach
