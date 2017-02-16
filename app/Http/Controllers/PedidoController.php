@@ -312,6 +312,15 @@ class PedidoController extends AbstractCrudController
             }
         }
 
+
+        foreach ($produtos as $produto) {
+            foreach ($produtosPedido as $produtoPedido) {
+                if ($produto->nome == $produtoPedido->nome) {
+                    $produto['qtdPedido'] = $produtoPedido->quantidade;
+                }
+            }
+        }
+
         if ($this->checaTempoCardapio($pedido[0]['id_cardapio'])) {
             return redirect('pedidos');
         } else {
@@ -416,7 +425,7 @@ class PedidoController extends AbstractCrudController
                 if ($retorno == false)
                     return redirect()
                         ->action('PedidoController@novo')
-                        ->withErrors(array('O estoque de algum porduto pode ter acabado enquanto seu pedido era feito. Faça-o novamente.'));
+                        ->withErrors(array('O estoque de algum porduto acabou enquanto seu pedido era feito. Faça-o novamente.'));
                 else
                     return redirect()
                         ->action('PedidoController@listar');
@@ -463,11 +472,15 @@ class PedidoController extends AbstractCrudController
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
-            $this->removerProdutosPedido($id);
-            $this->salvarPedido($request, $id);
+            $retorno = $this->salvarPedido($request, $id, 'editar');
 
-            return redirect()
-                ->action('PedidoController@listar');
+            if ($retorno == false)
+                return redirect()
+                    ->back()
+                    ->withErrors(array('O estoque de algum porduto acabou enquanto seu pedido era feito. Faça-o novamente.'));
+            else
+                return redirect()
+                    ->action('PedidoController@listar');
 
         } catch (QueryException $e) {
             return redirect()
@@ -501,7 +514,7 @@ class PedidoController extends AbstractCrudController
         }
     }
 
-    private function salvarPedido($request, $id = null)
+    private function salvarPedido($request, $id = null, $tipo = null)
     {
         $idsProdutos = array();
         $nomesProdutos = array();
@@ -515,6 +528,7 @@ class PedidoController extends AbstractCrudController
         $tiposRecheios = array();
         $idsDisponiveis = array();
         $disponiveis = array();
+        $quantidadesAnt = array();
 
         $i = 0;
         foreach ($request->ids as $idProduto) {
@@ -565,6 +579,12 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->quantidadesAnterior as $quantidadeAnt) {
+            $quantidadesAnt[$i] = $quantidadeAnt;
+            $i++;
+        }
+
+        $i = 0;
         foreach ($request->tipoPao as $tipoPao) {
             $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
             $i++;
@@ -608,10 +628,28 @@ class PedidoController extends AbstractCrudController
                 else
                     $pos = $j;
             }
-            if (($produtoCardapio->quantidade + $disponiveis[$pos]) < 0) {
-                $salvar = false;
+            if ($tipo == 'editar') {
+                echo "Nome: ".  $produtoCardapio->nome;
+                echo "<br>Quantidade Disponivel: " . $produtoCardapio->quantidade;
+                echo "<br>Nova quantidade: " . $disponiveis[$pos];
+                echo "<br>Qtd anterior: " . $quantidadesAnt[$pos] . "<br><br>";
+
+                //Pegar quantidade atual lolicitada do produto
+                if ($quantidadesAnt[$pos] < ($produtoCardapio->quantidade - $disponiveis[$pos])) {
+                    if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
+                        $salvar = false;
+                    }
+                }
+
+            }
+            else {
+                if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
+                    $salvar = false;
+                }
             }
         }
+        var_dump($salvar);
+        //exit;
 
         if ($salvar == true) {
             $dadosPedido = array(
@@ -625,12 +663,13 @@ class PedidoController extends AbstractCrudController
             );
 
             if ($id != null) {
+                $this->removerProdutosPedido($id);
                 $pedido = Pedido::find($id);
                 $pedido->fill($dadosPedido);
                 $pedido->save();
             }
             else
-                $pedido = Pedido::create($dadosPedido);
+               $pedido = Pedido::create($dadosPedido);
 
             for ($i = 0; $i < count($nomesProdutos); $i++) {
                 $produto = array(
@@ -657,16 +696,36 @@ class PedidoController extends AbstractCrudController
                 $j = 0;
                 foreach ($idsDisponiveis as $idsDisponivei) {
                     if ($idsDisponivei == $produtoCardapio->id_produto) {
-                        $dados = array(
-                            "quantidade" => $disponiveis[$j]
-                        );
-                        $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                        $produtoCardapio->fill($dados);
-                        $produtoCardapio->save();
+                        $l = 0;
+                        $pos = 0;
+                        foreach ($idsDisponiveis as $idDisponivel) {
+                            if ($idDisponivel != $produtoCardapio->id_produto) {
+                                $l++;
+                            }
+                            else
+                                $pos = $j;
+                        }
+                        $k = 0;
+                        foreach ($nomesProdutos as $nomeProduto) {
+                            if ($nomeProduto == $produtoCardapio->nome) {
+                                //Pegar quantidade atual lolicitada do produto, e a quantidade anterior cadastrada
+                                $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesProdutos[$k] - $quantidadesAnt[$pos]);
+
+                                $dados = array(
+                                    "quantidade" => $novaQuantidade
+                                );
+
+                                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                                $produtoCardapio->fill($dados);
+                                $produtoCardapio->save();
+                            }
+                            $k++;
+                        }
                     }
                     $j++;
                 }
             }
+            return true;
         }
         else
             return false;
@@ -793,6 +852,32 @@ class PedidoController extends AbstractCrudController
 
             ProdutoPedido::create($produto);
         }
+    }
+
+    public function removerLote(Request $request)
+    {
+        $pedido = Pedido::find($request->ids);
+        $produtosPedido = ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $pedido->id])->get();
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $pedido->id_cardapio])->get();
+
+        foreach ($produtosCardapio as $produtoCardapio) {
+            foreach ($produtosPedido as $produtoPedido) {
+                if ($produtoCardapio->nome == $produtoPedido->nome) {
+                    $produtoCardapio->quantidade = floatval($produtoCardapio->quantidade) + floatval($produtoPedido->quantidade);
+                    $dado = array(
+                            "quantidade" => $produtoCardapio->quantidade
+                    );
+                    var_dump($produtoCardapio->quantidade);
+
+                    $pcAlterar = ProdutoCardapio::find($produtoCardapio->id);
+                    $pcAlterar->fill($dado);
+                    $pcAlterar->save();
+                }
+            }
+        }
+
+        return
+            parent::removerLote($request);
     }
 
     private function removerProdutosPedido($id)
