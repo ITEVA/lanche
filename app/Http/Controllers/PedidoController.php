@@ -212,6 +212,7 @@ class PedidoController extends AbstractCrudController
         foreach ($produtosDia as $produtoDia) {
             $produto = Produto::find($produtoDia->id_produto);
             $produtos[$i] = $produto;
+            $produto['quantidade'] = $produtoDia->quantidade;
             $i++;
         }
 
@@ -312,7 +313,6 @@ class PedidoController extends AbstractCrudController
             }
         }
 
-
         foreach ($produtos as $produto) {
             $produto['qtdPedido'] = 0;
             foreach ($produtosPedido as $produtoPedido) {
@@ -388,6 +388,7 @@ class PedidoController extends AbstractCrudController
         foreach ($produtosDia as $produtoDia) {
             $produto = Produto::find($produtoDia->id_produto);
             $produtos[$i] = $produto;
+            $produto['quantidade'] = $produtoDia->quantidade;
             $i++;
         }
 
@@ -426,6 +427,47 @@ class PedidoController extends AbstractCrudController
             else {
                 $produtoPedido['idSanduiche'] = $produtoPedido->id_produto;
                 $ids[$i++] = $produtoPedido->id_produto;
+            }
+        }
+
+        foreach ($produtos as $produto) {
+            $produto['qtdPedido'] = 0;
+            foreach ($produtosPedido as $produtoPedido) {
+                if ($produto->nome == $produtoPedido->nome) {
+                    $nomeQ = explode(" ", $produtoPedido->nome);
+                    $nomeQ1 = explode(" ", $produtoPedido->tipo_pao);
+                    if ($nomeQ[0] == "Sand.") {
+                        if ($nomeQ1[1] == "carioca") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão carioca") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else if ($nomeQ1[1] == "integral") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão integral") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else if ($nomeQ1[1] == "sovado") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão sovado") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão de forma") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                    }
+                    $produto['qtdPedido'] = $produto['qtdPedido'] + $produtoPedido->quantidade;
+                }
             }
         }
 
@@ -483,10 +525,15 @@ class PedidoController extends AbstractCrudController
 
         try {
             if (count($request->nome) > 0) {
-                $this->salvarPedidoCorrigir($request);
+                $retorno = $this->salvarPedidoCorrigir($request);
 
-                return redirect()
-                    ->action('PedidoController@listarCorrigir');
+                if ($retorno == false)
+                    return redirect()
+                        ->action('PedidoController@novoCorrigir')
+                        ->withErrors(array('O estoque de algum porduto acabou enquanto seu pedido era feito. Faça-o novamente.'));
+                else
+                    return redirect()
+                        ->action('PedidoController@listarCorrigir');
             }
         } catch (QueryException $e) {
             return redirect()
@@ -533,11 +580,15 @@ class PedidoController extends AbstractCrudController
         $request['id_empregador'] = Auth::user()->id_empregador;
 
         try {
-            $this->removerProdutosPedido($id);
-            $this->salvarPedidoCorrigir($request, $id);
+            $retorno = $this->salvarPedidoCorrigir($request, $id, 'editar');
 
-            return redirect()
-                ->action('PedidoController@listarCorrigir');
+            if ($retorno == false)
+                return redirect()
+                    ->back()
+                    ->withErrors(array('O estoque de algum porduto acabou enquanto seu pedido era feito. Faça-o novamente.'));
+            else
+                return redirect()
+                    ->action('PedidoController@listarCorrigir');
 
         } catch (QueryException $e) {
             return redirect()
@@ -655,7 +706,6 @@ class PedidoController extends AbstractCrudController
 
         $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
 
-
         $salvar = true;
         $i = 0;
         foreach ($produtosCardapio as $produtoCardapio) {
@@ -762,7 +812,7 @@ class PedidoController extends AbstractCrudController
             return false;
     }
 
-    private function salvarPedidoCorrigir($request, $id = null)
+    private function salvarPedidoCorrigir($request, $id = null, $tipo = null)
     {
         $idsProdutos = array();
         $nomesProdutos = array();
@@ -774,6 +824,10 @@ class PedidoController extends AbstractCrudController
         $tiposPao = array();
         $tiposChapado = array();
         $tiposRecheios = array();
+        $idsDisponiveis = array();
+        $disponiveis = array();
+        $quantidadesAnt = array();
+        $quantidadesAtuais = array();
 
         $i = 0;
         foreach ($request->ids as $idProduto) {
@@ -812,6 +866,30 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->idDisponiveis as $idDisponivel) {
+            $idsDisponiveis[$i] = $idDisponivel;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->disponiveis as $disponivel) {
+            $disponiveis[$i] = $disponivel;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->quantidadesAnterior as $quantidadeAnt) {
+            $quantidadesAnt[$i] = $quantidadeAnt;
+            $i++;
+        }
+
+        $i = 0;
+        foreach ($request->quantidadesAtuais as $quantidadeAtual) {
+            $quantidadesAtuais[$i] = $quantidadeAtual;
+            $i++;
+        }
+
+        $i = 0;
         foreach ($request->tipoPao as $tipoPao) {
             $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
             $i++;
@@ -842,47 +920,116 @@ class PedidoController extends AbstractCrudController
 
         date_default_timezone_set('America/Fortaleza');
 
-        $dadosPedido = array(
-            "data" => $cardapio[0]->data,
-            "preco" => $precoTotal,
-            "observacao" => $request->observacao,
-            "turno" => $cardapio[0]->turno,
-            "corrigido" => '1',
-            "motivo_correcao" => $request->motivo_correcao,
-            "data_correcao" => date("Y/m/d H:i"),
-            "responsavel_correcao" => Auth::user()->apelido,
-            "id_usuario" => $request->usuario,
-            "id_cardapio" => $request->cardapio,
-            "id_empregador" => Auth::user()->id_empregador,
-        );
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
 
-        if ($id != null) {
-            $pedido = Pedido::find($id);
-            $pedido->fill($dadosPedido);
-            $pedido->save();
+        $salvar = true;
+        $i = 0;
+        foreach ($produtosCardapio as $produtoCardapio) {
+            $j = 0;
+            $pos = 0;
+            foreach ($idsDisponiveis as $idsDisponivei) {
+                if ($idsDisponivei != $produtoCardapio->id_produto) {
+                    $j++;
+                }
+                else
+                    $pos = $j;
+            }
+            if ($tipo == 'editar') {
+                if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
+                    if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
+                        $salvar = false;
+                    }
+                }
+            }
+            else {
+                if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
+                    $salvar = false;
+                }
+            }
         }
-        else
-            $pedido = Pedido::create($dadosPedido);
 
-        for ($i = 0; $i < count($nomesProdutos); $i++) {
-            $produto = array(
-                "nome" => $nomesProdutos[$i],
-                "nome_formado" => $nomesProdutosFormados[$i],
-                "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
-                "tipo_pao" => $tiposPao[$i],
-                "chapado" => $tiposChapado[$i],
-                "tipo_recheio" => $tiposRecheios[$i],
-                "data" => $date,
+        if ($salvar == true) {
+            $dadosPedido = array(
+                "data" => $cardapio[0]->data,
+                "preco" => $precoTotal,
+                "observacao" => $request->observacao,
                 "turno" => $cardapio[0]->turno,
-                "preco_unitario" => $precosProdutos[$i],
-                "preco_total" => $precosFormadosProdutos[$i],
-                "id_produto" => $idsProdutos[$i],
-                "id_pedido" => $pedido->id,
-                "id_empregador" => Auth::user()->id_empregador
+                "corrigido" => '1',
+                "motivo_correcao" => $request->motivo_correcao,
+                "data_correcao" => date("Y/m/d H:i"),
+                "responsavel_correcao" => Auth::user()->apelido,
+                "id_usuario" => $request->usuario,
+                "id_cardapio" => $request->cardapio,
+                "id_empregador" => Auth::user()->id_empregador,
             );
 
-            ProdutoPedido::create($produto);
+            if ($id != null) {
+                $this->removerProdutosPedido($id);
+                $pedido = Pedido::find($id);
+                $pedido->fill($dadosPedido);
+                $pedido->save();
+            } else
+                $pedido = Pedido::create($dadosPedido);
+
+            for ($i = 0; $i < count($nomesProdutos); $i++) {
+                $produto = array(
+                    "nome" => $nomesProdutos[$i],
+                    "nome_formado" => $nomesProdutosFormados[$i],
+                    "quantidade" => str_replace(",", ".", $quantidadesProdutos[$i]),
+                    "tipo_pao" => $tiposPao[$i],
+                    "chapado" => $tiposChapado[$i],
+                    "tipo_recheio" => $tiposRecheios[$i],
+                    "data" => $date,
+                    "turno" => $cardapio[0]->turno,
+                    "preco_unitario" => $precosProdutos[$i],
+                    "preco_total" => $precosFormadosProdutos[$i],
+                    "id_produto" => $idsProdutos[$i],
+                    "id_pedido" => $pedido->id,
+                    "id_empregador" => Auth::user()->id_empregador
+                );
+
+                ProdutoPedido::create($produto);
+            }
+
+
+            $i = 0;
+            foreach ($produtosCardapio as $produtoCardapio) {
+                $l = 0;
+                $pos = 0;
+                foreach ($idsDisponiveis as $idDisponivel) {
+                    if ($idDisponivel != $produtoCardapio->id_produto) {
+                        $l++;
+                    }
+                    else
+                        $pos = $l;
+                }
+                if ($quantidadesAtuais[$pos] == 0) {
+                    $novaQuantidade = $disponiveis[$pos];
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
+                else {
+                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
+            }
+            return true;
         }
+        else
+            return false;
     }
 
     public function removerLote(Request $request)
