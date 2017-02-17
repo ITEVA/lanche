@@ -32,6 +32,11 @@ $(document).ready(function () {
 
         if (salvar) {
             $(".nomeProduto").each(function () {
+                var id = $(this).parent().parent('tr').attr('iid');
+                var novoValor = parseFloat($('.quantidadeTotalPedido'+id).val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+
+                $('.quantidadeTotalPedido'+id).val(novoValor);
+
                 $(".selectNomeFormado").append("<option selected='selected' class='selectProdutoFormado' value='" + $(this).html() + "'>" + $(this).html() + "</option>");
 
                 var tipoPao = $(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao');
@@ -280,12 +285,7 @@ $(document).ready(function () {
         var contPreco = contO;
         var contQtd = contO;
 
-        $(".selectId").each(function () {
-            contIds--;
-            if(contIds == 0) {
-                $(this).remove();
-            }
-        });
+
 
         $(".selectPreco").each(function () {
             contPreco--;

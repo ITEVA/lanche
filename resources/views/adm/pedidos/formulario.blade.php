@@ -61,7 +61,8 @@
                                         <label>{{$produto['nome']}}: </label>
                                         <input type="hidden" name="idDisponiveis[]" value="{{$produto->id}}"/>
                                         <input type="text" class="disponiveis" name="disponiveis[]" nomeP="{{$produto->nome}}" iid="{{$produto['nome']}}" id="{{$produto['id']}}" qtdDisponivel="{{$produto['quantidade']}}" value="{{$produto['quantidade']}}"/>
-                                        <input type="hidden" name="quantidadesAnterior[]" value="{{isset($produto['qtdPedido']) ? $produto['qtdPedido'] : ''}}"/>
+                                        <input type="text" name="quantidadesAnterior[]" value="{{isset($produto['qtdPedido']) ? $produto['qtdPedido'] : ''}}"/>
+                                        <input type="text" name="quantidadesAtuais[]" class="quantidadeTotalPedido{{$produto->id}}" value="0"/>
                                     </div>
                                 @endif
                             @endforeach

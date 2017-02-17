@@ -314,9 +314,42 @@ class PedidoController extends AbstractCrudController
 
 
         foreach ($produtos as $produto) {
+            $produto['qtdPedido'] = 0;
             foreach ($produtosPedido as $produtoPedido) {
                 if ($produto->nome == $produtoPedido->nome) {
-                    $produto['qtdPedido'] = $produtoPedido->quantidade;
+                    $nomeQ = explode(" ", $produtoPedido->nome);
+                    $nomeQ1 = explode(" ", $produtoPedido->tipo_pao);
+                    if ($nomeQ[0] == "Sand.") {
+                        if ($nomeQ1[1] == "carioca") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão carioca") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else if ($nomeQ1[1] == "integral") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão integral") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else if ($nomeQ1[1] == "sovado") {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão sovado") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                        else {
+                            foreach ($produtos as $produto1) {
+                                if ($produto1->nome == "Pão de forma") {
+                                    $produto1['qtdPedido'] = $produto1['qtdPedido'] + $produtoPedido->quantidade;
+                                }
+                            }
+                        }
+                    }
+                    $produto['qtdPedido'] = $produto['qtdPedido'] + $produtoPedido->quantidade;
                 }
             }
         }
@@ -529,6 +562,7 @@ class PedidoController extends AbstractCrudController
         $idsDisponiveis = array();
         $disponiveis = array();
         $quantidadesAnt = array();
+        $quantidadesAtuais = array();
 
         $i = 0;
         foreach ($request->ids as $idProduto) {
@@ -585,6 +619,12 @@ class PedidoController extends AbstractCrudController
         }
 
         $i = 0;
+        foreach ($request->quantidadesAtuais as $quantidadeAtual) {
+            $quantidadesAtuais[$i] = $quantidadeAtual;
+            $i++;
+        }
+
+        $i = 0;
         foreach ($request->tipoPao as $tipoPao) {
             $tiposPao[$i] = $tipoPao == "undefined" ? "" : $tipoPao;
             $i++;
@@ -634,8 +674,7 @@ class PedidoController extends AbstractCrudController
                 echo "<br>Nova quantidade: " . $disponiveis[$pos];
                 echo "<br>Qtd anterior: " . $quantidadesAnt[$pos] . "<br><br>";
 
-                //Pegar quantidade atual lolicitada do produto
-                if ($quantidadesAnt[$pos] < ($produtoCardapio->quantidade - $disponiveis[$pos])) {
+                if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
                     if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
                         $salvar = false;
                     }
@@ -648,8 +687,6 @@ class PedidoController extends AbstractCrudController
                 }
             }
         }
-        var_dump($salvar);
-        //exit;
 
         if ($salvar == true) {
             $dadosPedido = array(
@@ -708,8 +745,7 @@ class PedidoController extends AbstractCrudController
                         $k = 0;
                         foreach ($nomesProdutos as $nomeProduto) {
                             if ($nomeProduto == $produtoCardapio->nome) {
-                                //Pegar quantidade atual lolicitada do produto, e a quantidade anterior cadastrada
-                                $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesProdutos[$k] - $quantidadesAnt[$pos]);
+                                $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
 
                                 $dados = array(
                                     "quantidade" => $novaQuantidade
