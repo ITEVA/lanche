@@ -23,7 +23,6 @@ $(document).ready(function () {
         });
 
         var salvar = true;
-        var teste = true;
 
         $(".disponiveis").each(function () {
             if($(this).val() < 0)
@@ -285,7 +284,12 @@ $(document).ready(function () {
         var contPreco = contO;
         var contQtd = contO;
 
-
+        $(".selectId").each(function () {
+            contIds--;
+            if(contIds == 0) {
+                $(this).remove();
+            }
+        });
 
         $(".selectPreco").each(function () {
             contPreco--;

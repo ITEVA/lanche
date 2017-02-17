@@ -669,17 +669,11 @@ class PedidoController extends AbstractCrudController
                     $pos = $j;
             }
             if ($tipo == 'editar') {
-                echo "Nome: ".  $produtoCardapio->nome;
-                echo "<br>Quantidade Disponivel: " . $produtoCardapio->quantidade;
-                echo "<br>Nova quantidade: " . $disponiveis[$pos];
-                echo "<br>Qtd anterior: " . $quantidadesAnt[$pos] . "<br><br>";
-
                 if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
                     if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
                         $salvar = false;
                     }
                 }
-
             }
             else {
                 if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
@@ -730,35 +724,36 @@ class PedidoController extends AbstractCrudController
 
             $i = 0;
             foreach ($produtosCardapio as $produtoCardapio) {
-                $j = 0;
-                foreach ($idsDisponiveis as $idsDisponivei) {
-                    if ($idsDisponivei == $produtoCardapio->id_produto) {
-                        $l = 0;
-                        $pos = 0;
-                        foreach ($idsDisponiveis as $idDisponivel) {
-                            if ($idDisponivel != $produtoCardapio->id_produto) {
-                                $l++;
-                            }
-                            else
-                                $pos = $j;
-                        }
-                        $k = 0;
-                        foreach ($nomesProdutos as $nomeProduto) {
-                            if ($nomeProduto == $produtoCardapio->nome) {
-                                $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
-
-                                $dados = array(
-                                    "quantidade" => $novaQuantidade
-                                );
-
-                                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                                $produtoCardapio->fill($dados);
-                                $produtoCardapio->save();
-                            }
-                            $k++;
-                        }
+                $l = 0;
+                $pos = 0;
+                foreach ($idsDisponiveis as $idDisponivel) {
+                    if ($idDisponivel != $produtoCardapio->id_produto) {
+                        $l++;
                     }
-                    $j++;
+                    else
+                        $pos = $l;
+                }
+                if ($quantidadesAtuais[$pos] == 0) {
+                    $novaQuantidade = $disponiveis[$pos];
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
+                else {
+                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
                 }
             }
             return true;
