@@ -33,9 +33,15 @@
                         @endif
 
                         <div class="form-group col-md-3 col-xs-12">
-                            <label for="data">Data</label>
-                            <input type="text" class="form-control date date-picker" name="data"
-                                   value="{{old('data') !== null ? old('data') : $cardapio->data}}"/>
+                            <label for="data">Data inicio</label>
+                            <input type="text" class="form-control date date-picker" name="dataIni"
+                                   value="{{old('data') !== null ? old('data') : ''}}"/>
+                        </div>
+
+                        <div class="form-group col-md-3 col-xs-12">
+                            <label for="data">Data fim</label>
+                            <input type="text" class="form-control date date-picker" name="dataFim"
+                                   value="{{old('data') !== null ? old('data') : ''}}"/>
                         </div>
 
                         <div class="form-group col-md-5 col-xs-12 quebrarDiv">

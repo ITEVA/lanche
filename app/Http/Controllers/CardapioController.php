@@ -43,13 +43,27 @@ class CardapioController extends AbstractCrudController
     }
 
     public function novo(){
-        $produtos = Produto::all();
+        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
         return parent::novo()
             ->with('produtos', $produtos);
     }
 
+    public function novoLote(){
+        if($this->checkPermissao()) return redirect('error404');
+        $itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+        $cardapio = Cardapio::getEmpty();
+        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
+
+        return view('adm.cardapios.formularioLote')
+            ->with('cardapio', $this->formatInput($cardapio))
+            ->with('action', 'cardapios/salvarLote')
+            ->with('produtos', $produtos)
+            ->with('itensPermitidos', $itensPermitidos);
+    }
+
     public function editar($id){
-        $produtos = Produto::all();
+        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
         $produtosAtuais = ProdutoCardapio::where(['id_cardapio'=>$id])->get();
 
         return parent::editar($id)
@@ -76,6 +90,55 @@ class CardapioController extends AbstractCrudController
             $cardapio = Cardapio::create($c);
 
             $this->salvarProdutosCardapio($request, $cardapio->id);
+
+            return redirect()
+                ->action('CardapioController@listar');
+
+        } catch (QueryException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(array('Erro ao salvar cardapio. Tente mais tarde.'));
+        }
+    }
+
+    public function salvarLote(CardapioRequest $request)
+    {
+        $request['id_empregador'] = Auth::user()->id_empregador;
+
+        $dataInicio = $this->formatarDataEn($request->dataIni);
+        $dataFim = $this->formatarDataEn($request->dataFim);
+
+        $dataCriada = $dataInicio;
+
+        try {
+            $c = array(
+                "data" => $dataInicio,
+                "descricao" => $request['descricao'],
+                "id_empregador" => $request['id_empregador'],
+                "hora_inicio" => $request['hora_inicio'],
+                "hora_final" => $request['hora_final'],
+                "turno" => $request['turno']
+            );
+
+            $c = $this->formatOutput($c);
+            $cardapio = Cardapio::create($c);
+            $this->salvarProdutosCardapio($request, $cardapio->id);
+
+            while (strtotime($dataCriada) < strtotime($dataFim)) {
+                $dataNova = date('Y-m-d', strtotime("+7 days",strtotime($dataCriada)));
+                $dataCriada = $dataNova;
+                echo $dataCriada."<br>";
+
+                $c['data'] = $dataCriada;
+
+                $c = $this->formatOutput($c);
+                $cardapio = Cardapio::create($c);
+                $this->salvarProdutosCardapio($request, $cardapio->id);
+
+                var_dump($c);
+            }
+            exit;
 
             return redirect()
                 ->action('CardapioController@listar');

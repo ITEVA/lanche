@@ -19,6 +19,9 @@
                 <a href="cardapios/novo" class="btn btn-success pull-right">
                     <i class="fa fa-plus"></i>&nbsp;Novo
                 </a>
+                <a href="cardapios/novoLote" class="btn btn-success pull-right">
+                    <i class="fa fa-plus"></i>&nbsp;Novo Lote
+                </a>
 
                 <div class="x_title">
                     <h2>Cardápios</h2>

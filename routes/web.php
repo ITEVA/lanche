@@ -51,7 +51,9 @@ Route::get('/perfil/{id}', 'PerfilController@listarPerfil');
 //Rotas para gestão de Cardápio
 Route::get('/cardapios', 'CardapioController@listar');
 Route::get('/cardapios/novo', 'CardapioController@novo');
+Route::get('/cardapios/novoLote', 'CardapioController@novoLote');
 Route::post('/cardapios/salvar', 'CardapioController@salvar');
+Route::post('/cardapios/salvarLote', 'CardapioController@salvarLote');
 Route::get('/cardapios/editar/{id}', 'CardapioController@editar');
 Route::post('/cardapios/atualizar/{id}', 'CardapioController@atualizar');
 Route::post('/cardapios/removerLote', 'CardapioController@removerLote');

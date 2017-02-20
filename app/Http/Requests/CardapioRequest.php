@@ -14,7 +14,7 @@ class CardapioRequest extends FormRequest
     public function rules()
     {
         return [
-            'data' => 'required'
+
         ];
     }
 
