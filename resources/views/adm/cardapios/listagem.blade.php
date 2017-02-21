@@ -111,12 +111,14 @@
                                 <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Quantidade</th>
                                         <th>Preço</th>
                                     </tr>
                                     @foreach($cardapio['produtos'] as $produto)
                                         @if(isset($produto['id_cardapio']))
                                             <tr>
                                                 <td>{{$produto['produto'][0]->nome}}</td>
+                                                <td>{{$produto->quantidade}}</td>
                                                 <td>R$ {{number_format($produto['produto'][0]->preco, 2, ',', '.')}}</td>
                                             </tr>
                                         @endif

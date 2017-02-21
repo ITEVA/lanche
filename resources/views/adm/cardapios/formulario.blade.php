@@ -34,7 +34,7 @@
 
                         <div class="form-group col-md-3 col-xs-12">
                             <label for="data">Data</label>
-                            <input type="text" class="form-control date date-picker" name="data"
+                            <input type="text" class="form-control date date-picker" name="data" {{isset($ids) ? " disabled" : ""}}
                                    value="{{old('data') !== null ? old('data') : $cardapio->data}}"/>
                         </div>
 
@@ -105,7 +105,7 @@
                         </div>
 
                         <div class="selects">
-                            <select  name="ids[]" class="form-control selectIds" multiple="multiple">
+                            <select  name="idsP[]" class="form-control selectIds" multiple="multiple">
                                 @if(isset($produtosAtuais))
                                     @foreach($produtosAtuais as $produtoAtual)
                                         <option selected="selected" class="selectId" value="{{$produtoAtual->id_produto}}">{{$produtoAtual->id_produto}}</option>

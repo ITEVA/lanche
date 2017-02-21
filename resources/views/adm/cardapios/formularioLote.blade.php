@@ -111,7 +111,7 @@
                         </div>
 
                         <div class="selects">
-                            <select  name="ids[]" class="form-control selectIds" multiple="multiple">
+                            <select  name="idsP[]" class="form-control selectIds" multiple="multiple">
                                 @if(isset($produtosAtuais))
                                     @foreach($produtosAtuais as $produtoAtual)
                                         <option selected="selected" class="selectId" value="{{$produtoAtual->id_produto}}">{{$produtoAtual->id_produto}}</option>

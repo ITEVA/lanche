@@ -5,6 +5,8 @@ $(document).ready(function () {
         $("#detalhesCardapio"+id).modal();
     }));
 
+    var urlAtual = window.location.href.split('/');
+
     $("#produtos").parent().css('clear', 'both');
 
     $("#salvarPedido").click(function (e) {
@@ -14,14 +16,13 @@ $(document).ready(function () {
         $(".nomeProduto").each(function () {
             cont++;
         });
+        cont = urlAtual[4] == "editarLote" ? 1 : cont;
         if (cont == 0) {
             $("#erroSalvar").modal();
         } else {
             $('#formCardapio').submit();
         }
     });
-
-    var urlAtual = window.location.href.split('/');
 
     if(urlAtual[4] === 'editar' || urlAtual[5] === 'editar') {
         $("#addTr").css("visibility", "visible");
@@ -50,7 +51,7 @@ $(document).ready(function () {
                 if(ctrl) {
                     $("#addTr").append("<tr class='produtosTabela' iid='" + id + "' nomeProduto='" + nome + "'>" +
                         "<td><label class='nomeProduto'>" + $(this).attr('nomeE') + "</label></td>" +
-                        "<td><input class='quantidadeProduto quantidadeCardapio' type='text' value='1' min='1' max='10'></td>" +
+                        "<td><input class='quantidadeProduto quantidadeCardapio' type='text' value='' min='1' max='10'></td>" +
                         "<td><a href='#' class='removerProduto'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
 

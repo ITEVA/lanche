@@ -135,10 +135,7 @@ class CardapioController extends AbstractCrudController
                 $c = $this->formatOutput($c);
                 $cardapio = Cardapio::create($c);
                 $this->salvarProdutosCardapio($request, $cardapio->id);
-
-                var_dump($c);
             }
-            exit;
 
             return redirect()
                 ->action('CardapioController@listar');
@@ -176,7 +173,7 @@ class CardapioController extends AbstractCrudController
 
     public function editarLote(Request $request)
     {
-        $produtos = Produto::all();
+        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
 
         return parent::editarLote($request)
             ->with('produtos', $produtos);
@@ -185,11 +182,16 @@ class CardapioController extends AbstractCrudController
     public function atualizarLote(Request $request)
     {
         $ids = explode('-', $request['ids']);
-        foreach ($ids as $id){
-            $this->removerProdutosCardapio($id);
-            $this->salvarProdutosCardapio($request['produtos'], $id);
+        if ($request->nome != "") {
+            foreach ($ids as $id) {
+                $this->removerProdutosCardapio($id);
+                $this->salvarProdutosCardapio($request, $id);
+            }
         }
         unset($request['produtos']);
+        unset($request['idsP']);
+        unset($request['nome']);
+        unset($request['quantidade']);
 
         return parent::atualizarLote($request);
     }
@@ -201,7 +203,7 @@ class CardapioController extends AbstractCrudController
         $quantidadesProdutos = array();
 
         $i = 0;
-        foreach ($request->ids as $idProduto) {
+        foreach ($request->idsP as $idProduto) {
             $idsProdutos[$i] = $idProduto;
             $i++;
         }
@@ -281,7 +283,9 @@ class CardapioController extends AbstractCrudController
 
     protected function formatOutput($request)
     {
-        $request['data'] = $this->formatarDataEn($request['data']);
+        if (isset($request['data']))
+            $request['data'] = $this->formatarDataEn($request['data']);
+
         return $request;
     }
 
