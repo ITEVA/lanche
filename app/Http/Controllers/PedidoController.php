@@ -651,28 +651,36 @@ class PedidoController extends AbstractCrudController
             $i++;
         }
 
-        $i = 0;
-        foreach ($request->idDisponiveis as $idDisponivel) {
-            $idsDisponiveis[$i] = $idDisponivel;
-            $i++;
+        if (isset($request->idDisponiveis)) {
+            $i = 0;
+            foreach ($request->idDisponiveis as $idDisponivel) {
+                $idsDisponiveis[$i] = $idDisponivel;
+                $i++;
+            }
         }
 
-        $i = 0;
-        foreach ($request->disponiveis as $disponivel) {
-            $disponiveis[$i] = $disponivel;
-            $i++;
+        if (isset($request->disponiveis)) {
+            $i = 0;
+            foreach ($request->disponiveis as $disponivel) {
+                $disponiveis[$i] = $disponivel;
+                $i++;
+            }
         }
 
-        $i = 0;
-        foreach ($request->quantidadesAnterior as $quantidadeAnt) {
-            $quantidadesAnt[$i] = $quantidadeAnt;
-            $i++;
+        if (isset($request->quantidadesAnterior)) {
+            $i = 0;
+            foreach ($request->quantidadesAnterior as $quantidadeAnt) {
+                $quantidadesAnt[$i] = $quantidadeAnt;
+                $i++;
+            }
         }
 
-        $i = 0;
-        foreach ($request->quantidadesAtuais as $quantidadeAtual) {
-            $quantidadesAtuais[$i] = $quantidadeAtual;
-            $i++;
+        if (isset($request->quantidadesAtuais)) {
+            $i = 0;
+            foreach ($request->quantidadesAtuais as $quantidadeAtual) {
+                $quantidadesAtuais[$i] = $quantidadeAtual;
+                $i++;
+            }
         }
 
         $i = 0;

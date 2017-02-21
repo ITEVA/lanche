@@ -157,7 +157,7 @@ class CardapioController extends AbstractCrudController
             $this->salvarProdutosCardapio($request, $id);
 
             unset($request['produtos']);
-            unset($request['ids']);
+            unset($request['idsP']);
             unset($request['nome']);
             unset($request['quantidade']);
 

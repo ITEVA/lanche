@@ -57,7 +57,7 @@ $(document).ready(function () {
 
                     $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
                     $(".selectNome").append("<option selected='selected' class='selectProduto' value='"+$(this).attr('nomeE')+"'>"+$(this).attr('nomeE')+"</option>");
-                    $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value='1'>1</option>");
+                    $(".selectQuantidade").append("<option selected='selected' class='selectQtd' value=''>-</option>");
                 }
                 else
                     $('#alertRepetido').modal();

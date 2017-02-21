@@ -63,11 +63,13 @@ class RelatorioController extends AbstractCrudController
 
         $pedidos = $this->getPedidos($date, $request->turno);
 
-        $produtosGeral = DB::select("SELECT nome_formado, SUM(lanche.produto_pedido.quantidade) as qtdTotal
-                                FROM lanche.produto_pedido
-                                where data = '{$date}'
-                                AND turno = '{$request->turno}'
-                                GROUP BY lanche.produto_pedido.nome_formado");
+        $produtosGeral = DB::select("SELECT nome_formado as nome, SUM(ROUND(quantidade,0)) as qtdTotalInteiros, SUM(quantidade - ROUND(quantidade,0)) * 2 as qtdTotalMeios
+                                     FROM produto_pedido
+                                     where data = '{$date}'
+                                     AND turno = '{$request->turno}'
+                                     GROUP BY nome_formado
+                                     HAVING qtdTotalInteiros > 0
+                                     OR qtdTotalMeios > 0");
 
         //Criando o objeto de PDF e inicializando suas configurações
         $pdf = new FPDF("P", "pt", "A4");
@@ -92,7 +94,8 @@ class RelatorioController extends AbstractCrudController
         $pdf->SetXY(20, 145);
         $pdf->SetFont('arial', 'B', 10);
         $pdf->Cell(278, 20, 'Produto', 1, 0, "C");
-        $pdf->Cell(278, 20, 'Quantidade', 1, 0, "C");
+        $pdf->Cell(139, 20, 'Quantidade de inteiros', 1, 0, "C");
+        $pdf->Cell(139, 20, 'Quantidade de meios', 1, 0, "C");
 
         //linhas da tabela
         $pdf->SetFont('arial', '', 10);
@@ -100,8 +103,9 @@ class RelatorioController extends AbstractCrudController
             $pdf->SetY($pdf->GetY() + 20);
             foreach ($produtosGeral as $produto) {
                 $pdf->SetX(20);
-                $pdf->Cell(278, 14, $produto->nome_formado, 1, 0, "C");
-                $pdf->Cell(278, 14, $produto->qtdTotal, 1, 0, "C");
+                $pdf->Cell(278, 14, $produto->nome, 1, 0, "C");
+                $pdf->Cell(139, 14, $produto->qtdTotalInteiros, 1, 0, "C");
+                $pdf->Cell(139, 14, $produto->qtdTotalMeios, 1, 0, "C");
                 $pdf->SetY($pdf->GetY() + 14);
             }
         }
