@@ -253,6 +253,7 @@ $(document).ready(function () {
             $(".selectIds").append("<option selected='selected' class='selectId' value='"+ id +"'>"+ id +"</option>");
         }
         totalPedido();
+        $('.quantidadeProduto').keyup();
     });
 
     $('#addTr').on("click",".removerProduto",function(e) {
