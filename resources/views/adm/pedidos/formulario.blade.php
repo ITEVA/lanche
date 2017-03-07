@@ -89,9 +89,10 @@
                                             <td class="sanduicheTp {{$sanduiche == 0 ? "colunaInativa" : ""}}">
                                                 @if($produtoPedido['sanduiche'] == 1)
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[0]->nome}}" {{$produtoPedido->tipo_pao == 'Pão carioca' ? "checked='checked'" : ""}} value="{{$tipoPaes[0]->preco}}"/>PC
-                                                    <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[1]->nome}}" {{$produtoPedido->tipo_pao == 'Pão de forma' ? "checked='checked'" : ""}} value="{{$tipoPaes[1]->preco}}"/>PF
+                                                    <input class="tipoPao" id="paoPadrao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[1]->nome}}" {{$produtoPedido->tipo_pao == 'Pão de forma' ? "checked='checked'" : ""}} value="{{$tipoPaes[1]->preco}}"/>PF
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[2]->nome}}" {{$produtoPedido->tipo_pao == 'Pão integral' ? "checked='checked'" : ""}} value="{{$tipoPaes[2]->preco}}"/>PI
                                                     <input class="tipoPao" type="radio" name="tipo_pao{{$produtoPedido['idSanduiche']}}" nomePao="{{$tipoPaes[3]->nome}}" {{$produtoPedido->tipo_pao == 'Pão sovado' ? "checked='checked'" : ""}} value="{{$tipoPaes[3]->preco}}"/>PS
+                                                    <input class="tipoPaoDeducao" type="hidden" value="{{$produtoPedido->tipo_pao}}"/>
                                                 @endif
                                             </td>
                                             <td class="sanduicheTr {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">

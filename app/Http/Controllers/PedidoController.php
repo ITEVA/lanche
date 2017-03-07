@@ -1006,28 +1006,15 @@ class PedidoController extends AbstractCrudController
                     else
                         $pos = $l;
                 }
-                if ($quantidadesAtuais[$pos] == 0) {
-                    $novaQuantidade = $disponiveis[$pos];
+                $novaQuantidade = $disponiveis[$pos];
 
-                    $dados = array(
-                        "quantidade" => $novaQuantidade
-                    );
+                $dados = array(
+                    "quantidade" => $novaQuantidade
+                );
 
-                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                    $produtoCardapio->fill($dados);
-                    $produtoCardapio->save();
-                }
-                else {
-                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
-
-                    $dados = array(
-                        "quantidade" => $novaQuantidade
-                    );
-
-                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                    $produtoCardapio->fill($dados);
-                    $produtoCardapio->save();
-                }
+                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                $produtoCardapio->fill($dados);
+                $produtoCardapio->save();
             }
             return true;
         }

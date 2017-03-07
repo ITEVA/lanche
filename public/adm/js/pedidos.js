@@ -83,8 +83,6 @@ $(document).ready(function () {
         $(".totalPedido").css("visibility", "visible");
     }
 
-    var ctrlDuplicata = 1;
-
     $('#addProduto').click(function () {
         if ($('#produtos').val() != '') {
             if($('.produtosPedidos').hasClass("tabelaProdutos") == false) {
@@ -101,7 +99,14 @@ $(document).ready(function () {
             preco = parseFloat(preco).toFixed(2);
             var duplicata = buscaDuplicata(id);
 
-            var idSanduiche = duplicata ? id+"_"+ (ctrlDuplicata++) : id;
+            var ctrlDuplicata = 0;
+            $('.nomeProduto').each(function () {
+                if($(this).attr('nomeproduto') == nome) {
+                    ctrlDuplicata++;
+                }
+            });
+
+            var idSanduiche = duplicata ? id + "_" + (ctrlDuplicata + 1) : id;
             var pCarioca = $('#produtos').attr('pCarioca');
             var pForma = $('#produtos').attr('pForma');
             var pIntegral = $('#produtos').attr('pIntegral');
@@ -115,7 +120,7 @@ $(document).ready(function () {
                     "<td><label class='precoUnitario'>R$ " + preco.replace(".", ",") + "</label></td>" +
                     "<td class='sanduicheTp'>" +
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão carioca' value='" + pCarioca + "'/>PC " +
-                        "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão de forma' value='" + pForma + "'/>PF " +
+                        "<input class='tipoPao' id='paoPadrao' type='radio' name='tipo_pao" + idSanduiche + "' checked='checked' nomePao='Pão de forma' value='" + pForma + "'/>PF " +
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão integral' value='" + pIntegral + "'/>PI " +
                         "<input class='tipoPao' type='radio' name='tipo_pao" + idSanduiche + "' nomePao='Pão sovado' value='" + pSovado + "'/>PS " +
                         "<input class='tipoPaoDeducao' type='hidden' value='Pão de forma'/>"+
@@ -222,7 +227,16 @@ $(document).ready(function () {
 
             if (countTp > 0) {
                 $(".sanduicheTp").removeClass('colunaInativa');
-                $('.tipoPao').change();
+                if (nomeQ[0] == "Sand.") {
+                    var qtdE = $('.nomeProduto').size();
+                    var cont = 1;
+
+                    $(".nomeProduto").each(function () {
+                        if (cont++ == qtdE) {
+                            $(this).parent().parent('tr').find('#paoPadrao').change();
+                        }
+                    });
+                }
             }
 
             $(".tipoRecheio").each(function () {
