@@ -712,7 +712,7 @@ class PedidoController extends AbstractCrudController
 
         $cardapio = Cardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id' => $request->cardapio])->get();
 
-        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->where('quantidade', '<>', '0')->whereNotNull('quantidade')->get();
 
         $salvar = true;
         $i = 0;
@@ -791,15 +791,28 @@ class PedidoController extends AbstractCrudController
                     else
                         $pos = $l;
                 }
-                $novaQuantidade = $disponiveis[$pos];
+                if ($quantidadesAtuais[$pos] == 0) {
+                    $novaQuantidade = $produtoCardapio->quantidade;
 
-                $dados = array(
-                    "quantidade" => $novaQuantidade
-                );
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
 
-                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                $produtoCardapio->fill($dados);
-                $produtoCardapio->save();
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
+                else {
+                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos]);
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
             }
             return true;
         }
@@ -923,7 +936,7 @@ class PedidoController extends AbstractCrudController
 
         date_default_timezone_set('America/Fortaleza');
 
-        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->where('quantidade', '<>', '0')->whereNotNull('quantidade')->get();
 
         $salvar = true;
         $i = 0;
@@ -1006,15 +1019,28 @@ class PedidoController extends AbstractCrudController
                     else
                         $pos = $l;
                 }
-                $novaQuantidade = $disponiveis[$pos];
+                if ($quantidadesAtuais[$pos] == 0) {
+                    $novaQuantidade = $produtoCardapio->quantidade;
 
-                $dados = array(
-                    "quantidade" => $novaQuantidade
-                );
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
 
-                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                $produtoCardapio->fill($dados);
-                $produtoCardapio->save();
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
+                else {
+                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos]);
+
+                    $dados = array(
+                        "quantidade" => $novaQuantidade
+                    );
+
+                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                    $produtoCardapio->fill($dados);
+                    $produtoCardapio->save();
+                }
             }
             return true;
         }

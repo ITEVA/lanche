@@ -32,7 +32,30 @@ $(document).ready(function () {
         if (salvar) {
             $(".nomeProduto").each(function () {
                 var id = $(this).parent().parent('tr').attr('iid');
+                var nomeRemove = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+                var nomeRemoveQ = (nomeRemove.toString()).split(" ");
                 var novoValor = parseFloat($('.quantidadeTotalPedido'+id).val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+
+                if (nomeRemoveQ[0] == "Sand.") {
+                    var tipoPao = (($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toString()).split(" ");
+
+                    if (tipoPao[1] == "carioca") {
+                        novoValor = parseFloat($('.quantidadeTotalPedido4').val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+                        $('.quantidadeTotalPedido4').val(novoValor);
+                    }
+                    else if (tipoPao[1] == "sovado") {
+                        novoValor = parseFloat($('.quantidadeTotalPedido5').val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+                        $('.quantidadeTotalPedido5').val(novoValor);
+                    }
+                    else if (tipoPao[1] == "integral") {
+                        novoValor = parseFloat($('.quantidadeTotalPedido7').val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+                        $('.quantidadeTotalPedido7').val(novoValor);
+                    }
+                    else if (tipoPao[1] == "de" && tipoPao[2] == "forma") {
+                        novoValor = parseFloat($('.quantidadeTotalPedido6').val()) + parseFloat($(this).parent().parent('tr').find('.quantidade').val());
+                        $('.quantidadeTotalPedido6').val(novoValor);
+                    }
+                }
 
                 $('.quantidadeTotalPedido'+id).val(novoValor);
 
