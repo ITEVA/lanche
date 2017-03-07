@@ -261,11 +261,29 @@ $(document).ready(function () {
         var id = $(this).parent().parent('tr').find('.nomeProduto').attr('iid');
         var iid = $(this).parent().parent('tr').attr('iid');
         var nomeRemove = $(this).parent().parent('tr').find('.nomeProduto').attr('nomeProduto');
+        var nomeRemoveQ = (nomeRemove.toString()).split(" ");
         var qtd = ($(this).parent().parent('tr').find('.quantidadeProduto').val()).replace(",", ".");
         var qtdDeduzido = $(this).parent().parent('tr').find('.deduzido').val();
         var qtdDisponivel = $("#"+iid).val();
         var cont = 0, contO = 0, ctrl = 0;
         var novaQtdDisponivel = parseFloat(qtdDisponivel) + parseFloat(qtdDeduzido);
+
+        if (nomeRemoveQ[0] == "Sand.") {
+            var tipoPao = (($(this).parent().parent('tr').find('.tipoPao:checked').attr('nomePao')).toString()).split(" ");
+
+            if (tipoPao[1] == "carioca") {
+                $("#4").val(parseFloat($("#4").val()) + parseFloat(qtdDeduzido));
+            }
+            else if (tipoPao[1] == "sovado") {
+                $("#5").val(parseFloat($("#5").val()) + parseFloat(qtdDeduzido));
+            }
+            else if (tipoPao[1] == "integral") {
+                $("#7").val(parseFloat($("#7").val()) + parseFloat(qtdDeduzido));
+            }
+            else if (tipoPao[1] == "de" && tipoPao[2] == "forma") {
+                $("#6").val(parseFloat($("#6").val()) + parseFloat(qtdDeduzido));
+            }
+        }
 
         $("#"+iid).val(novaQtdDisponivel);
 

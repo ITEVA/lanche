@@ -63,7 +63,7 @@ class RelatorioController extends AbstractCrudController
 
         $pedidos = $this->getPedidos($date, $request->turno);
 
-        $produtosGeral = DB::select("SELECT nome_formado as nome, SUM(ROUND(quantidade,0)) as qtdTotalInteiros, SUM(quantidade - ROUND(quantidade,0)) * 2 as qtdTotalMeios
+        $produtosGeral = DB::select("SELECT nome_formado as nome, SUM(FLOOR(quantidade)) as qtdTotalInteiros, SUM(quantidade - FLOOR(quantidade)) * 2 as qtdTotalMeios
                                      FROM produto_pedido
                                      where data = '{$date}'
                                      AND turno = '{$request->turno}'

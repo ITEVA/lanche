@@ -116,7 +116,7 @@
                                                 <label class="precoFormado {{$produtoPedido['idSanduiche']}}">{{"R$ ". number_format($produtoPedido['valorFormado'], 2, ',', '.')}}</label>
                                             </td>
                                             <td>
-                                                <input class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50">
+                                                <input qtd="{{str_replace(".", ",", $produtoPedido->quantidade)}}" class="quantidadeProduto quantidade" type="text" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}" min="1" max="50">
                                                 <input class="deduzido" type="hidden" value="{{str_replace(".", ",", $produtoPedido->quantidade)}}">
                                             </td>
                                             <td class="td"><label class="precoProduto">R$ {{number_format($produtoPedido->preco_total, 2, ',', '.')}}</label></td>

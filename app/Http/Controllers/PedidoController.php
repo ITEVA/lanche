@@ -791,28 +791,15 @@ class PedidoController extends AbstractCrudController
                     else
                         $pos = $l;
                 }
-                if ($quantidadesAtuais[$pos] == 0) {
-                    $novaQuantidade = $disponiveis[$pos];
+                $novaQuantidade = $disponiveis[$pos];
 
-                    $dados = array(
-                        "quantidade" => $novaQuantidade
-                    );
+                $dados = array(
+                    "quantidade" => $novaQuantidade
+                );
 
-                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                    $produtoCardapio->fill($dados);
-                    $produtoCardapio->save();
-                }
-                else {
-                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos]  - $quantidadesAnt[$pos]);
-
-                    $dados = array(
-                        "quantidade" => $novaQuantidade
-                    );
-
-                    $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
-                    $produtoCardapio->fill($dados);
-                    $produtoCardapio->save();
-                }
+                $produtoCardapio = ProdutoCardapio::find($produtoCardapio->id);
+                $produtoCardapio->fill($dados);
+                $produtoCardapio->save();
             }
             return true;
         }
@@ -995,7 +982,7 @@ class PedidoController extends AbstractCrudController
                     "tipo_pao" => $tiposPao[$i],
                     "chapado" => $tiposChapado[$i],
                     "tipo_recheio" => $tiposRecheios[$i],
-                    "data" => $date,
+                    "data" => $cardapio[0]->data,
                     "turno" => $cardapio[0]->turno,
                     "preco_unitario" => $precosProdutos[$i],
                     "preco_total" => $precosFormadosProdutos[$i],
@@ -1055,18 +1042,35 @@ class PedidoController extends AbstractCrudController
         $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $pedido->id_cardapio])->get();
 
         foreach ($produtosCardapio as $produtoCardapio) {
-            if ($produtoCardapio->quantidade != '') {
+            $nomeProdutoQ = explode(" ", $produtoCardapio->nome);
+            if ($produtoCardapio->quantidade != '' || $nomeProdutoQ[0] == "Sand.") {
                 foreach ($produtosPedido as $produtoPedido) {
                     if ($produtoCardapio->nome == $produtoPedido->nome) {
-                        $produtoCardapio->quantidade = floatval($produtoCardapio->quantidade) + floatval($produtoPedido->quantidade);
-                        $dado = array(
-                            "quantidade" => $produtoCardapio->quantidade
-                        );
-                        var_dump($produtoCardapio->quantidade);
+                        if ($produtoPedido->tipo_pao == '') {
 
-                        $pcAlterar = ProdutoCardapio::find($produtoCardapio->id);
-                        $pcAlterar->fill($dado);
-                        $pcAlterar->save();
+                            $produtoCardapio->quantidade = floatval($produtoCardapio->quantidade) + floatval($produtoPedido->quantidade);
+                            $dado = array(
+                                "quantidade" => $produtoCardapio->quantidade
+                            );
+
+                            $pcAlterar = ProdutoCardapio::find($produtoCardapio->id);
+                            $pcAlterar->fill($dado);
+                            $pcAlterar->save();
+                        }
+                        else {
+                            foreach ($produtosCardapio as $produtoCardapio1) {
+                                if ($produtoCardapio1->nome == $produtoPedido->tipo_pao) {
+                                    $produtoCardapio1->quantidade = floatval($produtoCardapio1->quantidade) + floatval($produtoPedido->quantidade);
+                                    $dado = array(
+                                        "quantidade" => $produtoCardapio1->quantidade
+                                    );
+
+                                    $pcAlterar = ProdutoCardapio::find($produtoCardapio1->id);
+                                    $pcAlterar->fill($dado);
+                                    $pcAlterar->save();
+                                }
+                            }
+                        }
                     }
                 }
             }
