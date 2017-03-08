@@ -22,3 +22,8 @@ a.removerCampo {
 label.destaque {
     font-size: 30px;
 }
+
+.tableStyle {
+    background-color: #3F5367;
+    color: white;
+}

@@ -50,6 +50,60 @@
                             <br>
                             <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
                         </div>
+                        <div class="form-group col-md-6 col-xs-12 "></div>
+
+                        <div class="form-group col-md-2 col-xs-12 ">
+                            <label>Legenda</label>
+                            <table class='table table-striped responsive-utilities jambo_table'>
+                                <tr class="headings">
+                                    <th class="tableStyle">Sigla</th>
+                                    <th class="tableStyle">Representação</th>
+                                </tr>
+                                <tr>
+                                    <td><label>PC</label></td>
+                                    <td><label>Pão Carioca</label></td>
+                                </tr>
+                                <tr>
+                                    <td><label>PF</label></td>
+                                    <td><label>Pão de forma</label></td>
+                                </tr>
+                                <tr>
+                                    <td><label>PI</label></td>
+                                    <td><label>Pão Integral</label></td>
+                                </tr>
+                                <tr>
+                                    <td><label>PS</label></td>
+                                    <td><label>Pão Sovado</label></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="form-group col-md-2 col-xs-12 ">
+                            <label>Legenda</label>
+                            <table class='table table-striped responsive-utilities jambo_table'>
+                                <tr class="headings">
+                                    <th class="tableStyle">Sigla</th>
+                                    <th class="tableStyle">Representação</th>
+                                </tr>
+                                <tr>
+                                    <td><label>M</label></td>
+                                    <td><label>Margarina</label></td>
+                                </tr><tr>
+                                    <td><label>R</label></td>
+                                    <td><label>Requeijão</label></td>
+                                </tr><tr>
+                                    <td><label>N/A</label></td>
+                                    <td><label>Sem nada</label></td>
+                                </tr><tr>
+                                    <td><label>C</label></td>
+                                    <td><label>Chapado</label></td>
+                                </tr>
+                                <tr>
+                                    <td><label>N.C</label></td>
+                                    <td><label>Não chapado</label></td>
+                                </tr>
+                            </table>
+                        </div>
 
                         <div class="form-group col-md-3 col-xs-12 quebrarDiv">
                             <label>Disponibilidades de produtos: </label>
@@ -71,15 +125,15 @@
                         <div class="produtosPedidos">
                             <table class='table table-striped responsive-utilities jambo_table' id='addTr'>
                                 <tr>
-                                    <th>Produto</th>
-                                    <th>Preço unitário</th>
-                                    <th class="sanduicheTp {{$sanduiche == 0 ? "colunaInativa" : ""}}">Tipo de pão</th>
-                                    <th class="sanduicheTr {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">Mant / Req</th>
-                                    <th class="sanduicheC {{$sanduiche == 0 && $pao == 0 ? "colunaInativa" : ""}}">Chap / N. Chap</th>
-                                    <th class="sanduiche {{$sanduiche == 0 && $pao == 0 && $tapioca == 0  ? "colunaInativa" : ""}}">Preço formado</th>
-                                    <th>Quantidade</th>
-                                    <th>Preço total</th>
-                                    <th>Excluir</th>
+                                    <th class="tableStyle">Produto</th>
+                                    <th class="tableStyle">Preço unitário</th>
+                                    <th class="tableStyle sanduicheTp {{$sanduiche == 0 ? "colunaInativa" : ""}}">Tipo de pão</th>
+                                    <th class="tableStyle sanduicheTr {{$sanduiche == 0 && $pao == 0 && $tapioca == 0 ? "colunaInativa" : ""}}">Mant / Req</th>
+                                    <th class="tableStyle sanduicheC {{$sanduiche == 0 && $pao == 0 ? "colunaInativa" : ""}}">Chap / N. Chap</th>
+                                    <th class="tableStyle sanduiche {{$sanduiche == 0 && $pao == 0 && $tapioca == 0  ? "colunaInativa" : ""}}">Preço formado</th>
+                                    <th class="tableStyle">Quantidade</th>
+                                    <th class="tableStyle">Preço total</th>
+                                    <th class="tableStyle">Excluir</th>
                                 </tr>
                                 @if(isset($produtosPedido))
                                     @foreach($produtosPedido as $produtoPedido)
