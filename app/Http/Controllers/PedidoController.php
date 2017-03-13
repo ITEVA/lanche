@@ -717,13 +717,6 @@ class PedidoController extends AbstractCrudController
         $url = explode("atualizar/", $request->url());
         $produtosPedido = isset($url[1]) ? ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $url[1]])->get() : "";
 
-        if ($produtosPedido != '') {
-            foreach ($produtosPedido as $produtoPedido) {
-                var_dump($produtoPedido->nome);
-                var_dump($produtoPedido->quantidade);
-            }
-        }
-
         $salvar = true;
         $i = 0;
         foreach ($produtosCardapio as $produtoCardapio) {
@@ -740,15 +733,9 @@ class PedidoController extends AbstractCrudController
             if ($produtoCardapio->quantidade == 0) {
                 for($i = 0; $i < count($nomesProdutos); $i++) {
                     if ($tipo == 'editar') {
-                        $cont = $this->contaProduto($produtosPedido, $produtoCardapio->nome);
-                        var_dump($cont);
-
-                        foreach ($produtosPedido as $produtoPedido) {
-                            if ($produtoCardapio->nome == $produtoPedido->nome) {
-                                if ($cont > $produtoPedido->quantidade) {
-                                    $salvar = false;
-                                }
-                                var_dump($salvar);
+                        if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
+                            if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                                $salvar = false;
                             }
                         }
                     }
@@ -776,7 +763,6 @@ class PedidoController extends AbstractCrudController
                 }
             }
         }
-        exit;
 
         if ($salvar == true) {
             $dadosPedido = array(
@@ -977,7 +963,10 @@ class PedidoController extends AbstractCrudController
 
         date_default_timezone_set('America/Fortaleza');
 
-        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->where('quantidade', '<>', '0')->whereNotNull('quantidade')->get();
+        $produtosCardapio = ProdutoCardapio::where(['id_empregador' => Auth::user()->id_empregador, 'id_cardapio' => $request->cardapio])->where('quantidade', '<>', '')->whereNotNull('quantidade')->get();
+
+        $url = explode("atualizar/", $request->url());
+        $produtosPedido = isset($url[1]) ? ProdutoPedido::where(['id_empregador' => Auth::user()->id_empregador, 'id_pedido' => $url[1]])->get() : "";
 
         $salvar = true;
         $i = 0;
@@ -991,16 +980,37 @@ class PedidoController extends AbstractCrudController
                 else
                     $pos = $j;
             }
-            if ($tipo == 'editar') {
-                if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
-                    if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
-                        $salvar = false;
+
+            if ($produtoCardapio->quantidade == 0) {
+                for($i = 0; $i < count($nomesProdutos); $i++) {
+                    if ($tipo == 'editar') {
+                        if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
+                            if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                                $salvar = false;
+                            }
+                        }
+                    }
+                    else {
+                        $nomeProdutoCompQ = explode(" ", $nomesProdutos[$i]);
+
+                        if ($produtoCardapio->nome == $nomesProdutos[$i] || ($nomeProdutoCompQ[0] == "Sand." && $tiposPao[$i] == $produtoCardapio->nome)) {
+                            $salvar = false;
+                        }
                     }
                 }
             }
             else {
-                if ($produtoCardapio->quantidade == 0 || ($produtoCardapio->quantidade < $disponiveis[$pos])) {
-                    $salvar = false;
+                if ($tipo == 'editar') {
+                    if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
+                        if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                            $salvar = false;
+                        }
+                    }
+                }
+                else {
+                    if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                        $salvar = false;
+                    }
                 }
             }
         }
@@ -1072,7 +1082,10 @@ class PedidoController extends AbstractCrudController
                     $produtoCardapio->save();
                 }
                 else {
-                    $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos]);
+                    if ($produtoCardapio->quantidade != 0 || $produtoCardapio->quantidade != $quantidadesAtuais[$pos])
+                        $novaQuantidade = $produtoCardapio->quantidade - ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos]);
+                    else
+                        $novaQuantidade = $produtoCardapio->quantidade;
 
                     $dados = array(
                         "quantidade" => $novaQuantidade
@@ -1199,16 +1212,6 @@ class PedidoController extends AbstractCrudController
         }
 
         return $pedidos;
-    }
-
-    private function contaProduto($produtosPedido, $nomeProduto) {
-        $cont = 0;
-        foreach ($produtosPedido as $produtoPedido) {
-            if($produtoPedido->nome == $nomeProduto)
-                $cont += $produtoPedido->quantidade;
-        }
-
-        return $cont;
     }
 
     private function intevaloMes()
