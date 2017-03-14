@@ -734,7 +734,7 @@ class PedidoController extends AbstractCrudController
                 for($i = 0; $i < count($nomesProdutos); $i++) {
                     if ($tipo == 'editar') {
                         if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
-                            if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                            if ($produtoCardapio->quantidade < ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos])) {
                                 $salvar = false;
                             }
                         }
@@ -751,7 +751,7 @@ class PedidoController extends AbstractCrudController
             else {
                 if ($tipo == 'editar') {
                     if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
-                        if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                        if ($produtoCardapio->quantidade < ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos])) {
                             $salvar = false;
                         }
                     }
@@ -985,7 +985,7 @@ class PedidoController extends AbstractCrudController
                 for($i = 0; $i < count($nomesProdutos); $i++) {
                     if ($tipo == 'editar') {
                         if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
-                            if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                            if ($produtoCardapio->quantidade < ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos])) {
                                 $salvar = false;
                             }
                         }
@@ -1002,7 +1002,7 @@ class PedidoController extends AbstractCrudController
             else {
                 if ($tipo == 'editar') {
                     if ($quantidadesAnt[$pos] < ($quantidadesAtuais[$pos] - $disponiveis[$pos])) {
-                        if ($produtoCardapio->quantidade < $quantidadesAtuais[$pos]) {
+                        if ($produtoCardapio->quantidade < ($quantidadesAtuais[$pos] - $quantidadesAnt[$pos])) {
                             $salvar = false;
                         }
                     }
