@@ -12,7 +12,7 @@
     <!-- Url base do sistema -->
     <base href="{{url('/')}}" target="_self" />
 
-    <title>Gerenciamento do site</title>
+    <title>Sistema do lanche</title>
 
     <!-- Bootstrap core CSS -->
     <link href="adm/css/bootstrap.min.css" rel="stylesheet">

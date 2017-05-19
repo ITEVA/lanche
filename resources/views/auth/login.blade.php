@@ -11,7 +11,7 @@
             @endif
             <form method="post" action="{{ url('/login') }}">
                 {{ csrf_field() }}
-                <h1>Sistema de gerenciamento</h1>
+                <h1>Sistema do lanche</h1>
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }} has-feedback">
                     <input name="email"  type="email" value="{{old('login')}}" class="form-control has-feedback-left" id="inputSuccess4" placeholder="Email" required="required" />
                     <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
