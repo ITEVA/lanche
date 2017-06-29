@@ -29,7 +29,8 @@ return [
     |
     */
 
-    'host' => 'smtp.office365.com',
+    //'host' => 'smtp.office365.com',
+    'host' => 'smtp.gmail.com',
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +43,8 @@ return [
     |
     */
 
-    'port' => 587,
+    //'port' => 587,
+    'port' => 465,
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +57,8 @@ return [
     |
     */
 
-    'from' => ['address' => 'nicolas.matos@iteva.org.br', 'name' => 'Base'],
+    //'from' => ['address' => 'nicolas.matos@iteva.org.br', 'name' => 'Base'],
+    'from' => ['address' => 'nicolasmatos.iteva@gmail.com', 'name' => 'Base'],
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +71,8 @@ return [
     |
     */
 
-    'encryption' => 'tls',
+    //'encryption' => 'tls',
+    'encryption' => 'ssl',
 
     /*
     |--------------------------------------------------------------------------
@@ -81,7 +85,8 @@ return [
     |
     */
 
-    'username' => 'nicolas.matos@iteva.org.br',
+    //'username' => 'nicolas.matos@iteva.org.br',
+    'username' => 'nicolasmatos.iteva@gmail.com',
 
     /*
     |--------------------------------------------------------------------------
@@ -94,7 +99,8 @@ return [
     |
     */
 
-    'password' => 'Iteva100',
+    //'password' => 'Iteva100',
+    'password' => 'iteva234',
 
     /*
     |--------------------------------------------------------------------------
