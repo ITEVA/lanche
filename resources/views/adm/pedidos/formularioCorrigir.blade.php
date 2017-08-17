@@ -119,57 +119,68 @@
                                 <br>
                                 <input type="button" id="addProduto" name="salvar" value="Adicionar" class="btn btn-success">
                             </div>
-                            <div class="form-group col-md-6 col-xs-12 "></div>
+                            <div class="form-group col-md-4 col-xs-12 "></div>
 
-                            <div class="form-group col-md-2 col-xs-12 ">
+                            <div class="form-group col-md-3 col-xs-12 ">
                                 <label>Legenda</label>
                                 <table class='table table-striped responsive-utilities jambo_table'>
                                     <tr class="headings">
                                         <th class="tableStyle">Sigla</th>
                                         <th class="tableStyle">Representação</th>
+                                        <th class="tableStyle">Valor</th>
                                     </tr>
                                     <tr>
                                         <td><label>PC</label></td>
                                         <td><label>Pão Carioca</label></td>
+                                        <td><label>0,25</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PF</label></td>
                                         <td><label>Pão de forma</label></td>
+                                        <td><label>0,39</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PI</label></td>
                                         <td><label>Pão Integral</label></td>
+                                        <td><label>0,57</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PS</label></td>
                                         <td><label>Pão Sovado</label></td>
+                                        <td><label>0,25</label></td>
                                     </tr>
                                 </table>
                             </div>
 
-                            <div class="form-group col-md-2 col-xs-12 ">
+                            <div class="form-group col-md-3 col-xs-12 ">
                                 <label>Legenda</label>
                                 <table class='table table-striped responsive-utilities jambo_table'>
                                     <tr class="headings">
                                         <th class="tableStyle">Sigla</th>
                                         <th class="tableStyle">Representação</th>
+                                        <th class="tableStyle">Valor</th>
                                     </tr>
                                     <tr>
                                         <td><label>M</label></td>
                                         <td><label>Margarina</label></td>
+                                        <td><label>0,14</label></td>
                                     </tr><tr>
                                         <td><label>R</label></td>
                                         <td><label>Requeijão</label></td>
+                                        <td><label>0,37</label></td>
                                     </tr><tr>
                                         <td><label>N/A</label></td>
                                         <td><label>Sem nada</label></td>
+                                        <td><label>0,00</label></td>
                                     </tr><tr>
                                         <td><label>C</label></td>
                                         <td><label>Chapado</label></td>
+                                        <td><label>0,00</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>N.C</label></td>
                                         <td><label>Não chapado</label></td>
+                                        <td><label>0,00</label></td>
                                     </tr>
                                 </table>
                             </div>

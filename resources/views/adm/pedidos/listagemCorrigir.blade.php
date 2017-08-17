@@ -133,7 +133,7 @@
                                             @if(isset($produtoPedido['id_pedido']))
                                                 <tr>
                                                     <td>{{$produtoPedido['nome_formado']}}</td>
-                                                    <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.')}}</td>
+                                                    <td>R$ {{number_format($produtoPedido['preco_unitario'], 2, ',', '.') . ($produtoPedido['tipo_pao'] == "Pão carioca" ? " + (0,25)" : ($produtoPedido['tipo_pao'] == "Pão de forma" ? " + (0,39)" : ($produtoPedido['tipo_pao'] == "Pão integral" ? " + (0,57)" : ($produtoPedido['tipo_pao'] == "Pão Sovado" ? " + (0,25)" : "")))) . ($produtoPedido['tipo_recheio'] == "Margarina" ? " + (0,14)" : ($produtoPedido['tipo_recheio'] == "Requeijão" ? " + (0,37)" : ""))}}</td>
                                                     <td>{{str_replace(".", ",", $produtoPedido['quantidade'])}}</td>
                                                     <td>R$ {{number_format($produtoPedido['preco_total'], 2, ',', '.')}}</td>
                                                 </tr>
