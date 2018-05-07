@@ -42,6 +42,8 @@ class PermissaoController extends AbstractCrudController
         $dadosClasses['permissao'] = $request['permissao'];
         $dadosClasses['produto'] = $request['produto'];
         $dadosClasses['cardapio'] = $request['cardapio'];
+        $dadosClasses['gastos'] = $request['gastos'];
+        $dadosClasses['gestaoGastos'] = $request['gestaoGastos'];
         $dadosClasses['perfil'] = $request['perfil'];
         $dadosClasses['pedido'] = $request['pedido'];
         $dadosClasses['corrigirPedido'] = $request['corrigirPedido'];
@@ -52,6 +54,8 @@ class PermissaoController extends AbstractCrudController
         unset($request['permissao']);
         unset($request['produto']);
         unset($request['cardapio']);
+        unset($request['gastos']);
+        unset($request['gestaoGastos']);
         unset($request['perfil']);
         unset($request['pedido']);
         unset($request['corrigirPedido']);
@@ -150,6 +154,24 @@ class PermissaoController extends AbstractCrudController
             PermissaoClasse::create($permissao);
         }
 
+		if($object['gastos']) {
+			$permissao = array(
+				'classe' => 'gastos',
+				'id_permissao' => $id,
+				'id_empregador' => Auth::user()->id_empregador
+			);
+			PermissaoClasse::create($permissao);
+		}
+
+		if($object['gestaoGastos']) {
+			$permissao = array(
+				'classe' => 'gestaoGastos',
+				'id_permissao' => $id,
+				'id_empregador' => Auth::user()->id_empregador
+			);
+			PermissaoClasse::create($permissao);
+		}
+
         if($object['pedido']) {
             $permissao = array(
                 'classe' => 'pedido',
@@ -182,6 +204,8 @@ class PermissaoController extends AbstractCrudController
         unset($object['permissao']);
         unset($object['produto']);
         unset($object['cardapio']);
+        unset($object['gastos']);
+        unset($object['gestaoGastos']);
         unset($object['perfil']);
         unset($object['pedido']);
         unset($object['corrigirPedido']);

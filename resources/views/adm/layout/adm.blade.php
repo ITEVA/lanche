@@ -102,6 +102,11 @@
                                         <i class="fa fa-user"></i>
                                         Perfil <span class="fa "></span></a></li>
                             @endif
+                            @if(isset($itensPermitidos['gastos']))
+                                <li><a href="gastos/{{Auth::user()->id}}/{{date("Y")}}">
+                                        <i class="fa fa-usd"></i>
+                                        Gastos <span class="fa "></span></a></li>
+                            @endif
                             @if(isset($itensPermitidos['pedido']))
                                 <li><a href="pedidos">
                                         <i class="fa fa-cutlery"></i>

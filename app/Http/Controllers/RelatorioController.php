@@ -63,6 +63,8 @@ class RelatorioController extends AbstractCrudController
 
         $pedidos = $this->getPedidos($date, $request->turno);
 
+
+
         $produtosGeral = DB::select("SELECT nome_formado as nome, SUM(FLOOR(quantidade)) as qtdTotalInteiros, SUM(quantidade - FLOOR(quantidade)) * 2 as qtdTotalMeios
                                      FROM produto_pedido
                                      where data = '{$date}'
@@ -93,9 +95,9 @@ class RelatorioController extends AbstractCrudController
         //Tabela total de produtos
         $pdf->SetXY(20, 145);
         $pdf->SetFont('arial', 'B', 10);
-        $pdf->Cell(278, 20, 'Produto', 1, 0, "C");
-        $pdf->Cell(139, 20, 'Quantidade de inteiros', 1, 0, "C");
-        $pdf->Cell(139, 20, 'Quantidade de meios', 1, 0, "C");
+        $pdf->Cell(336, 20, 'Produto', 1, 0, "C");
+        $pdf->Cell(110, 20, 'Quantidade de inteiros', 1, 0, "C");
+        $pdf->Cell(110, 20, 'Quantidade de meios', 1, 0, "C");
 
         //linhas da tabela
         $pdf->SetFont('arial', '', 10);
@@ -103,92 +105,76 @@ class RelatorioController extends AbstractCrudController
             $pdf->SetY($pdf->GetY() + 20);
             foreach ($produtosGeral as $produto) {
                 $pdf->SetX(20);
-                $pdf->Cell(278, 14, $produto->nome, 1, 0, "C");
-                $pdf->Cell(139, 14, $produto->qtdTotalInteiros, 1, 0, "C");
-                $pdf->Cell(139, 14, $produto->qtdTotalMeios, 1, 0, "C");
+                $pdf->Cell(336, 14, $produto->nome, 1, 0, "L");
+                $pdf->Cell(110, 14, $produto->qtdTotalInteiros, 1, 0, "C");
+                $pdf->Cell(110, 14, $produto->qtdTotalMeios, 1, 0, "C");
                 $pdf->SetY($pdf->GetY() + 14);
             }
         }
 
-        //Rodape
-        $pdf->SetAutoPageBreak(5);
-        $pdf->SetFont('arial', '', 10);
-        $pdf->SetXY(20, -45);
-        $pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
-        $pdf->SetXY(20, -30);
-        $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
+		$pdf->SetXY(0, $pdf->GetY() + 14);
+		$pdf->SetFont('arial', 'B', 10);
+		$pdf->Cell(595, 14, "PEDIDOS INDIVIDUAIS DIA: " . $request->data, 0, 0, "C");
 
-        $i = 0;
-        $mod = 5;
-        $linhas = 4;
-
-        $posicaoPedidoUsuario = 0;
+		$pdf->SetXY(0, $pdf->GetY() + 20);
+		$pdf->SetX(20);
+		$pdf->Cell(110, 14, "Nome", 1, 0, "C");
+		$pdf->Cell(366, 14, "Produto", 1, 0, "C");
+		$pdf->Cell(80, 14, "Quantidade", 1, 0, "C");
+		$pdf->SetY($pdf->GetY() + 14);
 
         foreach ($pedidos as $pedido) {
-            if($i % $mod == 0) {
-                $pdf->AddPage();
+        	if(isset($pedido['produtos'])) {
+				foreach ($pedido['produtos'] as $produto) {
+					if($pdf->GetY() > 740){
+						//Rodape
+						$pdf->SetAutoPageBreak(5);
+						$pdf->SetFont('arial', '', 10);
+						$pdf->SetXY(20, -45);
+						$pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
+						$pdf->SetXY(20, -30);
+						$pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
 
-                //Desenha o cabeçalho do relatorio
-                $pdf->Image('adm/images/logo1.png');
-                $pdf->SetXY(245, 80);
-                $pdf->SetFont('arial', '', 10);
-                $pdf->Cell(595, 14, $diaSemana, 0, 0, "C");
-                $pdf->Line(20, 100, 575, 100);
+						$pdf->AddPage();
 
-                $pdf->SetXY(0, 115);
-                $pdf->SetFont('arial', 'B', 10);
-                $pdf->Cell(595, 14, "PEDIDOS INDIVIDUAIS DIA: " . $request->data, 0, 0, "C");
-                $posicaoPedidoUsuario = 0;
-            }
+						$pdf->SetY(30);
 
-            $posicaoPedidoUsuario = $posicaoPedidoUsuario == 0 ? $posicaoPedidoUsuario + 145 : $posicaoPedidoUsuario + 115;
+						//Desenha o cabeçalho do relatorio
+						$pdf->Image('adm/images/logo1.png');
+						$pdf->SetXY(245, 80);
+						$pdf->SetFont('arial', '', 10);
+						$pdf->Cell(595, 14, $diaSemana, 0, 0, "C");
+						$pdf->Line(20, 100 , 575, 100);
 
-            //Tabela total de produtos
-            $pdf->SetXY(20, $posicaoPedidoUsuario);
-            $pdf->SetFont('arial', 'B', 10);
-            $pdf->Cell(556, 20, $pedido['nomeUsuario'][0]['apelido'], 1, 0, "C");
-            $pdf->SetXY(20, $posicaoPedidoUsuario + 20);
-            $pdf->SetFont('arial', 'B', 10);
-            $pdf->Cell(278, 20, 'Produto', 1, 0, "C");
-            $pdf->Cell(278, 20, 'Quantidade', 1, 0, "C");
+						$pdf->SetXY(0, 115);
+						$pdf->SetFont('arial', 'B', 10);
+						$pdf->Cell(595, 14, "PEDIDOS INDIVIDUAIS DIA: " . $request->data, 0, 0, "C");
 
-            //linhas da tabela
-            $pdf->SetFont('arial', '', 10);
-            if(count($pedido['produtos']) > 0) {
-                $pdf->SetY($pdf->GetY() + 20);
-                $j = 0;
-                while($j < $linhas) {
-                    if($j == 0) {
-                        foreach ($pedido['produtos'] as $produto) {
-                            $pdf->SetX(20);
-                            $pdf->Cell(278, 14, $produto['nome_formado'], 1, 0, "C");
-                            $pdf->Cell(278, 14, $produto['quantidade'], 1, 0, "C");
-                            $pdf->SetY($pdf->GetY() + 14);
-                            $j++;
-                        }
-                    }
-                    if($j < $linhas) {
-                        $pdf->SetX(20);
-                        $pdf->Cell(278, 14, '', 1, 0, "C");
-                        $pdf->Cell(278, 14, '', 1, 0, "C");
-                        $pdf->SetY($pdf->GetY() + 14);
-                        $j++;
-                    }
-                }
-            }
+						$pdf->SetXY(0, $pdf->GetY() + 20);
+						$pdf->SetX(20);
+						$pdf->Cell(110, 14, "Nome", 1, 0, "C");
+						$pdf->Cell(366, 14, "Produto", 1, 0, "C");
+						$pdf->Cell(80, 14, "Quantidade", 1, 0, "C");
+						$pdf->SetY($pdf->GetY() + 14);
+					}
 
-            if($i % $mod == 0) {
-                //Rodape
-                $pdf->SetAutoPageBreak(5);
-                $pdf->SetFont('arial', '', 10);
-                $pdf->SetXY(20, -45);
-                $pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
-                $pdf->SetXY(20, -30);
-                $pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
-            }
-
-            $i++;
+					$pdf->SetFont('arial', '', 10);
+					$pdf->SetX(20);
+					$pdf->Cell(110, 14, $pedido['nomeUsuario'][0]['apelido'], 1, 0, "L");
+					$pdf->Cell(366, 14, $produto['nome_formado'], 1, 0, "C");
+					$pdf->Cell(80, 14, $produto['quantidade'], 1, 0, "C");
+					$pdf->SetY($pdf->GetY() + 14);
+				}
+			}
         }
+
+		//Rodape
+		$pdf->SetAutoPageBreak(5);
+		$pdf->SetFont('arial', '', 10);
+		$pdf->SetXY(20, -45);
+		$pdf->Cell(555, 15, "Rodovia CE - 040 s/n - Aquiraz - CE - cep 61.700-000 - cx. postal 66 - fone (85) 3362-3210 - e-mail iteva@iteva.org.br", 'T', 0, 'C');
+		$pdf->SetXY(20, -30);
+		$pdf->Cell(555, 15, "www.iteva.org.br", 0, 0, 'C');
 
         $pdf->Output();
         exit;
@@ -202,7 +188,10 @@ class RelatorioController extends AbstractCrudController
             //Pegando produtos do pedido
             $pedido['produtos'] = ProdutoPedido::where(['id_pedido' => $pedido->id, 'id_empregador' => Auth::user()->id_empregador])->get();
             $pedido['nomeUsuario'] = User::where(['id' => $pedido->id_usuario, 'id_empregador' => Auth::user()->id_empregador])->get();
+			$pedido['apelido'] = $pedido['nomeUsuario'][0]['apelido'];
         }
+
+		$pedidos = collect($pedidos)->sortBy('apelido');
 
         return $pedidos;
     }

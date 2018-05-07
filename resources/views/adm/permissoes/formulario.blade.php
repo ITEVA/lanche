@@ -56,6 +56,12 @@
                                 <input type="checkbox" class="permissao" value="cardapio" name="cardapio" {{isset($permissoesAtuais['cardapio']) ? 'checked' : ''}}><label class="lblPermissao">Cardápio</label>
                             </span>
                             <span class="quebraBox">
+                                <input type="checkbox" class="permissao" value="gestaoGastos" name="gestaoGastos" {{isset($permissoesAtuais['gestaoGastos']) ? 'checked' : ''}}><label class="lblPermissao">Gestão Gastos</label>
+                            </span>
+                            <span class="quebraBox">
+                                <input type="checkbox" class="permissao" value="gastos" name="gastos" {{isset($permissoesAtuais['gastos']) ? 'checked' : ''}}><label class="lblPermissao">Gastos</label>
+                            </span>
+                            <span class="quebraBox">
                                 <input type="checkbox" class="permissao" value="perfil" name="perfil" {{isset($permissoesAtuais['perfil']) ? 'checked' : ''}}><label class="lblPermissao">Perfil</label>
                             </span>
                             <span class="quebraBox">
