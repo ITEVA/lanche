@@ -227,7 +227,7 @@ class PerfilController extends AbstractCrudController
 
 		else {
 			return view('adm.perfil.formularioGastos')
-				->with('action', 'gastos/salvar/')
+				->with('action', 'gastos/salvar')
 				->with('mes', $mes)
 				->with('ano', $ano)
 				->with('idUsuario', $idUsuario)
