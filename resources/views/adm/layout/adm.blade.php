@@ -107,6 +107,11 @@
                                         <i class="fa fa-usd"></i>
                                         Gastos <span class="fa "></span></a></li>
                             @endif
+                            @if(isset($itensPermitidos['almoco']))
+                                <li><a href="almocos">
+                                        <i class="fa fa-cutlery"></i>
+                                        Almoço <span class="fa "></span></a></li>
+                            @endif
                             @if(isset($itensPermitidos['pedido']))
                                 <li><a href="pedidos">
                                         <i class="fa fa-cutlery"></i>

@@ -29,6 +29,8 @@ $(document).ready(function () {
         enviarForm($('#removerLote').attr('href'));
     });
 
+
+    $('[data-toggle="popover"]').popover();
 });
 
 function enviarForm(acao) {

@@ -18,4 +18,9 @@ class ProdutoCardapio extends Model
             'id_empregador' => ''
         ];
     }
+
+	public function produto()
+	{
+		return $this->belongsTo('App\Produto', 'id_produto');
+	}
 }

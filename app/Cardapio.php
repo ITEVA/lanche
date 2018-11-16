@@ -20,4 +20,9 @@ class Cardapio extends Model
             'turno' => ''
         ];
     }
+
+	public function produtosCardapio()
+	{
+		return $this->hasMany('App\ProdutoCardapio', 'id_cardapio');
+	}
 }
