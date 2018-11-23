@@ -14,7 +14,8 @@ class Produto extends Model
         return (object)[
             'nome' => '',
             'preco' => '',
-            'especificacao' => ''
+            'especificacao' => '',
+            'sobremesa' => '0'
         ];
     }
 }

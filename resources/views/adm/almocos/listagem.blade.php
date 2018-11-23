@@ -16,6 +16,9 @@
                 <a class="btn btn-success pull-right" {{$disabled ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "href=almocos/novo"}} data-content="Já existe um registro de almoço para hoje, utilize o botão de editar para acessar.">
                     <i class="fa fa-plus"></i>&nbsp;Novo
                 </a>
+                <a class="btn btn-success pull-right" href="almocos/novoAnterior">
+                    <i class="fa fa-plus"></i>&nbsp;Novo anterior
+                </a>
 
                 <div class="x_title">
                     <h2>Almoços cadastrados no sistema</h2>
@@ -109,7 +112,7 @@
         var asInitVals = new Array();
         var oTable = $('#example').dataTable({
             //"bPaginate": false,
-            "order": [[1, "asc"]],
+            "order": [[1, "desc"]],
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -136,10 +139,13 @@
             "aoColumnDefs": [
                 {'bSortable': false,
                     'aTargets': [0]},
+                {'bSortable': true,
+                    'aTargets': [1],
+                    render: $.fn.dataTable.render.moment( 'DD/MM/YYYY' )},
                 {'bSortable': false,
-                    'aTargets': [3]},
+                    'aTargets': [2]},
                 {'bSortable': false,
-                    'aTargets': [4]}
+                    'aTargets': [3]}
             ],
             'iDisplayLength': 10,
             "sPaginationType": "full_numbers"

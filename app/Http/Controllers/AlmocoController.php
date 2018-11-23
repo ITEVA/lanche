@@ -27,6 +27,16 @@ class AlmocoController extends AbstractCrudController
 			->with('disabled', count($almoco) > 0 ? 1 : 0);
 	}
 
+	public function novoAnterior()
+	{
+		if (parent::checkPermissao()) return redirect('error404');
+		$itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
+
+		return view('adm.almocos.formularioDataAnterior')
+			->with('action', 'almocos/salvarAnterior')
+			->with('itensPermitidos', $itensPermitidos);
+	}
+
 	public function novo()
 	{
 		$almoco = Almoco::where(['data' => date('Y-m-d')])->get();
@@ -66,6 +76,37 @@ class AlmocoController extends AbstractCrudController
 		return parent::editar($id)
 			->with('sobremesas', $sobremesas)
 			->with('usuarios', $usuarios);
+	}
+
+	public function salvarAnterior(Request $request)
+	{
+		if (parent::checkPermissao()) return redirect('error404');
+
+		try {
+			$dados['data'] = $this->formatDateEn($request->data);
+			$dados['id_empregador'] = Auth::user()->id_empregador;
+			$almoco = Almoco::create($dados);
+
+			$usuarios = User::where(['status'=>1])->orderBy('apelido','asc')->get();
+
+			foreach ($usuarios as $usuario) {
+				$dadosProduto = array (
+					"peso" => "",
+					"id_almoco" => $almoco->id,
+					"id_usuario" => $usuario->id,
+					"id_empregador" => Auth::user()->id_empregador
+				);
+
+				AlmocoUsuario::create($dadosProduto);
+			}
+
+			return redirect('almocos/editar/'.$almoco->id);
+		} catch (QueryException $e) {
+			return redirect()
+				->back()
+				->withInput()
+				->withErrors(array('Erro ao salvar. Tente mais tarde'));
+		}
 	}
 
 	public function salvar(Request $request)

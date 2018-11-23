@@ -29,14 +29,14 @@
 
                         <div class="col-md-12 col-xs-12">
                             @foreach($usuarios as $usuario)
-                                <div class="form-group col-md-12 col-xs-12">
+                                <div class="form-group col-md-12 col-xs-12" style="height: 45px">
                                     <div class="form-group col-md-2 col-xs-12">
-                                        <img style="height: 35px; border-radius: 15px;" src="adm/images/perfil/{{isset($usuario->peso) ? $usuario->usuario->foto : $usuario->foto}}" alt=""/>
+                                        <img style="width: 70px; border-radius: 15px;" src="adm/images/perfil/{{isset($usuario->peso) ? $usuario->usuario->foto : $usuario->foto}}" alt=""/>
                                         <label for="titulo">{{isset($usuario->peso) ? $usuario->usuario->apelido : $usuario->apelido}}</label>
                                         <input type="hidden" name="id_usuario[]" value="{{isset($usuario->peso) ? $usuario->usuario->id : $usuario->id}}">
                                     </div>
 
-                                    <div class="form-group col-md-1 col-xs-12">
+                                    <div class="form-group col-md-2 col-xs-12">
                                         <label for="titulo">Peso</label>
                                         <div class="form-group col-md-12 col-xs-12">
                                             <input type="text" name="peso[]" class="tags form-control tags_1" value="{{isset($usuario->peso) ? $usuario->peso : ''}}"/>
@@ -44,7 +44,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group col-md-1 col-xs-12">
+                                    <div class="form-group col-md-2 col-xs-12">
                                         <label for="titulo">Sobremesa</label>
                                         <select name="id_sobremesa[]" class="select2_single form-control">
                                             <option selected="selected" value="">Selecione uma sobremesa</option>
@@ -57,7 +57,7 @@
                                     </div>
 
                                     <div class="form-group col-md-3 col-xs-12">
-                                        <input type="submit" name="salvar" value="Salvar" class="btn btn-success">
+                                        <input type="submit" name="salvar" value="Salvar" style="margin-top: 24px" class="btn btn-success">
                                     </div>
                                 </div>
 

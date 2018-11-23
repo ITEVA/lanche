@@ -42,6 +42,17 @@
                             <textarea class="form-control" name="especificacao">{{old('especificacao') !== null ? old('especificacao') : $produto->especificacao}}</textarea>
                         </div>
 
+                        <div class="form-group col-md-3 col-xs-12">
+                            <label>Sobremesa</label><br/>
+                            @if ((old('sobremesa') !== null && old('sobremesa') === '0') || (old('sobremesa') === null && $produto->sobremesa == '0'))
+                                <input type="radio" class="flat" name="sobremesa" value="1"/> Sim
+                                <input type="radio" class="flat" name="sobremesa" checked="checked" value="0"/> Não
+                            @else
+                                <input type="radio" class="flat" name="sobremesa" checked="checked" value="1"/> Sim
+                                <input type="radio" class="flat" name="sobremesa" value="0"/> Não
+                            @endif
+                        </div>
+
                         <div class="ln_solid col-md-12 col-xs-12"></div>
                         <div class="form-group  col-md-12 col-xs-12">
                             <input type="submit" name="salvar" value="Salvar" class="btn btn-success">

@@ -95,7 +95,9 @@ Route::post('/produtos/atualizarLote', 'ProdutoController@atualizarLote');
 //Rotas para gestão de Almoço
 Route::get('/almocos', 'AlmocoController@listar');
 Route::get('/almocos/novo', 'AlmocoController@novo');
+Route::get('/almocos/novoAnterior', 'AlmocoController@novoAnterior');
 Route::post('/almocos/salvar', 'AlmocoController@salvar');
+Route::post('/almocos/salvarAnterior', 'AlmocoController@salvarAnterior');
 Route::get('/almocos/editar/{id}', 'AlmocoController@editar');
 Route::post('/almocos/atualizar/{id}', 'AlmocoController@atualizar');
 Route::post('/almocos/removerLote', 'AlmocoController@removerLote');
