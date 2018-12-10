@@ -47,6 +47,9 @@
                                 <input type="checkbox" class="permissao" value="user" name="user" {{isset($permissoesAtuais['user']) ? 'checked' : ''}}><label class="lblPermissao">Usuários</label>
                             </span>
                             <span class="quebraBox">
+                                <input type="checkbox" class="permissao" value="cargo" name="cargo" {{isset($permissoesAtuais['cargo']) ? 'checked' : ''}}><label class="lblPermissao">Cargos</label>
+                            </span>
+                            <span class="quebraBox">
                                 <input type="checkbox" class="permissao" value="permissao" name="permissao" {{isset($permissoesAtuais['permissao']) ? 'checked' : ''}}><label class="lblPermissao">Permissões</label>
                             </span>
                             <span class="quebraBox">

@@ -82,6 +82,11 @@
                                         <i class="fa fa-users"></i>
                                         Usuários </a></li>
                             @endif
+                            @if(isset($itensPermitidos['cargo']))
+                                <li><a href="cargos">
+                                        <i class="fa fa-briefcase"></i>
+                                        Cargos </a></li>
+                            @endif
                             @if(isset($itensPermitidos['permissao']))
                                 <li><a href="permissoes">
                                         <i class="fa fa-lock"></i>

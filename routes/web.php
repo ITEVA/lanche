@@ -35,6 +35,16 @@ Route::post('/users/atualizarLote', 'UserController@atualizarLote');
 Route::get('/users/editarPerfil/{id}', 'PerfilController@editarPerfil');
 Route::post('/users/atualizarPerfil/{id}', 'PerfilController@atualizarPerfil');
 
+//Rotas para gestão de cargo
+Route::get('/cargos', 'CargoController@listar');
+Route::get('/cargos/novo', 'CargoController@novo');
+Route::post('/cargos/salvar', 'CargoController@salvar');
+Route::get('/cargos/editar/{id}', 'CargoController@editar');
+Route::post('/cargos/atualizar/{id}', 'CargoController@atualizar');
+Route::post('/cargos/removerLote', 'CargoController@removerLote');
+Route::post('/cargos/editarLote', 'CargoController@editarLote');
+Route::post('/cargos/atualizarLote', 'CargoController@atualizarLote');
+
 //Rotas para gestão de permissões
 Route::get('/permissoes', 'PermissaoController@listar');
 Route::get('/permissoes/novo', 'PermissaoController@novo');

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Almoco;
 use App\Gasto;
 use App\Http\Requests\PerfilRequest;
+use App\Produto;
 use App\ProdutoPedido;
 use App\User;
 use App\Pedido;
@@ -273,36 +275,57 @@ class PerfilController extends AbstractCrudController
 		return $consumo;
 	}
 
+	public function gatosTotais ($idUsuario, $ini, $fim) {
+		$pedidos = Pedido::where(['id_usuario' => $idUsuario, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$ini, $fim])->get();
+		$almocos = Almoco::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$ini, $fim])->get();
+
+		$lanche  = 0;
+		foreach ($pedidos as $pedido) {
+			$lanche = $lanche + floatval($pedido->preco);
+		}
+
+		$somaAlmoco = 0;
+		$somaSobremesa = 0;
+		if(count($almocos) > 0) {
+			foreach ($almocos as $almoco) {
+				foreach ($almoco->itens as $au) {
+					if($idUsuario == $au->id_usuario) {
+						$pesos = explode(',', $au->peso);
+						foreach ($pesos as $peso) {
+							$somaAlmoco = $somaAlmoco + (floatval($peso) * 13.50) / 1000;
+						}
+						$sobremesa = Produto::find($au->sobremesa);
+						$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+					}
+				}
+			}
+		}
+		$gastos = array(
+			'lanche' => $lanche,
+			'almoco' => $somaAlmoco,
+			'sobremesa' => $somaSobremesa
+		);
+
+		return $gastos;
+	}
+
 	public function buscarLanche($ano, $idUsuario) {
 		$usuario = User::find($idUsuario);
 
 		$bissexto = date('L', mktime(0, 0, 0, 1, 1, $ano));
 
-		$usuario['lancheJaneiro'] = 	$this->calculaConsumo($idUsuario, $ano.'-01-01', $ano.'-01-31');
-		$usuario['lancheFevereiro'] = 	$this->calculaConsumo($idUsuario, $ano.'-02-01', $ano.'-02-'.($bissexto ? '29' : '28'));
-		$usuario['lancheMarco'] = 		$this->calculaConsumo($idUsuario, $ano.'-03-01', $ano.'-03-31');
-		$usuario['lancheAbril'] = 		$this->calculaConsumo($idUsuario, $ano.'-04-01', $ano.'-04-30');
-		$usuario['lancheMaio'] = 		$this->calculaConsumo($idUsuario, $ano.'-05-01', $ano.'-05-31');
-		$usuario['lancheJunho'] = 		$this->calculaConsumo($idUsuario, $ano.'-06-01', $ano.'-06-30');
-		$usuario['lancheJulho'] = 		$this->calculaConsumo($idUsuario, $ano.'-07-01', $ano.'-07-31');
-		$usuario['lancheAgosto'] = 		$this->calculaConsumo($idUsuario, $ano.'-08-01', $ano.'-08-31');
-		$usuario['lancheSetembro'] =	$this->calculaConsumo($idUsuario, $ano.'-09-01', $ano.'-09-30');
-		$usuario['lancheOutubro'] = 	$this->calculaConsumo($idUsuario, $ano.'-10-01', $ano.'-10-31');
-		$usuario['lancheNovembro'] = 	$this->calculaConsumo($idUsuario, $ano.'-11-01', $ano.'-11-30');
-		$usuario['lancheDezembro'] = 	$this->calculaConsumo($idUsuario, $ano.'-12-01', $ano.'-12-31');
-
-		$usuario['gastosJaneiro'] = 	Gasto::where(['mes' => 1, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosFevereiro'] = 	Gasto::where(['mes' => 2, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosMarco'] = 		Gasto::where(['mes' => 3, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosAbril'] = 		Gasto::where(['mes' => 4, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosMaio'] = 		Gasto::where(['mes' => 5, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosJunho'] = 		Gasto::where(['mes' => 6, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosJulho'] = 		Gasto::where(['mes' => 7, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosAgosto'] = 		Gasto::where(['mes' => 8, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosSetembro'] = 	Gasto::where(['mes' => 9, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosOutubro'] = 	Gasto::where(['mes' => 10, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosNovembro'] = 	Gasto::where(['mes' => 11, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
-		$usuario['gastosDezembro'] = 	Gasto::where(['mes' => 12, 'ano' => $ano, 'id_usuario' => $idUsuario])->first();
+		$usuario['gastosJaneiro'] = 		$this->gatosTotais($idUsuario, $ano.'-01-01', $ano.'-01-31');
+		$usuario['gastosFevereiro'] = 	$this->gatosTotais($idUsuario, $ano.'-02-01', $ano.'-02-'.($bissexto ? '29' : '28'));
+		$usuario['gastosMarco'] = 		$this->gatosTotais($idUsuario, $ano.'-03-01', $ano.'-03-31');
+		$usuario['gastosAbril'] = 		$this->gatosTotais($idUsuario, $ano.'-04-01', $ano.'-04-30');
+		$usuario['gastosMaio'] = 		$this->gatosTotais($idUsuario, $ano.'-05-01', $ano.'-05-31');
+		$usuario['gastosJunho'] = 		$this->gatosTotais($idUsuario, $ano.'-06-01', $ano.'-06-30');
+		$usuario['gastosJulho'] = 		$this->gatosTotais($idUsuario, $ano.'-07-01', $ano.'-07-31');
+		$usuario['gastosAgosto'] = 		$this->gatosTotais($idUsuario, $ano.'-08-01', $ano.'-08-31');
+		$usuario['gastosSetembro'] =		$this->gatosTotais($idUsuario, $ano.'-09-01', $ano.'-09-30');
+		$usuario['gastosOutubro'] = 		$this->gatosTotais($idUsuario, $ano.'-10-01', $ano.'-10-31');
+		$usuario['gastosNovembro'] = 	$this->gatosTotais($idUsuario, $ano.'-11-01', $ano.'-11-30');
+		$usuario['gastosDezembro'] = 	$this->gatosTotais($idUsuario, $ano.'-12-01', $ano.'-12-31');
 
 		return $usuario;
 	}

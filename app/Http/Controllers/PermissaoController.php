@@ -39,6 +39,7 @@ class PermissaoController extends AbstractCrudController
 
         $dadosClasses['inicio'] = $request['inicio'];
         $dadosClasses['user'] = $request['user'];
+        $dadosClasses['cargo'] = $request['cargo'];
         $dadosClasses['permissao'] = $request['permissao'];
         $dadosClasses['produto'] = $request['produto'];
         $dadosClasses['cardapio'] = $request['cardapio'];
@@ -52,6 +53,7 @@ class PermissaoController extends AbstractCrudController
 
         unset($request['inicio']);
         unset($request['user']);
+        unset($request['cargo']);
         unset($request['permissao']);
         unset($request['produto']);
         unset($request['cardapio']);
@@ -119,6 +121,15 @@ class PermissaoController extends AbstractCrudController
             );
             PermissaoClasse::create($user);
         }
+
+		if($object['cargo']) {
+			$user = array(
+				'classe' => 'cargo',
+				'id_permissao' => $id,
+				'id_empregador' => Auth::user()->id_empregador
+			);
+			PermissaoClasse::create($user);
+		}
 
         if($object['permissao']) {
             $permissao = array(
@@ -212,6 +223,7 @@ class PermissaoController extends AbstractCrudController
 
         unset($object['inicio']);
         unset($object['user']);
+        unset($object['cargo']);
         unset($object['permissao']);
         unset($object['produto']);
         unset($object['cardapio']);

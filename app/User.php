@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'foto', 'nome', 'apelido', 'email', 'password', 'permissao', 'id_empregador'
+        'foto', 'nome', 'apelido', 'email', 'password', 'status', 'permissao', 'id_empregador'
     ];
 
     /**
@@ -38,4 +38,14 @@ class User extends Authenticatable
             'status' => '1'
         ];
     }
+
+	public function permissao()
+	{
+		return $this->belongsTo('App\Permissao', 'id_permissao' );
+	}
+
+	public function cargo()
+	{
+		return $this->belongsTo('App\Cargo', 'id_cargo' );
+	}
 }

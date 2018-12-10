@@ -52,10 +52,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Janeiro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJaneiro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosJaneiro']['lanche']) ? $usuario['gastosJaneiro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJaneiro']['almoco']) ? $usuario['gastosJaneiro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJaneiro']['sobremesa']) ? $usuario['gastosJaneiro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJaneiro'] + (isset($usuario['gastosJaneiro']['almoco']) ? $usuario['gastosJaneiro']['almoco'] : 0) + (isset($usuario['gastosJaneiro']['sobremesa']) ? $usuario['gastosJaneiro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosJaneiro']['lanche'] + (isset($usuario['gastosJaneiro']['almoco']) ? $usuario['gastosJaneiro']['almoco'] : 0) + (isset($usuario['gastosJaneiro']['sobremesa']) ? $usuario['gastosJaneiro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/1/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -66,10 +66,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Fevereiro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheFevereiro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosFevereiro']['lanche']) ? $usuario['gastosFevereiro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosFevereiro']['almoco']) ? $usuario['gastosFevereiro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosFevereiro']['sobremesa']) ? $usuario['gastosFevereiro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheFevereiro'] + (isset($usuario['gastosFevereiro']['almoco']) ? $usuario['gastosFevereiro']['almoco'] : 0) + (isset($usuario['gastosFevereiro']['sobremesa']) ? $usuario['gastosFevereiro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosFevereiro']['lanche'] + (isset($usuario['gastosFevereiro']['almoco']) ? $usuario['gastosFevereiro']['almoco'] : 0) + (isset($usuario['gastosFevereiro']['sobremesa']) ? $usuario['gastosFevereiro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/2/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -80,10 +80,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Março</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheMarco'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosMarco']['lanche']) ? $usuario['gastosMarco']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosMarco']['almoco']) ? $usuario['gastosMarco']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosMarco']['sobremesa']) ? $usuario['gastosMarco']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheMarco'] + (isset($usuario['gastosMarco']['almoco']) ? $usuario['gastosMarco']['almoco'] : 0) + (isset($usuario['gastosMarco']['sobremesa']) ? $usuario['gastosMarco']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosMarco']['lanche'] + (isset($usuario['gastosMarco']['almoco']) ? $usuario['gastosMarco']['almoco'] : 0) + (isset($usuario['gastosMarco']['sobremesa']) ? $usuario['gastosMarco']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/3/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -94,10 +94,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Abril</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheAbril'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosAbril']['lanche']) ? $usuario['gastosAbril']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosAbril']['almoco']) ? $usuario['gastosAbril']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosAbril']['sobremesa']) ? $usuario['gastosAbril']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheAbril'] + (isset($usuario['gastosAbril']['almoco']) ? $usuario['gastosAbril']['almoco'] : 0) + (isset($usuario['gastosAbril']['sobremesa']) ? $usuario['gastosAbril']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosAbril']['lanche'] + (isset($usuario['gastosAbril']['almoco']) ? $usuario['gastosAbril']['almoco'] : 0) + (isset($usuario['gastosAbril']['sobremesa']) ? $usuario['gastosAbril']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/4/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -108,10 +108,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Maio</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheMaio'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosMaio']['lanche']) ? $usuario['gastosMaio']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosMaio']['almoco']) ? $usuario['gastosMaio']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosMaio']['sobremesa']) ? $usuario['gastosMaio']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheMaio'] + (isset($usuario['gastosMaio']['almoco']) ? $usuario['gastosMaio']['almoco'] : 0) + (isset($usuario['gastosMaio']['sobremesa']) ? $usuario['gastosMaio']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosMaio']['lanche'] + (isset($usuario['gastosMaio']['almoco']) ? $usuario['gastosMaio']['almoco'] : 0) + (isset($usuario['gastosMaio']['sobremesa']) ? $usuario['gastosMaio']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/5/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -122,10 +122,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Junho</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJunho'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosJunho']['lanche']) ? $usuario['gastosJunho']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJunho']['almoco']) ? $usuario['gastosJunho']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJunho']['sobremesa']) ? $usuario['gastosJunho']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJunho'] + (isset($usuario['gastosJunho']['almoco']) ? $usuario['gastosJunho']['almoco'] : 0) + (isset($usuario['gastosJunho']['sobremesa']) ? $usuario['gastosJunho']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosJunho']['lanche'] + (isset($usuario['gastosJunho']['almoco']) ? $usuario['gastosJunho']['almoco'] : 0) + (isset($usuario['gastosJunho']['sobremesa']) ? $usuario['gastosJunho']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/6/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -136,10 +136,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Julho</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJulho'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosJulho']['lanche']) ? $usuario['gastosJulho']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJulho']['almoco']) ? $usuario['gastosJulho']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosJulho']['sobremesa']) ? $usuario['gastosJulho']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheJulho'] + (isset($usuario['gastosJulho']['almoco']) ? $usuario['gastosJulho']['almoco'] : 0) + (isset($usuario['gastosJulho']['sobremesa']) ? $usuario['gastosJulho']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosJulho']['lanche'] + (isset($usuario['gastosJulho']['almoco']) ? $usuario['gastosJulho']['almoco'] : 0) + (isset($usuario['gastosJulho']['sobremesa']) ? $usuario['gastosJulho']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/7/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -150,10 +150,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Agosto</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheAgosto'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosAgosto']['lanche']) ? $usuario['gastosAgosto']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosAgosto']['almoco']) ? $usuario['gastosAgosto']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosAgosto']['sobremesa']) ? $usuario['gastosAgosto']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheAgosto'] + (isset($usuario['gastosAgosto']['almoco']) ? $usuario['gastosAgosto']['almoco'] : 0) + (isset($usuario['gastosAgosto']['sobremesa']) ? $usuario['gastosAgosto']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosAgosto']['lanche'] + (isset($usuario['gastosAgosto']['almoco']) ? $usuario['gastosAgosto']['almoco'] : 0) + (isset($usuario['gastosAgosto']['sobremesa']) ? $usuario['gastosAgosto']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/8/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -164,10 +164,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Setembro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheSetembro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosSetembro']['lanche']) ? $usuario['gastosSetembro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosSetembro']['almoco']) ? $usuario['gastosSetembro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosSetembro']['sobremesa']) ? $usuario['gastosSetembro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheSetembro'] + (isset($usuario['gastosSetembro']['almoco']) ? $usuario['gastosSetembro']['almoco'] : 0) + (isset($usuario['gastosSetembro']['sobremesa']) ? $usuario['gastosSetembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosSetembro']['lanche'] + (isset($usuario['gastosSetembro']['almoco']) ? $usuario['gastosSetembro']['almoco'] : 0) + (isset($usuario['gastosSetembro']['sobremesa']) ? $usuario['gastosSetembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/9/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -178,10 +178,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Outubro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheOutubro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosOutubro']['lanche']) ? $usuario['gastosOutubro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosOutubro']['almoco']) ? $usuario['gastosOutubro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosOutubro']['sobremesa']) ? $usuario['gastosOutubro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheOutubro'] + (isset($usuario['gastosOutubro']['almoco']) ? $usuario['gastosOutubro']['almoco'] : 0) + (isset($usuario['gastosOutubro']['sobremesa']) ? $usuario['gastosOutubro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosOutubro']['lanche'] + (isset($usuario['gastosOutubro']['almoco']) ? $usuario['gastosOutubro']['almoco'] : 0) + (isset($usuario['gastosOutubro']['sobremesa']) ? $usuario['gastosOutubro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/10/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -192,10 +192,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Novembro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheNovembro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosNovembro']['lanche']) ? $usuario['gastosNovembro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosNovembro']['almoco']) ? $usuario['gastosNovembro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosNovembro']['sobremesa']) ? $usuario['gastosNovembro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheNovembro'] + (isset($usuario['gastosNovembro']['almoco']) ? $usuario['gastosNovembro']['almoco'] : 0) + (isset($usuario['gastosNovembro']['sobremesa']) ? $usuario['gastosNovembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosNovembro']['lanche'] + (isset($usuario['gastosNovembro']['almoco']) ? $usuario['gastosNovembro']['almoco'] : 0) + (isset($usuario['gastosNovembro']['sobremesa']) ? $usuario['gastosNovembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/11/{{$anoSelecionado}}/{{$usuario->id}}"><i
@@ -206,10 +206,10 @@
                                     <td class="a-center ">
                                     </td>
                                     <td>Dezembro</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheDezembro'], 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['gastosDezembro']['lanche']) ? $usuario['gastosDezembro']['lanche'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosDezembro']['almoco']) ? $usuario['gastosDezembro']['almoco'] : '0.0', 2, ',', '.')}}</td>
                                     <td>{{"R$ " . number_format(isset($usuario['gastosDezembro']['sobremesa']) ? $usuario['gastosDezembro']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
-                                    <td>{{"R$ " . number_format($usuario['lancheDezembro'] + (isset($usuario['gastosDezembro']['almoco']) ? $usuario['gastosDezembro']['almoco'] : 0) + (isset($usuario['gastosDezembro']['sobremesa']) ? $usuario['gastosDezembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['gastosDezembro']['lanche'] + (isset($usuario['gastosDezembro']['almoco']) ? $usuario['gastosDezembro']['almoco'] : 0) + (isset($usuario['gastosDezembro']['sobremesa']) ? $usuario['gastosDezembro']['sobremesa'] : 0), 2, ',', '.')}}</td>
                                     @if(array_key_exists('gestaoGastos', $itensPermitidos))
                                         <td class="iconeListagem"><a
                                                     href="gastos/novo/12/{{$anoSelecionado}}/{{$usuario->id}}"><i
