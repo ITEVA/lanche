@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cargo;
 use App\Http\Requests\UserRequest;
 use App\User;
 use App\Permissao;
@@ -22,17 +23,21 @@ class UserController extends AbstractCrudController
     public function novo()
     {
         $permissoes = Permissao::where($this->getFilter())->get();
+		$cargos = Cargo::where($this->getFilter())->orderBy('nome', 'asc')->get();
 
         return parent::novo()
-            ->with('permissoes', $permissoes);
+            ->with('permissoes', $permissoes)
+			->with('cargos', $cargos);
     }
 
     public function editar($id)
     {
         $permissoes = Permissao::where($this->getFilter())->get();
+		$cargos = Cargo::where($this->getFilter())->orderBy('nome', 'asc')->get();
 
         return parent::editar($id)
-            ->with('permissoes', $permissoes);
+            ->with('permissoes', $permissoes)
+			->with('cargos', $cargos);
     }
 
     public function salvar(UserRequest $request)

@@ -50,9 +50,10 @@
                                     <td class="iconeListagem"><a
                                                 href="users/editar/{{$usuario->id}}"><i
                                                     class="fa fa-pencil-square-o"></i></a></td>
-                                    <td class="iconeListagem"><a class="removerRegistro"
-                                                                 href="{{$usuario->id}}"><i
-                                                    class="fa fa-trash"></i></a>
+                                    <td class="iconeListagem">
+                                        @if($usuario->id != 27)
+                                            <a class="removerRegistro" href="{{$usuario->id}}"><i class="fa fa-trash"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

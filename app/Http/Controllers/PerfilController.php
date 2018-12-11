@@ -290,12 +290,48 @@ class PerfilController extends AbstractCrudController
 			foreach ($almocos as $almoco) {
 				foreach ($almoco->itens as $au) {
 					if($idUsuario == $au->id_usuario) {
-						$pesos = explode(',', $au->peso);
-						foreach ($pesos as $peso) {
-							$somaAlmoco = $somaAlmoco + (floatval($peso) * 13.50) / 1000;
+						if($au->id_usuario == 27) {
+							foreach ($almoco->itens as $ai) {
+								$usuario = User::find($ai->id_usuario);
+
+								if($usuario->id_cargo == 15) {
+									$pesos = explode(',', $ai->peso);
+									$somaPesos = 0;
+									foreach ($pesos as $peso) {
+										$somaPesos = $somaPesos + floatval($peso);
+									}
+
+									if($somaPesos > 500) {
+										$somaAlmoco = $somaAlmoco + (500 * 13.50) / 1000;
+									}
+									else {
+										$somaAlmoco = $somaAlmoco + (floatval($somaPesos) * 13.50) / 1000;
+									}
+
+									$sobremesa = Produto::find($ai->sobremesa);
+									$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+								}
+							}
 						}
-						$sobremesa = Produto::find($au->sobremesa);
-						$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+						$usuario = User::find($au->id_usuario);
+						if($usuario->id_cargo == 15) {
+							$pesos = explode(',', $au->peso);
+							$somaPesos = 0;
+							foreach ($pesos as $peso) {
+								$somaPesos = $somaPesos + floatval($peso);
+							}
+							if($somaPesos > 500) {
+								$somaAlmoco = $somaAlmoco + ((floatval($peso) - 500) * 13.50) / 1000;
+							}
+						}
+						else {
+							$pesos = explode(',', $au->peso);
+							foreach ($pesos as $peso) {
+								$somaAlmoco = $somaAlmoco + (floatval($peso) * 13.50) / 1000;
+							}
+							$sobremesa = Produto::find($au->sobremesa);
+							$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+						}
 					}
 				}
 			}

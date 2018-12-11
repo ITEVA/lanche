@@ -68,6 +68,21 @@
                             </select>
                         </div>
 
+                        <!-- Cargo -->
+                        <div class="form-group col-md-2 col-xs-6">
+                            <label>Cargo*</label><br>
+                            <select name="id_cargo" class="form-control">
+                                <option {{(isset($ids) ? 'selected="selected"' : "")}} value="">Selecione um cargo
+                                </option>
+                                @if (count($cargos) > 0)
+                                    @foreach ($cargos as $cargo)
+                                        <option {{$cargo->id == old('id_cargo') || (old('id_cargo') === null && $cargo->id == $user->id_cargo) ? 'selected="selected"' : ''}}
+                                                value="{{$cargo->id}}">{{$cargo->nome}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
                         <div class="form-group col-md-4 col-xs-12">
                             <label for="email">Email*</label>
                             <input type="email" class="form-control" name="email" {{isset($ids) ? " disabled" : ""}}
