@@ -121,3 +121,6 @@ Route::post('/relatorios/pedidos/imprimir', 'RelatorioController@pedidosImprimir
 Route::get('/relatorios/gastos', 'RelatorioController@listarGastos');
 Route::post('/relatorios/gastos', 'RelatorioController@listarFiltroGastos');
 Route::post('/relatorios/gastos/imprimir', 'RelatorioController@gastosImprimir');
+
+Route::get('/relatorios/acompanhamento', 'RelatorioController@listarAcompanhamento');
+Route::post('/relatorios/acompanhamento', 'RelatorioController@listarFiltroAcompanhamento');

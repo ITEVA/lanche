@@ -1,0 +1,4 @@
+table.jambo_table tbody tr.selected {
+    background: burlywood !important;
+    color: black !important;
+}

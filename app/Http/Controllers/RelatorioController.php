@@ -22,6 +22,37 @@ class RelatorioController extends AbstractCrudController
         parent::__construct('auth');
     }
 
+	protected function listarAcompanhamento()
+	{
+		if($this->checkPermissao()) return redirect('error404');
+		$itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+		$date = $this->dataAtual();
+		$turno = date('H:i') < '12:00' ? 1 : 0;
+		$pedidos = $this->getPedidos($date, $turno);
+
+		return view('adm.relatorios.acompanhamento')
+			->with('itensPermitidos', $itensPermitidos)
+			->with('pedidos', $pedidos)
+			->with('dataRe', date('d/m/Y'))
+			->with('turnoRe', $turno);
+	}
+
+	protected function listarFiltroAcompanhamento(Request $request)
+	{
+		if($this->checkPermissao()) return redirect('error404');
+		$itensPermitidos = $this->getClassesPermissao(Auth::user()->permissao);
+
+		$date = $this->formatarDataEn($request->data);
+		$pedidos = $this->getPedidos($date, $request->turno);
+
+		return view('adm.relatorios.acompanhamento')
+			->with('itensPermitidos', $itensPermitidos)
+			->with('pedidos', $pedidos)
+			->with('dataRe', $request->data)
+			->with('turnoRe', $request->turno);
+	}
+
     /* Relatório de pedidos */
     protected function listarPedidos()
     {
@@ -296,7 +327,7 @@ class RelatorioController extends AbstractCrudController
     {
         $usuarios = User::where($this->getFilter())->orderBy('nome', 'asc')->get();
 
-        foreach ($usuarios as $usuario) {
+			foreach ($usuarios as $usuario) {
             $usuario['pedidos'] = Pedido::where(['id_usuario' => $usuario->id, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->get();
             $consumo  = 0;
             foreach ($usuario['pedidos'] as $pedido) {

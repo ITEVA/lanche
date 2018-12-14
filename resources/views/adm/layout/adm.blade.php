@@ -138,6 +138,9 @@
                                     <ul class="nav child_menu" style="display: none">
                                         <li><a href="relatorios/pedidos">Pedidos</a></li>
                                     </ul>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="relatorios/acompanhamento">Acompanhamento</a></li>
+                                    </ul>
                                 </li>
                             @endif
                         </ul>
