@@ -63,6 +63,11 @@ class AlmocoController extends AbstractCrudController
 	{
 		$almoco = Almoco::find($id);
 		$usuarios = $almoco->itens;
+		foreach ($usuarios as $usuario) {
+			$usuario['apelido'] = $usuario->usuario->apelido;
+		}
+
+		$usuarios = collect($usuarios)->sortBy('apelido');
 		$cardapio = Cardapio::where(['data' => $almoco->data, 'turno' => 1])->get();
 
 		$sobremesas = array();
