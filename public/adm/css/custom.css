@@ -6,6 +6,19 @@ body.nav-sm .container.body .left_col {
     z-index: 200;
 }
 
+.block{
+    position: absolute;
+    float: none;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: #1a1a1a;
+    opacity: 0.6;
+    width: 100%;
+    display: none;
+    pointer-events: none;
+}
+
 body.nav-sm .container.body .right_col {
     padding: 10px 20px;
     margin-left: 70px;

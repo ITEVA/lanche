@@ -3,6 +3,7 @@
     <link href="adm/css/permissoes.css" rel="stylesheet">
 @endsection
 @section('conteudo')
+    <div class="block"></div>
     <div class="row conteudoPrincipal">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
@@ -13,7 +14,7 @@
                 </div>
                 <div class="x_content">
                     <!-- start form for validation -->
-                    <form method="POST" action="{{$action}}" enctype="multipart/form-data" id="demo-form"
+                    <form class="forms" method="POST" action="{{$action}}" enctype="multipart/form-data" id="demo-form"
                           data-parsley-validate>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
                         @if(isset($ids))

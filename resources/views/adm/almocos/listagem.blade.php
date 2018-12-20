@@ -6,6 +6,7 @@
     <link href="adm/css/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
 @endsection
 @section('conteudo')
+<div class="block"></div>
 <div class="">
     <div class="row conteudoPrincipal">
         <div class="col-md-12 col-sm-12 col-xs-12">

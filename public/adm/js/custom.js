@@ -28,6 +28,22 @@ $(function () {
         }
     });
 
+    $('.block').css("height", $(document).height());
+
+    $(".btn-success").on("click", function () {
+        if($(this).attr("id") !== "removerLote") {
+            $(this).attr('point-events', 'none');
+            $('.block').css("display", "block");
+            $('.nav-md').css("overflow", "none");
+            $('.block').css("overflow", "none");
+        }
+    });
+
+    $('.forms').submit(function(event){
+        $(".btn-success").attr('disabled', 'disabled');
+    });
+
+
     $('#menu_toggle').click(function () {
         if ($('body').hasClass('nav-md')) {
             $('body').removeClass('nav-md').addClass('nav-sm');
