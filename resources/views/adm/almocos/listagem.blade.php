@@ -6,6 +6,11 @@
     <link href="adm/css/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
 @endsection
 @section('conteudo')
+<div class="cssload-loading">
+    <i></i>
+    <i></i>
+    <i></i>
+</div>
 <div class="block"></div>
 <div class="">
     <div class="row conteudoPrincipal">
@@ -17,7 +22,7 @@
                 <a class="btn btn-success pull-right" {{$disabled ? "disabled data-toggle=popover data-placement=bottom data-trigger=hover" : "href=almocos/novo"}} data-content="Já existe um registro de almoço para hoje, utilize o botão de editar para acessar.">
                     <i class="fa fa-plus"></i>&nbsp;Novo
                 </a>
-                <a class="btn btn-success pull-right" href="almocos/novoAnterior">
+                <a class="btn btn-success pull-right blockSave" href="almocos/novoAnterior">
                     <i class="fa fa-plus"></i>&nbsp;Novo anterior
                 </a>
 

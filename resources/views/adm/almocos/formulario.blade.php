@@ -3,6 +3,11 @@
     <link href="adm/css/permissoes.css" rel="stylesheet">
 @endsection
 @section('conteudo')
+    <div class="cssload-loading">
+        <i></i>
+        <i></i>
+        <i></i>
+    </div>
     <div class="block"></div>
     <div class="row conteudoPrincipal">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -58,7 +63,7 @@
                                     </div>
 
                                     <div class="form-group col-md-3 col-xs-12">
-                                        <input type="submit" name="salvar" value="Salvar" style="margin-top: 24px" class="btn btn-success">
+                                        <input type="submit" name="salvar" value="Salvar" style="margin-top: 24px" class="btn btn-success blockSave">
                                     </div>
                                 </div>
 
@@ -68,7 +73,7 @@
 
                         <div class="ln_solid col-md-12 col-xs-12"></div>
                         <div class="form-group  col-md-12 col-xs-12">
-                            <input type="submit" name="salvar" value="Salvar" class="btn btn-success">
+                            <input type="submit" name="salvar" value="Salvar" class="btn btn-success blockSave">
                             <a href="almocos">Voltar</a>
                         </div>
                         <div class="form-group  col-md-12 col-xs-12">
