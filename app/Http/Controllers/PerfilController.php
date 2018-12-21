@@ -308,8 +308,7 @@ class PerfilController extends AbstractCrudController
 										$somaAlmoco = $somaAlmoco + (floatval($somaPesos) * 13.50) / 1000;
 									}
 
-									$sobremesa = Produto::find($ai->sobremesa);
-									$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+									$somaSobremesa = $somaSobremesa + $ai->valor_sobremesa;
 								}
 							}
 						}
@@ -329,8 +328,8 @@ class PerfilController extends AbstractCrudController
 							foreach ($pesos as $peso) {
 								$somaAlmoco = $somaAlmoco + (floatval($peso) * 13.50) / 1000;
 							}
-							$sobremesa = Produto::find($au->sobremesa);
-							$somaSobremesa = $somaSobremesa + $sobremesa['preco'];
+
+							$somaSobremesa = $somaSobremesa + $au->valor_sobremesa;
 						}
 					}
 				}

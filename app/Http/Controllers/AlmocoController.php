@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Almoco;
 use App\AlmocoUsuario;
 use App\Cardapio;
+use App\Produto;
 use App\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -175,9 +176,11 @@ class AlmocoController extends AbstractCrudController
 		if($idsUsuario[0] != '') {
 			$i = 0;
 			foreach ($idsUsuario as $idUsuario) {
+				$sobremesa = Produto::find($idsSobremesa[$i]);
 				$dadosProduto = array (
 					"peso" => isset($pesos[$i]) ? $pesos[$i] : '',
 					"sobremesa" => isset($pesos[$i]) ? $idsSobremesa[$i] : '',
+					"valor_sobremesa" => isset($pesos[$i]) ? $sobremesa['preco'] : '',
 					"id_almoco" => $almoco->id,
 					"id_usuario" => $idUsuario,
 					"id_empregador" => Auth::user()->id_empregador
