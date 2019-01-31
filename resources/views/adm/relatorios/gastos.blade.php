@@ -44,8 +44,11 @@
                         <tr class="headings">
                             <th id="checkboxs">
                             </th>
-                            <th>Nome</th>
-                            <th>Gasto Total</th>
+                            <th>Apelido</th>
+                            <th>Gasto Lanche</th>
+                            <th>Gasto Almoço</th>
+                            <th>Gasto Sobremesa</th>
+                            <th>Total</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -54,9 +57,11 @@
                                 <tr class="even pointer">
                                     <td class="a-center ">
                                     </td>
-                                    <td>{{$usuario->nome}}</td>
-                                    <td>{{$usuario['consumo']}}</td>
-                                </tr>
+                                    <td>{{$usuario->apelido}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['consumo']['lanche']) ? $usuario['consumo']['lanche'] : '0.0', 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['consumo']['almoco']) ? $usuario['consumo']['almoco'] : '0.0', 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format(isset($usuario['consumo']['sobremesa']) ? $usuario['consumo']['sobremesa'] : '0.0', 2, ',', '.')}}</td>
+                                    <td>{{"R$ " . number_format($usuario['consumo']['lanche'] + (isset($usuario['consumo']['almoco']) ? $usuario['consumo']['almoco'] : 0) + (isset($usuario['consumo']['sobremesa']) ? $usuario['consumo']['sobremesa'] : 0), 2, ',', '.')}}</td>
                             @endforeach
                         @else
                             <tr>

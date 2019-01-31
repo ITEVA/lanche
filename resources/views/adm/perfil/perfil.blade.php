@@ -18,7 +18,7 @@
 
                     <div class="col-lg-10 usuario">
                         <p class="pInxirido">{{$usuario->nome}}</p>
-                        <p class="normal">{{$usuario->cargo}}</p>
+                        <p class="normal">{{isset($usuario->cargo->nome) ? $usuario->cargo->nome : ''}}</p>
 
                         <p class="pInxirido">Gasto atual:<p class="normal">R$ {{number_format($consumo, 2, ',', '.')}}</p></p>
                     </div>

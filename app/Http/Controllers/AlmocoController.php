@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Almoco;
 use App\AlmocoUsuario;
 use App\Cardapio;
+use App\InformacaoGeral;
 use App\Produto;
 use App\User;
 use Illuminate\Database\QueryException;
@@ -173,6 +174,8 @@ class AlmocoController extends AbstractCrudController
 			$almoco = Almoco::create($dados);
 		}
 
+		$ig = InformacaoGeral::find(1);
+
 		if($idsUsuario[0] != '') {
 			$i = 0;
 			foreach ($idsUsuario as $idUsuario) {
@@ -181,6 +184,7 @@ class AlmocoController extends AbstractCrudController
 					"peso" => isset($pesos[$i]) ? $pesos[$i] : '',
 					"sobremesa" => isset($pesos[$i]) ? $idsSobremesa[$i] : '',
 					"valor_sobremesa" => isset($pesos[$i]) ? $sobremesa['preco'] : '',
+					"valor_kg" => $ig->valor_kg,
 					"id_almoco" => $almoco->id,
 					"id_usuario" => $idUsuario,
 					"id_empregador" => Auth::user()->id_empregador

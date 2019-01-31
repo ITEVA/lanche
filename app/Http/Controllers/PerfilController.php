@@ -302,10 +302,10 @@ class PerfilController extends AbstractCrudController
 									}
 
 									if($somaPesos > 500) {
-										$somaAlmoco = $somaAlmoco + (500 * 13.50) / 1000;
+										$somaAlmoco = $somaAlmoco + (500 * $ai->valor_kg) / 1000;
 									}
 									else {
-										$somaAlmoco = $somaAlmoco + (floatval($somaPesos) * 13.50) / 1000;
+										$somaAlmoco = $somaAlmoco + (floatval($somaPesos) * $ai->valor_kg) / 1000;
 									}
 
 									$somaSobremesa = $somaSobremesa + $ai->valor_sobremesa;
@@ -320,13 +320,13 @@ class PerfilController extends AbstractCrudController
 								$somaPesos = $somaPesos + floatval($peso);
 							}
 							if($somaPesos > 500) {
-								$somaAlmoco = $somaAlmoco + ((floatval($peso) - 500) * 13.50) / 1000;
+								$somaAlmoco = $somaAlmoco + ((floatval($peso) - 500) * $au->valor_kg) / 1000;
 							}
 						}
 						else {
 							$pesos = explode(',', $au->peso);
 							foreach ($pesos as $peso) {
-								$somaAlmoco = $somaAlmoco + (floatval($peso) * 13.50) / 1000;
+								$somaAlmoco = $somaAlmoco + (floatval($peso) * $au->valor_kg) / 1000;
 							}
 
 							$somaSobremesa = $somaSobremesa + $au->valor_sobremesa;

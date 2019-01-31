@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Almoco;
 use Illuminate\Http\Request;
 use App\User;
 use App\Pedido;
@@ -280,7 +281,7 @@ class RelatorioController extends AbstractCrudController
         //Criando o objeto de PDF e inicializando suas configurações
         $pdf = new FPDF("P", "pt", "A4");
 
-        $pdf->SetTitle('Gstos: '. $request->dataIni. '-'. $request->dataFim);
+        $pdf->SetTitle('Gastos: '. $request->dataIni. '-'. $request->dataFim);
 
         //Adiciona uma nova pagina para cada colaborador
         $pdf->AddPage();
@@ -296,8 +297,11 @@ class RelatorioController extends AbstractCrudController
         //Tabela total de produtos
         $pdf->SetXY(20, 145);
         $pdf->SetFont('arial', 'B', 10);
-        $pdf->Cell(278, 20, 'nome', 1, 0, "C");
-        $pdf->Cell(278, 20, 'Gasto Total', 1, 0, "C");
+        $pdf->Cell(112, 20, 'Nome', 1, 0, "C");
+        $pdf->Cell(111, 20, 'Gasto Lanche', 1, 0, "C");
+        $pdf->Cell(111, 20, 'Gasto Almoço', 1, 0, "C");
+        $pdf->Cell(111, 20, 'Gasto Sobremesa', 1, 0, "C");
+        $pdf->Cell(111, 20, 'Total', 1, 0, "C");
 
         //linhas da tabela
         $pdf->SetFont('arial', '', 10);
@@ -305,8 +309,11 @@ class RelatorioController extends AbstractCrudController
             $pdf->SetY($pdf->GetY() + 20);
             foreach ($usuarios as $usuario) {
                 $pdf->SetX(20);
-                $pdf->Cell(278, 14, $usuario->nome, 1, 0, "C");
-                $pdf->Cell(278, 14, $usuario['consumo'], 1, 0, "C");
+                $pdf->Cell(112, 14, $usuario->apelido, 1, 0, "C");
+                $pdf->Cell(111, 14, "R$ " . number_format(isset($usuario['consumo']['lanche']) ? $usuario['consumo']['lanche'] : '0.0', 2, ',', '.'), 1, 0, "C");
+                $pdf->Cell(111, 14, "R$ " . number_format(isset($usuario['consumo']['almoco']) ? $usuario['consumo']['almoco'] : '0.0', 2, ',', '.'), 1, 0, "C");
+                $pdf->Cell(111, 14, "R$ " . number_format(isset($usuario['consumo']['sobremesa']) ? $usuario['consumo']['sobremesa'] : '0.0', 2, ',', '.'), 1, 0, "C");
+                $pdf->Cell(111, 14, "R$ " . number_format($usuario['consumo']['lanche'] + (isset($usuario['consumo']['almoco']) ? $usuario['consumo']['almoco'] : 0) + (isset($usuario['consumo']['sobremesa']) ? $usuario['consumo']['sobremesa'] : 0), 2, ',', '.'), 1, 0, "C");
                 $pdf->SetY($pdf->GetY() + 14);
             }
         }
@@ -325,19 +332,83 @@ class RelatorioController extends AbstractCrudController
 
     protected function getUsuarios ($intervalo)
     {
-        $usuarios = User::where($this->getFilter())->orderBy('nome', 'asc')->get();
+        $usuarios = User::where($this->getFilter())->where(["status" => 1])->orderBy('apelido', 'asc')->get();
 
-			foreach ($usuarios as $usuario) {
-            $usuario['pedidos'] = Pedido::where(['id_usuario' => $usuario->id, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$intervalo['ini'], $intervalo['fim']])->get();
-            $consumo  = 0;
-            foreach ($usuario['pedidos'] as $pedido) {
-                $consumo = $consumo + floatval($pedido->preco);
-            }
-            $usuario['consumo'] = "R$ " . number_format($consumo, 2, ',', '.');
-        }
+		foreach ($usuarios as $usuario) {
+			$usuario['consumo'] = $this->gastosTotais($usuario->id, $intervalo['ini'], $intervalo['fim']);
+		}
 
         return $usuarios;
     }
+
+	public function gastosTotais ($idUsuario, $ini, $fim) {
+		$pedidos = Pedido::where(['id_usuario' => $idUsuario, 'id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$ini, $fim])->get();
+		$almocos = Almoco::where(['id_empregador' => Auth::user()->id_empregador])->whereBetween('data', [$ini, $fim])->get();
+
+		$lanche  = 0;
+		foreach ($pedidos as $pedido) {
+			$lanche = $lanche + floatval($pedido->preco);
+		}
+
+		$somaAlmoco = 0;
+		$somaSobremesa = 0;
+		if(count($almocos) > 0) {
+			foreach ($almocos as $almoco) {
+				foreach ($almoco->itens as $au) {
+					if($idUsuario == $au->id_usuario) {
+						if($au->id_usuario == 27) {
+							foreach ($almoco->itens as $ai) {
+								$usuario = User::find($ai->id_usuario);
+
+								if($usuario->id_cargo == 15) {
+									$pesos = explode(',', $ai->peso);
+									$somaPesos = 0;
+									foreach ($pesos as $peso) {
+										$somaPesos = $somaPesos + floatval($peso);
+									}
+
+									if($somaPesos > 500) {
+										$somaAlmoco = $somaAlmoco + (500 * $ai->valor_kg) / 1000;
+									}
+									else {
+										$somaAlmoco = $somaAlmoco + (floatval($somaPesos) * $ai->valor_kg) / 1000;
+									}
+
+									$somaSobremesa = $somaSobremesa + $ai->valor_sobremesa;
+								}
+							}
+						}
+						$usuario = User::find($au->id_usuario);
+						if($usuario->id_cargo == 15) {
+							$pesos = explode(',', $au->peso);
+							$somaPesos = 0;
+							foreach ($pesos as $peso) {
+								$somaPesos = $somaPesos + floatval($peso);
+							}
+							if($somaPesos > 500) {
+								$somaAlmoco = $somaAlmoco + ((floatval($peso) - 500) * $au->valor_kg) / 1000;
+							}
+						}
+						else {
+							$pesos = explode(',', $au->peso);
+							foreach ($pesos as $peso) {
+								$somaAlmoco = $somaAlmoco + (floatval($peso) * $au->valor_kg) / 1000;
+							}
+
+							$somaSobremesa = $somaSobremesa + $au->valor_sobremesa;
+						}
+					}
+				}
+			}
+		}
+		$gastos = array(
+			'lanche' => $lanche,
+			'almoco' => $somaAlmoco,
+			'sobremesa' => $somaSobremesa
+		);
+
+		return $gastos;
+	}
     /* / Relatório de gastos */
 
     private function diaSemana($data)
