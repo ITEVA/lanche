@@ -29,6 +29,15 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
+
+                    @if (count($errors) > 0)
+                        <ul style="color: red;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+
                     <table id="example" class="table table-striped responsive-utilities jambo_table">
                         <thead>
                         <tr class="headings">

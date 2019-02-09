@@ -87,12 +87,25 @@ class CardapioController extends AbstractCrudController
 
             $c = $this->formatOutput($c);
 
-            $cardapio = Cardapio::create($c);
+            $cardapios = Cardapio::where(['data' => $c['data']])->get();
 
-            $this->salvarProdutosCardapio($request, $cardapio->id);
+            if (count($cardapios) > 0) {
 
-            return redirect()
-                ->action('CardapioController@listar');
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->withErrors(array('Já existe um cardápio para o dia '. $this->formatarDataBr($c['data']) .' edite ou exclua se quiser um novo!'));
+            }
+
+            else {
+                $cardapio = Cardapio::create($c);
+
+                $this->salvarProdutosCardapio($request, $cardapio->id);
+
+                return redirect()
+                    ->action('CardapioController@listar');
+            }
+
 
         } catch (QueryException $e) {
             return redirect()
@@ -125,6 +138,7 @@ class CardapioController extends AbstractCrudController
             $cardapio = Cardapio::create($c);
             $this->salvarProdutosCardapio($request, $cardapio->id);
 
+            $erros = "";
             while (strtotime($dataCriada) < strtotime($dataFim)) {
                 $dataNova = date('Y-m-d', strtotime("+7 days",strtotime($dataCriada)));
                 $dataCriada = $dataNova;
@@ -133,12 +147,25 @@ class CardapioController extends AbstractCrudController
                 $c['data'] = $dataCriada;
 
                 $c = $this->formatOutput($c);
-                $cardapio = Cardapio::create($c);
-                $this->salvarProdutosCardapio($request, $cardapio->id);
+
+                $cardapios = Cardapio::where(['data' => $c['data']])->get();
+
+                if (count($cardapios) > 0) {
+                    $erros = $erros . $this->formatarDataBr($c['data']). ", ";
+                }
+                else {
+                    $cardapio = Cardapio::create($c);
+                    $this->salvarProdutosCardapio($request, $cardapio->id);
+                }
             }
 
-            return redirect()
-                ->action('CardapioController@listar');
+            if($erros == "")
+                return redirect()
+                    ->action('CardapioController@listar');
+            else
+                return redirect()
+                    ->action('CardapioController@listar')
+                    ->withErrors(array('Já existe um cardápio para os dias: '. $erros .'edite ou exclua se quiser um novo!'));
 
         } catch (QueryException $e) {
             return redirect()
@@ -293,6 +320,35 @@ class CardapioController extends AbstractCrudController
     {
        $request->data = $this->formatarDataBr($request->data);
         return $request;
+    }
+
+    public function removerLote(Request $request)
+    {
+        if($this->checkPermissao()) return redirect('error404');
+
+        $strIds = $request->all();
+        $ids = explode('-', $strIds['ids']);
+
+        $erros = "";
+        foreach ($ids as $id) {
+            if (is_numeric($id)) {
+                $cardapio = Cardapio::find($id);
+                $pedidos = $cardapio->pedidos;
+
+                if (count($pedidos) > 0) {
+                    $erros = $erros . $this->formatarDataBr($cardapio->data). " (".count($pedidos)." pedidos), ";
+                }
+                else
+                    $cardapio->delete();
+            }
+        }
+        if($erros == "")
+            return redirect()
+                ->action('CardapioController@listar');
+        else
+            return redirect()
+                ->action('CardapioController@listar')
+                ->withErrors(array('Impossível excluir cardapios com pedidos cadastraados: '. $erros .' os pedidos devem ser excluidos primeiro!'));
     }
 
     protected function getFilter()

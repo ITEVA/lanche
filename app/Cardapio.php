@@ -25,4 +25,9 @@ class Cardapio extends Model
 	{
 		return $this->hasMany('App\ProdutoCardapio', 'id_cardapio');
 	}
+
+    public function pedidos()
+    {
+        return $this->hasMany('App\Pedido', 'id_cardapio');
+    }
 }
