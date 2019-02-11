@@ -87,7 +87,7 @@ class CardapioController extends AbstractCrudController
 
             $c = $this->formatOutput($c);
 
-            $cardapios = Cardapio::where(['data' => $c['data']])->get();
+            $cardapios = Cardapio::where(['data' => $c['data'], 'turno' => $c['turno']])->get();
 
             if (count($cardapios) > 0) {
 
@@ -135,10 +135,16 @@ class CardapioController extends AbstractCrudController
             );
 
             $c = $this->formatOutput($c);
-            $cardapio = Cardapio::create($c);
-            $this->salvarProdutosCardapio($request, $cardapio->id);
+            $cardapios = Cardapio::where(['data' => $c['data'], 'turno' => $c['turno']])->get();
 
             $erros = "";
+            if (count($cardapios) > 0) {
+                $erros = $erros . $this->formatarDataBr($c['data']). ", ";
+            }
+            else {
+                $cardapio = Cardapio::create($c);
+                $this->salvarProdutosCardapio($request, $cardapio->id);
+            }
             while (strtotime($dataCriada) < strtotime($dataFim)) {
                 $dataNova = date('Y-m-d', strtotime("+7 days",strtotime($dataCriada)));
                 $dataCriada = $dataNova;
@@ -148,7 +154,7 @@ class CardapioController extends AbstractCrudController
 
                 $c = $this->formatOutput($c);
 
-                $cardapios = Cardapio::where(['data' => $c['data']])->get();
+                $cardapios = Cardapio::where(['data' => $c['data'], 'turno' => $c['turno']])->get();
 
                 if (count($cardapios) > 0) {
                     $erros = $erros . $this->formatarDataBr($c['data']). ", ";
