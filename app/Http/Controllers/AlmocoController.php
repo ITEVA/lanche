@@ -45,7 +45,9 @@ class AlmocoController extends AbstractCrudController
 		if(count($almoco) > 0)
 			return redirect('almocos');
 
-		$usuarios = User::where(['status'=>1])->orderBy('apelido','asc')->get();
+        $contaIteva = 27;
+        $cozinha = 57;
+		$usuarios = User::where(['status'=>1])->where('id','!=',$contaIteva)->where('id','!=',$cozinha)->orderBy('apelido','asc')->get();
 		$cardapio = Cardapio::where(['data' => date('Y-m-d'), 'turno' => 1])->get();
 
 		$sobremesas = array();
@@ -58,7 +60,8 @@ class AlmocoController extends AbstractCrudController
 
 		return parent::novo()
 			->with('sobremesas', $sobremesas)
-			->with('usuarios', $usuarios);
+			->with('usuarios', $usuarios)
+            ->with('contaIteva',$contaIteva);
 	}
 
 	public function editar($id)
@@ -69,6 +72,7 @@ class AlmocoController extends AbstractCrudController
 			$usuario['apelido'] = $usuario->usuario->apelido;
 		}
 
+        $contaIteva = 27;
 		$usuarios = collect($usuarios)->sortBy('apelido');
 		$cardapio = Cardapio::where(['data' => $almoco->data, 'turno' => 1])->get();
 
@@ -82,7 +86,8 @@ class AlmocoController extends AbstractCrudController
 
 		return parent::editar($id)
 			->with('sobremesas', $sobremesas)
-			->with('usuarios', $usuarios);
+			->with('usuarios', $usuarios)
+            ->with('contaIteva',$contaIteva);
 	}
 
 	public function salvarAnterior(Request $request)
@@ -122,9 +127,13 @@ class AlmocoController extends AbstractCrudController
 
 		$request['id_empregador'] = Auth::user()->id_empregador;
 
-		try {
-			$idAlmoco = $this->salvarItens($request);
+		try{
+            foreach($request->peso as $peso){
+                $pesoTeste = str_split ($peso);
+                foreach($pesoTeste as $letra) if(!is_numeric($letra) and $letra != ',' and $letra != '') return redirect()->back()->withInput()->withErrors(array('Erro ao salvar dados. Digite apenas números.'));
+            }
 
+			$idAlmoco = $this->salvarItens($request);
 			return redirect('almocos/editar/'.$idAlmoco);
 		} catch (QueryException $e) {
 			return redirect()
@@ -139,9 +148,13 @@ class AlmocoController extends AbstractCrudController
 		$request['id_empregador'] = Auth::user()->id_empregador;
 
 		try {
+            foreach($request->peso as $peso){
+                $pesoTeste = str_split ($peso);
+                foreach($pesoTeste as $letra) if(!is_numeric($letra) and $letra != ',' and $letra != '') return redirect()->back()->withInput()->withErrors(array('Erro ao salvar dados. Digite apenas números.'));
+            }
+
 			$this->removerItens($id);
 			$idAlmoco = $this->salvarItens($request, $id);
-
 			return redirect('almocos/editar/'.$idAlmoco);
 		} catch (QueryException $e) {
 			return redirect()
@@ -156,10 +169,12 @@ class AlmocoController extends AbstractCrudController
 		$idsUsuario = $request->id_usuario;
 		$pesos = $request->peso;
 		$idsSobremesa = $request->id_sobremesa;
+		$visitante = $request->visitante;
 
 		$request->offsetUnset('id_usuario');
 		$request->offsetUnset('peso');
 		$request->offsetUnset('id_sobremesa');
+		$request->offsetUnset('visitante');
 
 		$dados = $this->formatOutput($request->except('_token'));
 
@@ -187,7 +202,8 @@ class AlmocoController extends AbstractCrudController
 					"valor_kg" => $ig->valor_kg,
 					"id_almoco" => $almoco->id,
 					"id_usuario" => $idUsuario,
-					"id_empregador" => Auth::user()->id_empregador
+					"id_empregador" => Auth::user()->id_empregador,
+                    "visitante"=>$visitante[$i]
 				);
 
 				if($dadosProduto['sobremesa'] == '')

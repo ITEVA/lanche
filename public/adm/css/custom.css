@@ -6923,3 +6923,11 @@ ul.notifications {
 .copyright-info {
     padding: 8px 0;
 }
+#btnVisitante{
+    right: 15px;
+    top: 07px;
+    padding-left: 30px;
+    padding-right: 30px;
+    position: absolute;
+    z-index: 1000;
+}
