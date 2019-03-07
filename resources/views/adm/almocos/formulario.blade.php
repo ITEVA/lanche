@@ -190,16 +190,18 @@
         function onChangeTag(input, tag) {
             alert("Changed a tag: " + tag);
         }
-
+        
         initag('.tags_1');
         function initag(ident) {
             $(ident).tagsInput({
                 trimValue: true,
                 width: 'auto'
             });
+            $('.tagsinput input').keypress(function () {
+                $(this).mask('000');
+            });
             return null
         }
-
     </script>
     <!-- /input tags -->
 @endsection
