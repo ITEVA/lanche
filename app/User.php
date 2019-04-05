@@ -36,7 +36,7 @@ class User extends Authenticatable
             'foto' => 'default.jpg',
             'permissao' => '1',
             'status' => '1',
-            'id_cargo' => ''
+            'id_cargo' => '' 
         ];
     }
 
