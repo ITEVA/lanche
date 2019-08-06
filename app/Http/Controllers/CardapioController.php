@@ -26,7 +26,7 @@ class CardapioController extends AbstractCrudController
         if(parent::checkPermissao()) return redirect('error404');
         $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
 
-        $cardapios = Cardapio::all();
+        $cardapios = Cardapio::whereBetween('data', [date('Y').'-01-01', date('Y').'-12-31'])->get();
 
         foreach ($cardapios as $cardapio) {
             $cardapio['diaSemana'] = $this->diaSemana($cardapio->data);
@@ -43,7 +43,7 @@ class CardapioController extends AbstractCrudController
     }
 
     public function novo(){
-        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
+        $produtos = Produto::where(['status' => 1, 'id_empregador' => Auth::user()->id_empregador])->get();
         return parent::novo()
             ->with('produtos', $produtos);
     }
@@ -63,7 +63,7 @@ class CardapioController extends AbstractCrudController
     }
 
     public function editar($id){
-        $produtos = Produto::where(['id_empregador' => Auth::user()->id_empregador])->get();
+        $produtos = Produto::where(['status' => 1, 'id_empregador' => Auth::user()->id_empregador])->get();
         $produtosAtuais = ProdutoCardapio::where(['id_cardapio'=>$id])->get();
 
         return parent::editar($id)

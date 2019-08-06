@@ -56,7 +56,7 @@ return [
             'driver' => 'mysql',
             'host' => 'localhost',
             'port' => '3306',
-            'database' => 'lanche',
+            'database' => 'lanche20190806',
             'username' => 'root',
             'password' => 'vertrigo',
             'charset' => 'utf8',

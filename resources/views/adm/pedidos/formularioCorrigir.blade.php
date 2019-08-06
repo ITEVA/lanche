@@ -131,23 +131,23 @@
                                     </tr>
                                     <tr>
                                         <td><label>PC</label></td>
-                                        <td><label>Pão Carioca</label></td>
-                                        <td><label>0,25</label></td>
+                                        <td><label>{{$tipoPaes[0]->nome}}</label></td>
+                                        <td><label>{{$tipoPaes[0]->preco}}</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PF</label></td>
-                                        <td><label>Pão de forma</label></td>
-                                        <td><label>0,39</label></td>
+                                        <td><label>{{$tipoPaes[1]->nome}}</label></td>
+                                        <td><label>{{$tipoPaes[1]->preco}}</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PI</label></td>
-                                        <td><label>Pão Integral</label></td>
-                                        <td><label>0,57</label></td>
+                                        <td><label>{{$tipoPaes[2]->nome}}</label></td>
+                                        <td><label>{{$tipoPaes[2]->preco}}</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>PS</label></td>
-                                        <td><label>Pão Sovado</label></td>
-                                        <td><label>0,25</label></td>
+                                        <td><label>{{$tipoPaes[3]->nome}}</label></td>
+                                        <td><label>{{$tipoPaes[3]->preco}}</label></td>
                                     </tr>
                                 </table>
                             </div>
@@ -162,25 +162,26 @@
                                     </tr>
                                     <tr>
                                         <td><label>M</label></td>
-                                        <td><label>Margarina</label></td>
-                                        <td><label>0,14</label></td>
+                                        <td><label>{{$tiposRecheio[0]->nome}}</label></td>
+                                        <td><label>{{$tiposRecheio[0]->preco}}</label></td>
                                     </tr><tr>
                                         <td><label>R</label></td>
-                                        <td><label>Requeijão</label></td>
-                                        <td><label>0,37</label></td>
-                                    </tr><tr>
+                                        <td><label>{{$tiposRecheio[1]->nome}}</label></td>
+                                        <td><label>{{$tiposRecheio[1]->preco}}</label></td>
+                                    </tr>
+                                    <tr>
                                         <td><label>N/A</label></td>
                                         <td><label>Sem nada</label></td>
-                                        <td><label>0,00</label></td>
+                                        <td><label>0.00</label></td>
                                     </tr><tr>
                                         <td><label>C</label></td>
                                         <td><label>Chapado</label></td>
-                                        <td><label>0,00</label></td>
+                                        <td><label>0.00</label></td>
                                     </tr>
                                     <tr>
                                         <td><label>N.C</label></td>
                                         <td><label>Não chapado</label></td>
-                                        <td><label>0,00</label></td>
+                                        <td><label>0.00</label></td>
                                     </tr>
                                 </table>
                             </div>

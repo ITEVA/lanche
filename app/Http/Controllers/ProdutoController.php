@@ -23,7 +23,7 @@ class ProdutoController extends AbstractCrudController
         if(parent::checkPermissao()) return redirect('error404');
         $itensPermitidos = parent::getClassesPermissao(Auth::user()->permissao);
 
-        $produtos = Produto::all();
+        $produtos = Produto::where(['status' => 1])->get();
 
         $produtos = $this->formatInputListagem($produtos);
 
@@ -86,6 +86,24 @@ class ProdutoController extends AbstractCrudController
         }
 
         return $request;
+    }
+
+    public function removerLote(Request $request)
+    {
+        if($this->checkPermissao()) return redirect('error404');
+
+        $strIds = $request->all();
+        $ids = explode('-', $strIds['ids']);
+
+        foreach ($ids as $id) {
+            if (is_numeric($id)) {
+                $produto = Produto::find($id);
+                $produto->fill(['status' => 0]);
+                $produto->save();
+            }
+        }
+        return redirect()
+            ->action($this->getName() . 'Controller@listar');
     }
 
     protected function getFilter()
